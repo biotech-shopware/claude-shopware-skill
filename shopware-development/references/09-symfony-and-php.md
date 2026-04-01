@@ -65,6 +65,7 @@ final class ProviderClient
 Apply these rules unless the project has a stricter local standard:
 
 - declare strict types in PHP files
+- prefer DRY and KISS over defensive ceremony
 - use typed parameters, properties, and return types
 - model structured domain data explicitly when arrays become ambiguous
 - keep public APIs clear about nullability and failure modes
@@ -72,6 +73,19 @@ Apply these rules unless the project has a stricter local standard:
 - prefer immutable or append-only patterns for state that is replayed or retried
 - use parameterized SQL when DAL is not suitable
 - avoid hidden global state and runtime service lookups
+- avoid redundant normalization, casting, or fallback branches when the contract already guarantees the value
+
+Example patterns:
+
+```php
+// Bad: defensive wrappers after the contract already guarantees a non-null string
+$code = trim((string) $requestDto->getWebhookCode());
+```
+
+```php
+// Preferred: use the typed contract directly
+$code = $requestDto->getWebhookCode();
+```
 
 ## Shopware-Specific Translation of These Rules
 
@@ -80,3 +94,4 @@ Apply these rules unless the project has a stricter local standard:
 - Logging rules matter most for admin operations, background workers, and payment flows where PII and secrets are easy to leak.
 - PHP typing and explicit domain models matter most around DAL payloads, provider adapters, and custom entity state.
 - Keep framework examples aligned with Shopware extension points. If a Symfony pattern fights Shopware's route scopes, DAL, or state handlers, choose the Shopware-compatible variant.
+- If a safeguard is needed, tie it to a concrete failure mode in the actual Shopware code path instead of adding hypothetical protection everywhere.

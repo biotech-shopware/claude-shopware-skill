@@ -57,7 +57,7 @@ Treat attached source material, ADRs, issues, forums, and blog posts as context 
    - `${CLAUDE_SKILL_DIR}/references/10-official-docs-map.md`
    - `${CLAUDE_SKILL_DIR}/references/17-accessibility-and-template-best-practices.md`
 5. Inventory mutation surfaces, trust boundaries, ownership boundaries, browser-authored data, cross-plugin contracts, and accessibility-sensitive UI patterns before proposing fixes.
-6. Plan the smallest safe change set. One concern per chunk: versioning, data model, cart pipeline, API, UI, payment flow, recurring flow, search/indexing, accessibility remediation, or review findings. If the codebase or user request requires a broader change, expand intentionally instead of forcing an artificial micro-change.
+6. Plan the smallest coherent safe change set. One concern per chunk: versioning, data model, cart pipeline, API, UI, payment flow, recurring flow, search/indexing, accessibility remediation, or review findings. If one small shared seam removes obvious duplication or avoids a second near-identical function, widen that seam instead of forcing an artificial micro-change.
 7. Preserve extension points and existing project patterns unless the task explicitly includes a migration.
 8. For multi-repo reviews, do not finalize findings until a triangulation pass checks how identifiers, saved methods, browser-stored values, custom fields, webhook state, recurring references, snippet or translation contracts, and shared frontend accessibility contracts move across repos.
 9. Validate after each chunk with the narrowest useful checks.
@@ -66,7 +66,8 @@ Treat attached source material, ADRs, issues, forums, and blog posts as context 
 ## Execution Rules
 
 - Default to Shopware 6.7 guidance. Read 6.6 compatibility notes only when the project or request requires them.
-- Keep changes small and reversible. Avoid multi-concern diffs unless the code is tightly coupled.
+- Keep changes small and reversible, but prefer the smallest coherent safe change over the mechanically smallest diff.
+- Apply DRY and KISS by default. Reuse an existing seam or helper when the behavior is genuinely shared instead of cloning near-identical code just to keep the diff smaller.
 - Protect hot paths first: cart, checkout, login, account, renewal, and large admin lists.
 - Customer-facing mutations must be login-protected, ownership-checked, and `POST`-only unless they are truly read-only.
 - Admin write routes must enforce backend `_acl`, not only frontend UI permissions.
@@ -88,6 +89,9 @@ Treat attached source material, ADRs, issues, forums, and blog posts as context 
 - Treat `sw-cache-hash` variation, invalidation states, cookies, and cacheable controller markup as reverse-proxy boundaries. Do not break Varnish or CDN cacheability casually.
 - Prefer CLI workers with explicit transports and failure queues on production. Treat the admin worker as a development fallback unless the project proves otherwise.
 - Indexers must stay bounded: batch with `IteratorFactory`, emit `EntityIndexingMessage`, and keep reindex implications explicit.
+- Add safeguards only for concrete failure modes in the actual code path. Do not add redundant casts, null guards, normalization, or wrapper branches when the type contract, DAL contract, validated input, or config contract already guarantees the value.
+- Ask before choosing between multiple valid approaches when the choice materially changes save behavior, persistence flow, entity modeling, native-component reuse, or admin/storefront UX structure.
+- If data conceptually belongs to the parent entity edit flow, prefer the normal entity save pipeline by default. Do not default to on-click writes inside a tab, editor, or assignment UI unless there is a clear operational reason.
 - Keep template logic cheap, admin UIs thin, and background work asynchronous when possible.
 - Use the inline examples in the owning reference files as starting patterns, not as a ceiling on implementation design. Adapt them to the exact plugin, Shopware version, and project conventions.
 
@@ -144,8 +148,11 @@ Read only the files needed for the current task using `${CLAUDE_SKILL_DIR}/refer
 - For implementation work, explain the next smallest safe step rather than proposing a broad rewrite.
 - When the user asks for a full review or end-to-end analysis, use this skill as context only and keep the investigation open until the relevant surfaces are exhausted.
 - For review work, present findings first, ordered by severity and blast radius.
+- Pin review findings to the current commit or working tree state. If the codebase changed between runs, say the baseline changed instead of presenting the delta as pure inconsistency.
 - When accessibility is a primary scope, put accessibility findings first, map them to WCAG, name the impacted flow, and distinguish confirmed code defects from runtime verification gaps or vendor limitations.
 - Every material finding should include the failure mode, blast radius, smallest safe fix, regression note, and validation note.
+- Classify non-primary review output clearly when needed: actionable now, deferred by scope, inactive or dormant surface, or verification gap.
+- When moving from review to implementation, prefer one finding at a time with a narrow regression pass after each fix. Re-scan the changed surface first unless the user asked for a fresh full review.
 - For implementation-ready accessibility reviews, include code samples when the user asks for them.
 - When the flow spans multiple plugins or repos, add a separate cross-flow section for contract drift instead of hiding it inside one plugin review.
 - When backend and frontend repos share one payment flow, make it explicit which values are browser-authored hints and where server authority is re-established.

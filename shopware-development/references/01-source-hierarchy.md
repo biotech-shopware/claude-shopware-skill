@@ -56,3 +56,12 @@ Use these examples to decide where a new learning belongs:
 | detailed PR template or findings template | `03-implementation-workflow.md` or `08-analysis-and-reviews.md` | no duplicate second owner |
 
 Apply repo-local `CLAUDE.md` guidance only when the repo already uses it or the user explicitly asks for it.
+
+Repo-local `CLAUDE.md` is the right place for:
+
+- local asset-build policy
+- command execution restrictions
+- branch-per-finding or branch-per-review workflow
+- project-specific dormant or intentionally inactive feature notes
+
+Keep the public skill focused on durable Shopware engineering guidance.

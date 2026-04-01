@@ -19,6 +19,8 @@ Use the lightest surface that fits the requirement.
 - If the feature integrates an external API, prefer a clear diagnostics path such as an API test action and actionable error reporting.
 - Never expose Admin API tokens, client secrets, or equivalent privileged credentials to storefront JavaScript or Twig.
 - Do not make the storefront call custom Admin API routes directly. Bridge through a backend route with the correct customer-facing validation or use the Store API where appropriate.
+- Ask before choosing between multiple valid admin directions when the decision materially changes save behavior, write timing, entity modeling, native-component reuse, or UX structure.
+- If plugin-owned data belongs to an entity edit surface, prefer saving through the normal entity save flow by default instead of issuing immediate writes from a tab or embedded editor.
 
 Example patterns:
 
@@ -32,6 +34,11 @@ fetch('/api/_action/my-plugin/rebuild-index', {
 
 ```text
 Preferred: keep the privileged action in the admin or app backend, protect it with ACL or signed app requests, and expose only customer-safe storefront routes through Store API or another ownership-checked backend route.
+```
+
+```text
+Bad: a new category tab writes cross-selling rows immediately on every click even though the data belongs to the category edit flow.
+Good: extend the category save flow by default and only choose immediate writes when the user explicitly wants that UX or the scale justifies it.
 ```
 
 ## 6.7 Migration Surfaces

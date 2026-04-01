@@ -14,6 +14,7 @@ Use review mode when the user asks for:
 - When linking core behavior, pin links to the exact Shopware tag or commit from `composer.lock` when possible.
 - Treat ADRs, issues, forum posts, and blog posts as labeled context unless verified.
 - Treat this skill as review context, not a scan boundary. For full reviews, keep following evidence across the full relevant surface even when the initially loaded references are narrow.
+- Pin findings to the current commit or working tree state first. If the code changed between runs, say the baseline changed before comparing findings across runs.
 
 ## Scope Coverage
 
@@ -85,6 +86,13 @@ Every material finding should include:
 - the smallest fix direction that matches Shopware patterns
 - copyable inline references as raw URLs in backticks when a source is cited
 
+Classify non-primary output explicitly when useful:
+
+- actionable now
+- deferred by scope
+- inactive or dormant surface
+- verification gap
+
 For review output that includes diffs, add:
 
 - a regression note
@@ -114,6 +122,8 @@ For multi-repo or plugin-ecosystem reviews, structure the output as:
 - a short validation or tooling-limits section
 
 Avoid checklist spam. Only report material issues that are actually present.
+
+If a feature is intentionally inactive, dormant, or outside the agreed scope, do not force it into the main actionable findings list unless the user explicitly wants speculative hardening there.
 
 Literal findings template:
 
@@ -148,6 +158,18 @@ Accessibility-first variant:
 - Keep sentences short and decisive.
 - Avoid filler and speculative noise.
 - If there are no findings, say so clearly and mention remaining verification gaps instead of padding the report.
+- Separate confirmed defects from context-dependent concerns, provider limitations, and dormant-feature observations.
+
+## Baseline and Fix Execution
+
+- If the codebase changed between repeated review runs, add a short baseline note instead of implying pure model inconsistency.
+- When moving from review into implementation, prefer one finding at a time with a narrow regression pass after each fix.
+- Re-scan the changed surface first after each fix. Do not silently convert every remediation step into a new full-repo review unless asked.
+
+Optional review sections when they add clarity:
+
+- `Deferred / Inactive / Out-of-Scope`
+- `Baseline note`
 
 ## Triangulation Reviews
 

@@ -45,17 +45,27 @@ Bad chunks:
 - payment correctness plus saved methods plus refunds in one diff
 - storefront redesign mixed with backend query refactors
 
+Use the smallest coherent safe change, not the mechanically smallest diff:
+
+- reuse or widen one existing helper when the behavior is genuinely shared
+- allow a local refactor that removes obvious duplication
+- do not clone a second near-identical function or service just to keep the touched lines isolated
+
 ## Step 5: Implement Safely
 
 Guardrails:
 
 - keep controllers, handlers, subscribers, and Twig thin
+- keep the code DRY and KISS unless the project intentionally chose a different local standard
 - use constructor injection
 - load only the data needed
 - avoid repository calls inside loops
 - queue heavy work and external I/O when it is not request-critical
 - do not trust client-supplied payment or authorization state
 - do not add cookies, headers, or invalidations casually on cacheable routes
+- add safeguards only for a concrete failure mode in the current code path
+- do not add redundant `trim((string) ...)`, repeated null guards, or extra normalization when types, DAL contracts, validated input, or config contracts already guarantee the value
+- if more than one valid implementation materially changes persistence flow, entity modeling, native-component reuse, or admin/storefront UX structure, stop and ask before choosing
 
 ## Step 6: Validate the Smallest Useful Surface
 
@@ -90,6 +100,12 @@ Always capture:
 - remaining risk or follow-up chunk
 
 For review work, use `08-analysis-and-reviews.md` instead of this file's delivery format.
+
+When implementing from review findings:
+
+- fix one finding at a time unless the findings are tightly coupled
+- run a narrow regression pass after each fix
+- re-scan the changed surface first before reopening the full review scope
 
 ## Step 9: Write PR Descriptions By Default
 

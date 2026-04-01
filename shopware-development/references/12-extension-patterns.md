@@ -23,6 +23,7 @@
 - Load data in the resolver and attach a struct to the slot; do not query inside Twig.
 - Keep configuration-driven ordering and defaults explicit.
 - A custom product slider should collect product IDs in `collect()`, enrich the slot in `enrich()`, and render a prepared struct in Twig.
+- If multiple valid extension surfaces materially change persistence flow or UX structure, pause and ask before choosing.
 
 ## Import and Export
 
@@ -71,6 +72,7 @@ Good: dispatch one business event after the state is committed and let Flow Buil
 - Use entity extensions when the product needs structured extra fields but the lifecycle still belongs to the product.
 - Use custom entities when the domain needs its own lifecycle, synchronization, batching, or indexes.
 - Keep variant, property, stream, and cross-selling logic aligned with existing Shopware catalog models before inventing plugin-side shortcuts.
+- When direct association, extension, custom entity, or local collection are all plausible, ask before committing because that choice changes persistence, UX, and performance characteristics.
 
 Example pattern:
 
