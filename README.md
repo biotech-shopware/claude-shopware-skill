@@ -49,9 +49,9 @@ claude-shopware-skill/
         └── 21-internationalization-and-snippets.md
 ```
 
-## Install
+## Install And Use
 
-### Claude Code
+### Claude Code CLI Or Desktop App
 
 Personal install:
 
@@ -73,17 +73,68 @@ Invoke explicitly:
 /shopware-development review this Shopware plugin for P0/P1 security, performance, DAL, and compatibility issues
 ```
 
-### Codex
+Claude Code discovers personal skills from `~/.claude/skills/` and project skills from `.claude/skills/`. Restart Claude Code after installation if it was already running.
+
+Official reference: [Claude Code Agent Skills](https://docs.claude.com/en/docs/claude-code/skills)
+
+### Claude Native Mac App Or Claude Web
+
+Claude app skills are managed in the Claude UI, not by reading `~/.claude/skills`.
+
+Package the installable skill folder as a ZIP whose root contains `SKILL.md`, `references/`, and optional support files, then upload it in Claude's Skills UI if your plan and workspace settings enable custom skills.
+
+```bash
+cd shopware-development
+zip -r ../shopware-development-skill.zip SKILL.md references agents
+```
+
+Official reference: [Using Skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude)
+
+### Codex IDE, Codex CLI, Or Native Codex Mac App
 
 Install from GitHub repo `biotech-shopware/claude-shopware-skill` with skill path `shopware-development`.
 
-Use:
+Preferred install through the Codex skill installer:
+
+```bash
+python ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
+  --repo biotech-shopware/claude-shopware-skill \
+  --path shopware-development
+```
+
+Direct filesystem install:
+
+```bash
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+cp -R shopware-development "${CODEX_HOME:-$HOME/.codex}/skills/"
+```
+
+Restart Codex after installation. The Codex CLI, IDE extension, and native Mac app use the same local skill shape when they run with the same `CODEX_HOME`.
+
+Invoke explicitly when needed:
 
 ```text
 $shopware-development implement this Shopware 6.7 change with the smallest coherent safe change and call out version-specific behavior
 ```
 
 The `shopware-development/agents/openai.yaml` file provides Codex UI metadata. The runtime skill content remains the same.
+
+OpenAI reference: [Skills in ChatGPT](https://help.openai.com/en/articles/20001066-skills-in-chatgpt) notes that OpenAI skills follow the Agent Skills standard and are supported in Codex, but skills do not sync automatically across products.
+
+### Dry-Run Install Check
+
+Use a temp directory to verify the package shape without changing your active install:
+
+```bash
+tmp="$(mktemp -d)"
+mkdir -p "$tmp/codex/skills" "$tmp/claude/skills"
+cp -R shopware-development "$tmp/codex/skills/"
+cp -R shopware-development "$tmp/claude/skills/"
+test -f "$tmp/codex/skills/shopware-development/SKILL.md"
+test -f "$tmp/codex/skills/shopware-development/agents/openai.yaml"
+test -f "$tmp/claude/skills/shopware-development/SKILL.md"
+test -f "$tmp/claude/skills/shopware-development/references/01-source-hierarchy.md"
+```
 
 ## Prompt Patterns
 

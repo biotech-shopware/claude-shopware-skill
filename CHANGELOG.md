@@ -24,12 +24,13 @@ All notable changes to the universal Shopware AI skill are documented in this fi
   - temporary upload cleanup
   - sales-channel repository guidance
   - HTTP cache, queue, indexer, storefront, accessibility, and review routing
-- Updated `README.md` for both Claude Code and Codex installation and invocation.
+- Updated `README.md` with install and invocation guidance for Claude Code CLI/app, Claude native app/web, Codex CLI, Codex IDE, and the native Codex Mac app.
 
 ### Validated
 
 - Installable skill markdown is runtime-neutral except permitted repo-local overlay names.
 - Existing payment, recurring, headless, cart, checkout, cache, queue, indexing, accessibility, testing, i18n, backend, and review guidance remains covered.
+- Dry-run local installs resolve the expected Claude Code and Codex skill files.
 - Public documentation contains no local machine paths.
 
 ## [v0.6.0] - 2026-04-01
