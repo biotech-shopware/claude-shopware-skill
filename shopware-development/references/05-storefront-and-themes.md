@@ -1,5 +1,7 @@
 # Storefront and Themes
 
+Index: rendering, Twig, storefront JS, SCSS/theme, performance/cache, 6.7 structure, SEO/accessibility.
+
 ## Rendering Strategy
 
 - Keep Twig templates cheap.
@@ -77,6 +79,7 @@ Example patterns:
 - Use the Shopware storefront plugin system and data attributes for progressive enhancement.
 - Keep client code thin and avoid duplicating server-side business rules.
 - Prefer Store API or purpose-built endpoints for dynamic data.
+- Prefer native `fetch` for new storefront JS unless the project already standardizes on an existing HTTP helper.
 - Do not embed secrets or privileged logic in storefront JS.
 - Do not load third-party libraries globally when the feature only exists on one route or widget.
 - Do not write untrusted HTML with `innerHTML`, `insertAdjacentHTML`, or equivalent sinks. Treat `v-html` with the same suspicion.

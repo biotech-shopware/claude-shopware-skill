@@ -1,5 +1,7 @@
 # Extension Patterns
 
+Index: config, Flow Builder, CMS, import/export, media, rules, line items, mail, product/catalog choices.
+
 ## Plugin Configuration
 
 - Use `config.xml` and a typed configuration wrapper for merchant-facing settings.
@@ -9,9 +11,9 @@
 - API URL, timeout, debug mode, and feature flags belong in plugin configuration with a typed service, not in `private const` values scattered across services.
 - When writing custom fields programmatically, merge with the existing custom field array instead of replacing unrelated keys.
 
-## Business Events and Flow Builder
+## Flow Builder
 
-- Dispatch explicit business events for meaningful domain actions instead of hardcoding follow-up emails, tags, or webhooks.
+- Dispatch explicit business events or Flow Builder-compatible events for meaningful domain actions instead of hardcoding follow-up emails, tags, or webhooks.
 - Use Flow Builder-compatible events when merchants should be able to react without code changes.
 - Implement custom flow actions when the plugin exposes a domain operation merchants should be able to call from Flow Builder.
 - Put the business decision in the service, then emit the event once state is committed.
@@ -39,6 +41,7 @@
 - Validate remote sources before downloading them and treat URL-based imports as SSRF-sensitive.
 - Keep folder configuration and thumbnail behavior explicit.
 - Upload a remote image through `MediaService` or `FileSaver`, create the media entity first, then associate the media ID to products or CMS content.
+- Clean up temporary files after uploads, imports, and remote downloads.
 
 ## Rule Builder Conditions
 

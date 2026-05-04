@@ -1,5 +1,7 @@
 # Testing Patterns
 
+Index: scope, core traits, fixtures, repository mocks, Store API/checkout tests, migration/wiring tests, admin/frontend notes.
+
 ## Test Scope
 
 Pick the narrowest test that still proves the behavior:

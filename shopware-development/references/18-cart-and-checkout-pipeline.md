@@ -1,5 +1,7 @@
 # Cart and Checkout Pipeline
 
+Index: pipeline model, collectors/processors, ordering, line items, validators, delivery/promotions, order conversion, hot paths, async, review prompts.
+
 ## Core Pipeline Mental Model
 
 The stable Shopware core pattern is:

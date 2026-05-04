@@ -1,5 +1,7 @@
 # Analysis and Reviews
 
+Index: scope, scan order, severity, scale model, evidence, output, style, baseline/fix execution, triangulation.
+
 Use review mode when the user asks for:
 
 - a code review

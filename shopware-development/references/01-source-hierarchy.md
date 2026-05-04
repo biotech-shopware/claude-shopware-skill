@@ -2,18 +2,18 @@
 
 ## Authority Order
 
-1. Official Shopware docs for the exact target version.
-2. Stable Shopware core behavior matching the project version.
-3. Official Symfony docs.
-4. This skill's distilled references.
+1. Project version signals: root and extension `composer.json`, installed package metadata, and targeted lock-file checks when exact versions matter.
+2. Official Shopware docs for the exact target version as starting evidence.
+3. Stable Shopware core or installed vendor behavior matching the project version for behavior-sensitive claims.
+4. Official Symfony component, framework integration, and reference docs when Symfony behavior matters.
+5. This skill's distilled references.
 
 For storefront accessibility questions, use this variant:
 
-1. Official Shopware docs for the exact target version.
-2. Stable Shopware core storefront behavior matching the project version.
-3. WCAG 2.2, WAI-ARIA APG, ADA.gov, and U.S. Access Board material when the question is accessibility-specific.
-4. Official Symfony docs when framework behavior matters to the implementation.
-5. This skill's distilled references.
+1. Shopware docs and matching core storefront behavior for the target version.
+2. WCAG 2.2, WAI-ARIA APG, ADA.gov, and U.S. Access Board material when the question is accessibility-specific.
+3. Symfony docs when framework behavior matters to the implementation.
+4. This skill's distilled references.
 
 ## Ownership Boundaries
 
@@ -55,9 +55,9 @@ Use these examples to decide where a new learning belongs:
 | `messages.en.base.json` and admin/storefront snippet ownership | `21-internationalization-and-snippets.md` | short cross-reference from `05` or `06` |
 | detailed PR template or findings template | `03-implementation-workflow.md` or `08-analysis-and-reviews.md` | no duplicate second owner |
 
-Apply repo-local `CLAUDE.md` guidance only when the repo already uses it or the user explicitly asks for it.
+Apply repo-local `AGENTS.md` or `CLAUDE.md` guidance only when the repo already uses it or the user explicitly asks for it.
 
-Repo-local `CLAUDE.md` is the right place for:
+Repo-local overlay files are the right place for:
 
 - local asset-build policy
 - command execution restrictions

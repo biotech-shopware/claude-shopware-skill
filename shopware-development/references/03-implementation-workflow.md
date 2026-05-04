@@ -1,5 +1,7 @@
 # Implementation Workflow
 
+Index: frame, inspect, extension point, chunking, safeguards, validation, regression scan, reporting, PR/QA template.
+
 ## Step 1: Frame the Task
 
 - Identify the target version and active extension surface.
@@ -10,7 +12,7 @@
 
 Read only what is necessary:
 
-- nearest `CLAUDE.md` files if the repo uses them
+- nearest repo-local overlay files such as `AGENTS.md` or `CLAUDE.md` if the repo uses them
 - the relevant `composer.json` files
 - the existing service, route, subscriber, Twig block, admin module, or payment handler that owns the behavior
 - the relevant reference file from this skill
@@ -59,6 +61,7 @@ Guardrails:
 - keep the code DRY and KISS unless the project intentionally chose a different local standard
 - use constructor injection
 - load only the data needed
+- do not edit already executed migration classes; add a new migration unless the repo explicitly has a safe local-only migration policy
 - avoid repository calls inside loops
 - queue heavy work and external I/O when it is not request-critical
 - do not trust client-supplied payment or authorization state

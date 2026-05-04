@@ -1,5 +1,7 @@
 # Accessibility and Template Best Practices
 
+Index: baseline, storefront alignment, Twig/theme guidance, JS guidance, ecommerce components, review evidence, anti-patterns.
+
 Use sources in this order when accessibility is in scope:
 
 1. Shopware official docs for the target version.

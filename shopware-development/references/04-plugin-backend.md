@@ -1,5 +1,7 @@
 # Plugin Backend
 
+Index: architecture, DAL/modeling, migrations, APIs, HTTP cache, performance, Messenger, external integrations.
+
 ## Architecture
 
 Shape plugin backend code like a disciplined Symfony application:
@@ -141,6 +143,7 @@ $code = $config->getWebhookCode();
 - Add indexes that match real filters, joins, and sort keys.
 - Add composite unique indexes where they enforce idempotency or natural uniqueness for operational tables.
 - Use parameter binding for manual SQL.
+- Do not edit already executed migration classes; add a new migration unless the repo explicitly has a safe local-only migration policy.
 
 ## Store API and Admin API
 

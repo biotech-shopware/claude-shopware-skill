@@ -20,6 +20,7 @@ Example:
 - Enforce the same ownership rules for subscriptions, saved payment methods, subscription addresses, line items, and provider-specific card-choice mappings.
 - Do not assume one storefront, one language, or one price context.
 - If shipping methods, catalogs, or prices vary for roles such as sales agents or B2B segments, enforce that in backend resolution and route validation, not only in Twig visibility.
+- Use `SalesChannelRepository` instead of `EntityRepository` when the entity supports sales-channel scoped loading.
 
 ## Pricing and Tax
 
@@ -38,9 +39,14 @@ $product = $this->productRepository->search(new Criteria([$productId]), $context
 
 ```php
 // Preferred: keep the sales-channel context authoritative and only extract DAL context where needed
+public function __construct(
+    private readonly \Shopware\Core\System\SalesChannel\Entity\SalesChannelRepository $productRepository
+) {
+}
+
 $product = $this->productRepository->search(
     new Criteria([$productId]),
-    $salesChannelContext->getContext()
+    $salesChannelContext
 )->first();
 ```
 

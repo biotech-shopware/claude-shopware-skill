@@ -1,15 +1,17 @@
 # Quality and Operations
 
+Index: security, external APIs, observability, cache/queue/index operations, testing/CI, store readiness, failure modes, scheduled work.
+
 ## Security Baseline
 
 - Escape output by default and treat rich HTML as hostile unless it is sanitized.
 - Prefer DAL to reduce injection risk. If raw SQL is necessary, bind every parameter.
 - Treat any URL ingestion, remote file import, or webhook callback target as SSRF-sensitive: validate scheme and host, block private IP ranges, apply timeouts, and cap payload size.
-- Use the official CSRF or request-authenticity protections for storefront or admin-initiated write flows where the platform expects them.
+- Use the official request-authenticity protections for storefront or admin-initiated write flows where the platform expects them.
 - Enforce ACL for admin operations and ownership checks for storefront or Store API operations.
+- Distinguish browser-write routes from server-to-server endpoints. Browser-initiated writes need platform request protection; webhooks and signed callbacks replace CSRF with sender authentication, replay defense, and idempotency.
 - Never commit secrets. Treat system configuration values, API keys, and provider tokens as sensitive and keep them out of logs.
 - Never set `verify => false` or equivalent TLS-disable flags in production HTTP clients.
-- Distinguish browser-write routes from server-to-server endpoints. Browser-initiated POSTs need CSRF or equivalent request protection; webhooks and signed callbacks usually disable CSRF and replace it with sender authentication.
 - State-changing customer-facing endpoints should be POST-only and protected against IDOR or ownership bypass. Do not expose mutations over GET.
 - Do not log tokens, context tokens, provider responses, or payment payloads to the browser console or client-side telemetry by default.
 - Do not treat `localStorage`, `sessionStorage`, or other browser-persisted values as authoritative payment, vault, or ownership state.

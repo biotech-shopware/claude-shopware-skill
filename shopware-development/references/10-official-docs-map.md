@@ -1,9 +1,22 @@
 # Official Docs Map
 
+Index: research protocol, Shopware docs, storefront/accessibility, admin/apps, payments, operations, Symfony, extension surfaces, core anchors.
+
+## Docs Research Protocol
+
+- Treat rendered Shopware docs as navigation and starting evidence, not final behavior authority.
+- For detailed research, prefer the Markdown source in `shopware/docs` and the matching source file in `shopware/shopware` or installed `vendor/shopware/*`.
+- Convert rendered docs paths to Markdown source paths when possible. Example: `/docs/guides/plugins/plugins/storefront/customize-templates.html` maps to `guides/plugins/plugins/storefront/templates/customize-templates.md` in `shopware/docs` when that file exists.
+- Verify behavior-sensitive guidance against matching core or vendor code before implementing or reporting a finding.
+- For Symfony, check all relevant surfaces before concluding: component docs, framework or bundle integration docs, and reference/config docs.
+- If separate research agents are explicitly allowed, scope each to one docs/source question and require source-code verification. If delegation is not available, do the same checks inline.
+
 ## Versioned Shopware Docs
 
 - Shopware docs root: `https://developer.shopware.com/docs/`
 - Archived 6.6 docs root: `https://developer.shopware.com/docs/v6.6/`
+- Shopware docs Markdown source: `https://github.com/shopware/docs/tree/main/`
+- Shopware core source: `https://github.com/shopware/shopware/tree/trunk/`
 
 When a 6.6 page is needed, start with the same path under `/docs/v6.6/` and confirm that the archived page exists.
 
@@ -112,6 +125,7 @@ When a 6.6 page is needed, start with the same path under `/docs/v6.6/` and conf
 - HttpClient: `https://symfony.com/doc/current/http_client.html`
 - Messenger: `https://symfony.com/doc/current/messenger.html`
 - logging: `https://symfony.com/doc/current/logging.html`
+- configuration reference: `https://symfony.com/doc/current/reference/configuration/framework.html`
 
 ## Extension Surfaces
 

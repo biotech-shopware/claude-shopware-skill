@@ -1,19 +1,18 @@
-# Shopware Claude Code Skill
+# Shopware AI Skill for Claude Code and Codex
 
-Claude Code skill for Shopware 6 plugin development, reviews, payments, subscriptions, storefront and accessibility work, administration, testing, search/indexing, and architecture analysis.
+Universal Shopware 6 skill for AI-assisted planning, implementation, refactoring, review, and release work.
 
-Built for Shopware 6.7-first work with explicit 6.6 compatibility handling.
+The installable skill folder is platform-neutral. Claude Code and Codex use the same `shopware-development/` content; only installation and invocation differ by runtime.
 
-## Design
+## Scope
 
-- One installable skill: `shopware-development`
-- Lean `SKILL.md` plus 21 focused reference files
-- Official Shopware docs first, matching core behavior second
-- Guardrails only, never a cap on Claude investigation depth or solution search
-- Reference files read selectively based on task routing, not bulk-loaded
-- Pragmatic defaults: smallest coherent safe change, DRY/KISS, and no redundant defensive wrappers without a concrete failure mode
-- High-impact direction choices are paused for confirmation when they materially change persistence, entity modeling, or admin/storefront UX
-- Review mode stays findings-first, baseline-aware, and explicit about deferred, inactive, and verification-gap surfaces
+- Shopware 6.7-first plugin development with explicit 6.6 compatibility handling
+- backend, DAL, migrations, Store API, Admin API, HTTP cache, Varnish, queues, and indexers
+- storefront Twig, JS, SCSS, themes, accessibility, snippets, and i18n
+- administration modules, apps, app scripts, ACL, Vue 3, Pinia, Vite, and cloud constraints
+- payments, webhooks, refunds, saved methods, recurring payments, and headless contracts
+- cart, checkout, delivery, promotion, testing, search, operations, and multi-plugin reviews
+- pragmatic coding defaults: smallest coherent safe change, DRY/KISS, and no defensive ceremony without a concrete failure mode
 
 ## Repository Layout
 
@@ -24,6 +23,8 @@ claude-shopware-skill/
 ├── README.md
 └── shopware-development/
     ├── SKILL.md
+    ├── agents/
+    │   └── openai.yaml
     └── references/
         ├── 01-source-hierarchy.md
         ├── 02-version-targeting.md
@@ -50,106 +51,77 @@ claude-shopware-skill/
 
 ## Install
 
-### Personal
+### Claude Code
+
+Personal install:
 
 ```bash
 mkdir -p ~/.claude/skills
 cp -R shopware-development ~/.claude/skills/
 ```
 
-### Project-level
+Project install:
 
 ```bash
 mkdir -p .claude/skills
 cp -R shopware-development .claude/skills/
 ```
 
-Restart Claude Code after installation. Discovery requires:
-
-```text
-<skills-dir>/shopware-development/SKILL.md
-```
-
-## Use in Claude Code
-
-Invoke explicitly for reliable activation:
+Invoke explicitly:
 
 ```text
 /shopware-development review this Shopware plugin for P0/P1 security, performance, DAL, and compatibility issues
 ```
 
-```text
-/shopware-development implement this feature with the smallest coherent safe change and call out version-specific behavior
-```
+### Codex
+
+Install from GitHub repo `biotech-shopware/claude-shopware-skill` with skill path `shopware-development`.
+
+Use:
 
 ```text
-/shopware-development review this payment flow with focus on validate/finalize, webhook authenticity, idempotency, and ownership
+$shopware-development implement this Shopware 6.7 change with the smallest coherent safe change and call out version-specific behavior
 ```
 
-```text
-/shopware-development review this storefront for WCAG, keyboard, focus, modal, and repeated-component issues
-```
-
-```text
-/shopware-development analyze this cart or checkout change with focus on collectors, processors, pricing, delivery, cache safety, and hot-path boundaries
-```
-
-```text
-/shopware-development harden this Shopware 6.7 plugin so it stays Varnish-safe, uses Messenger/RabbitMQ correctly, and keeps indexers bounded
-```
-
-```text
-/shopware-development compare 2-3 valid admin implementation directions, explain the persistence and UX tradeoffs, and wait before choosing
-```
+The `shopware-development/agents/openai.yaml` file provides Codex UI metadata. The runtime skill content remains the same.
 
 ## Prompt Patterns
 
-**Strict plugin review**
-
 ```text
-/shopware-development review this plugin for P0/P1 security, performance, DAL, webhook, and Shopware compatibility issues. Findings first, with concrete file references.
+/shopware-development review this payment flow with focus on validate/finalize, webhook authenticity, idempotency, and ownership.
 ```
 
-**Small-step bug fix**
-
 ```text
-/shopware-development analyze this bug, identify the smallest coherent safe fix, reuse an existing seam if appropriate, implement it, and validate only the affected flow first.
+$shopware-development analyze this cart or checkout change with focus on collectors, processors, pricing, delivery, cache safety, and hot-path boundaries.
 ```
 
-**Architecture exploration**
-
 ```text
-/shopware-development think broadly first, compare 2-3 viable approaches, then recommend the best one. Use the skill as Shopware guardrails, not as a cap on solution space.
+/shopware-development review this storefront for WCAG, keyboard, focus, modal, repeated-component, and template override issues.
 ```
 
-**Full-repo review without constraining the model**
-
 ```text
-/shopware-development do a full end-to-end review of this Shopware project. Use the skill as context and guardrails only, not as a cap on investigation depth.
+$shopware-development harden this Shopware 6.7 plugin so it stays Varnish-safe, uses Messenger/RabbitMQ correctly, and keeps indexers bounded.
 ```
 
-**PR description**
-
 ```text
-/shopware-development write a PR description for this change using the default detailed structure.
+/shopware-development compare 2-3 valid admin implementation directions, explain persistence and UX tradeoffs, and wait before choosing.
 ```
 
-## What the Skill Adds
+```text
+$shopware-development do a full end-to-end review. Use the skill as Shopware guardrails only, not as a cap on investigation depth.
+```
 
-- Shopware-specific source order and routing
-- Example-driven backend, storefront, payments, cart, search, and testing guidance
-- Pragmatic coding defaults: DRY, KISS, and no defensive ceremony without a real failure mode
-- Direction-choice discipline for high-impact admin/storefront persistence and UX decisions
-- Stable review behavior with baseline notes and actionable/deferred/inactive triage
+## Source Policy
 
-The skill does not replace Claude's reasoning. It provides Shopware context and guardrails, not a ceiling on breadth or depth.
-
-## Repo-Local Overlay
-
-Keep repo-specific workflow choices in `CLAUDE.md`, not in the public skill. Typical local overlays include asset-build policy, command restrictions, branch workflow, and project-specific dormant-feature notes.
+- Detect project version from `composer.json` first.
+- Use targeted package checks, vendor metadata, or focused `composer.lock` search only when exact installed versions matter.
+- Treat Shopware docs as starting evidence; verify behavior-sensitive guidance against matching core or installed vendor code.
+- For Symfony behavior, check component docs, framework or bundle integration docs, and reference or config docs.
+- Keep local workflow preferences in repo overlays such as `AGENTS.md` or `CLAUDE.md`.
 
 ## Release Model
 
 - Release history lives in [CHANGELOG.md](CHANGELOG.md).
 - The installable skill root is `shopware-development/`.
-- The skill name is `shopware-development`.
+- The skill trigger is `shopware-development`.
+- Existing Claude and Codex-specific repos should not diverge from this universal skill content after `v0.7.0`.

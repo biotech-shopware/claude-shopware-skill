@@ -1,5 +1,7 @@
 # Search and Indexing
 
+Index: search rules, mapping/fetch symmetry, indexer lifecycle, workers, query builders, operations, review prompts.
+
 ## Search Rules
 
 - Prefer Shopware's search and listing routes when the task is storefront search or filtering behavior.

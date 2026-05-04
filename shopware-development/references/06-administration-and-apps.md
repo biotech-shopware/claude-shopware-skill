@@ -1,5 +1,7 @@
 # Administration and Apps
 
+Index: admin rules, admin Twig, 6.7/6.6 surfaces, apps, cloud, manifest, webhooks, actions, scripts, validation.
+
 Decide first whether the task belongs in:
 
 - a plugin administration module
@@ -35,6 +37,12 @@ fetch('/api/_action/my-plugin/rebuild-index', {
 ```text
 Preferred: keep the privileged action in the admin or app backend, protect it with ACL or signed app requests, and expose only customer-safe storefront routes through Store API or another ownership-checked backend route.
 ```
+
+## Administration Twig Templates
+
+- Administration Twig templates do not have access to storefront-only PHP Twig functions.
+- Administration templates are automatically extended; do not add `{% extends '...' %}` or `{% sw_extends '...' %}`.
+- A block with the same name replaces the parent block. Use `{% parent %}` only when appending to parent content is intentional.
 
 ```text
 Bad: a new category tab writes cross-selling rows immediately on every click even though the data belongs to the category edit flow.

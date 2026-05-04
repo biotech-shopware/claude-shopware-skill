@@ -1,5 +1,7 @@
 # Payments
 
+Index: non-negotiables, handler model, architecture, data collection, correctness, state sync, webhooks, saved methods, recurring/headless, validation.
+
 ## Non-Negotiables
 
 - Never receive, store, or forward raw PAN, CVV, bank account, or routing data through your server.

@@ -1,5 +1,7 @@
 # Version Targeting
 
+Index: default rule, detection order, 6.7 deltas, 6.6 compatibility, migration playbook, replacement strategy, anchors.
+
 ## Default Rule
 
 Default to Shopware 6.7 guidance. Switch to explicit 6.6 compatibility mode when:
@@ -14,10 +16,11 @@ Check in this order:
 
 1. Root `composer.json`
 2. Plugin/theme/app `composer.json`
-3. `composer.lock`
-4. Existing code patterns that imply a versioned extension surface
+3. Installed package metadata or `composer show` output when available
+4. Focused `composer.lock` search for specific package entries only when exact installed versions matter
+5. Existing code patterns that imply a versioned extension surface
 
-State the version assumption before changing behavior.
+State the version assumption before changing behavior. Do not read the full lock file by default; it is too large for routine version detection.
 
 ## 6.7-First Deltas
 

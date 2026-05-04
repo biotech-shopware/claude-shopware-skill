@@ -1,5 +1,7 @@
 # Subscriptions and Recurring Payments
 
+Index: review boundaries, lifecycle, recurring orders, saved methods, provider truth, data exposure, multi-plugin triangulation, validation prompts.
+
 ## Core Review Boundaries
 
 Establish these boundaries before judging code quality:
