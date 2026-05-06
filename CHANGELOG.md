@@ -2,6 +2,21 @@
 
 All notable changes to the universal Shopware AI skill are documented in this file.
 
+## [v0.7.1] - 2026-05-06
+
+### Changed
+
+- Normalized `allowed-tools` in `shopware-development/SKILL.md` to an explicit YAML list for Claude Code compatibility.
+- Converted the `SKILL.md` reference map to relative Markdown links and clarified that numeric routing entries map to those references.
+- Shortened `shopware-development/agents/openai.yaml` `default_prompt` while keeping the full Shopware scope in metadata.
+- Polished README installation guidance for Claude Code CLI/app, Claude native app/web, Codex IDE, Codex CLI, and the native Codex Mac app.
+
+### Validated
+
+- GitHub `main` and tagged installs work through the Codex skill installer.
+- Codex CLI smoke test routes Varnish plus RabbitMQ work to `04`, `05`, `11`, and `14`.
+- Claude Code CLI support is validated by package shape and official discovery paths on this machine because the `claude` binary is not installed.
+
 ## [v0.7.0] - 2026-05-04
 
 ### Added

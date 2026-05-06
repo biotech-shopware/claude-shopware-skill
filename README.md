@@ -53,6 +53,19 @@ claude-shopware-skill/
 
 ### Claude Code CLI Or Desktop App
 
+Clone the repo, then install the skill folder.
+
+```bash
+git clone https://github.com/biotech-shopware/claude-shopware-skill.git
+cd claude-shopware-skill
+```
+
+Use `main` for the latest release, or pin a release:
+
+```bash
+git checkout v0.7.1
+```
+
 Personal install:
 
 ```bash
@@ -73,7 +86,7 @@ Invoke explicitly:
 /shopware-development review this Shopware plugin for P0/P1 security, performance, DAL, and compatibility issues
 ```
 
-Claude Code discovers personal skills from `~/.claude/skills/` and project skills from `.claude/skills/`. Restart Claude Code after installation if it was already running.
+Claude Code discovers personal skills from `~/.claude/skills/` and project skills from `.claude/skills/`. Restart Claude Code if the top-level skills directory was created after the session started. If the skill does not appear, run `claude --debug` and check skill-loading errors.
 
 Official reference: [Claude Code Agent Skills](https://docs.claude.com/en/docs/claude-code/skills)
 
@@ -94,12 +107,33 @@ Official reference: [Using Skills in Claude](https://support.claude.com/en/artic
 
 Install from GitHub repo `biotech-shopware/claude-shopware-skill` with skill path `shopware-development`.
 
-Preferred install through the Codex skill installer:
+Preferred install through the Codex skill installer from inside Codex:
+
+```text
+$skill-installer install https://github.com/biotech-shopware/claude-shopware-skill/tree/main/shopware-development
+```
+
+Pinned install:
+
+```text
+$skill-installer install https://github.com/biotech-shopware/claude-shopware-skill/tree/v0.7.1/shopware-development
+```
+
+Script fallback:
 
 ```bash
-python ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
+python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
   --repo biotech-shopware/claude-shopware-skill \
   --path shopware-development
+```
+
+Pinned script fallback:
+
+```bash
+python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
+  --repo biotech-shopware/claude-shopware-skill \
+  --path shopware-development \
+  --ref v0.7.1
 ```
 
 Direct filesystem install:

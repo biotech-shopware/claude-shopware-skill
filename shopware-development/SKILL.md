@@ -13,7 +13,10 @@ description: >-
   tasks, multichannel context issues, project implementation planning,
   migrations, performance/security hardening, and Shopware code reviews or
   multi-plugin architecture analysis.
-allowed-tools: Read, Glob, Grep
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
 ---
 
 # Shopware Development
@@ -34,7 +37,7 @@ allowed-tools: Read, Glob, Grep
 
 ## Routing
 
-Read the smallest useful set of references before broadening:
+Read the smallest useful set of references before broadening. Numeric routing entries map to the Reference Map paths below.
 
 | Task signal | Always read | Also read if |
 | --- | --- | --- |
@@ -77,24 +80,24 @@ Before proposing or editing, inventory mutation surfaces, trust boundaries, owne
 
 ## Reference Map
 
-- `references/01-source-hierarchy.md` source order, ownership, repo-local overlays
-- `references/02-version-targeting.md` 6.7/6.6 splits, migration behavior
-- `references/03-implementation-workflow.md` chunking, validation, PR/QA templates
-- `references/04-plugin-backend.md` backend, DAL, APIs, cache, migrations, queues
-- `references/05-storefront-and-themes.md` Twig, JS, SCSS, themes, cache-safe rendering
-- `references/06-administration-and-apps.md` admin modules, ACL, apps, Vue 3, Pinia, Vite
-- `references/07-payments.md` payment handlers, webhooks, saved methods, refunds
-- `references/08-analysis-and-reviews.md` review mode, severity, evidence, output
-- `references/09-symfony-and-php.md` PHP and Symfony rules inside Shopware
-- `references/10-official-docs-map.md` docs research protocol and source anchors
-- `references/11-quality-and-operations.md` security, operations, observability, store readiness
-- `references/12-extension-patterns.md` config, Flow Builder, CMS, import/export, media, mail, catalog, rules
-- `references/13-context-and-commerce.md` context, sales-channel scope, pricing, tax
-- `references/14-cli-and-dev-tooling.md` console, workers, static analysis, local tooling
-- `references/15-subscriptions-and-recurring-payments.md` subscriptions, renewals, saved-method ownership
-- `references/16-headless-and-composable-frontends.md` composable frontend trust boundaries
-- `references/17-accessibility-and-template-best-practices.md` WCAG storefront review and remediation
-- `references/18-cart-and-checkout-pipeline.md` collectors, processors, validators, delivery, promotions
-- `references/19-testing-patterns.md` integration tests, Store API tests, fixtures, mocks, migrations
-- `references/20-search-and-indexing.md` search, indexers, Elasticsearch/OpenSearch, reindexing
-- `references/21-internationalization-and-snippets.md` snippets, translations, fallback inheritance
+- [references/01-source-hierarchy.md](references/01-source-hierarchy.md) source order, ownership, repo-local overlays
+- [references/02-version-targeting.md](references/02-version-targeting.md) 6.7/6.6 splits, migration behavior
+- [references/03-implementation-workflow.md](references/03-implementation-workflow.md) chunking, validation, PR/QA templates
+- [references/04-plugin-backend.md](references/04-plugin-backend.md) backend, DAL, APIs, cache, migrations, queues
+- [references/05-storefront-and-themes.md](references/05-storefront-and-themes.md) Twig, JS, SCSS, themes, cache-safe rendering
+- [references/06-administration-and-apps.md](references/06-administration-and-apps.md) admin modules, ACL, apps, Vue 3, Pinia, Vite
+- [references/07-payments.md](references/07-payments.md) payment handlers, webhooks, saved methods, refunds
+- [references/08-analysis-and-reviews.md](references/08-analysis-and-reviews.md) review mode, severity, evidence, output
+- [references/09-symfony-and-php.md](references/09-symfony-and-php.md) PHP and Symfony rules inside Shopware
+- [references/10-official-docs-map.md](references/10-official-docs-map.md) docs research protocol and source anchors
+- [references/11-quality-and-operations.md](references/11-quality-and-operations.md) security, operations, observability, store readiness
+- [references/12-extension-patterns.md](references/12-extension-patterns.md) config, Flow Builder, CMS, import/export, media, mail, catalog, rules
+- [references/13-context-and-commerce.md](references/13-context-and-commerce.md) context, sales-channel scope, pricing, tax
+- [references/14-cli-and-dev-tooling.md](references/14-cli-and-dev-tooling.md) console, workers, static analysis, local tooling
+- [references/15-subscriptions-and-recurring-payments.md](references/15-subscriptions-and-recurring-payments.md) subscriptions, renewals, saved-method ownership
+- [references/16-headless-and-composable-frontends.md](references/16-headless-and-composable-frontends.md) composable frontend trust boundaries
+- [references/17-accessibility-and-template-best-practices.md](references/17-accessibility-and-template-best-practices.md) WCAG storefront review and remediation
+- [references/18-cart-and-checkout-pipeline.md](references/18-cart-and-checkout-pipeline.md) collectors, processors, validators, delivery, promotions
+- [references/19-testing-patterns.md](references/19-testing-patterns.md) integration tests, Store API tests, fixtures, mocks, migrations
+- [references/20-search-and-indexing.md](references/20-search-and-indexing.md) search, indexers, Elasticsearch/OpenSearch, reindexing
+- [references/21-internationalization-and-snippets.md](references/21-internationalization-and-snippets.md) snippets, translations, fallback inheritance
