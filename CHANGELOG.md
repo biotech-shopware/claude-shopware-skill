@@ -2,6 +2,19 @@
 
 All notable changes to the universal Shopware AI skill are documented in this file.
 
+## [v0.7.2] - 2026-05-16
+
+### Changed
+
+- Added a core-source verification gate for named Shopware classes, service ids, routes, Twig paths/blocks, storefront imports, Administration components/blocks, CLI commands, events, and feature flags.
+- Strengthened fallback version handling: when a project does not pin Shopware, use the latest stable Shopware changelog/GitHub release tag instead of `trunk`, beta notes, ADR memory, generated examples, or old docs.
+- Kept the installable skill runtime-neutral for Claude and Codex while preserving the shared `shopware-development/agents/openai.yaml` Codex metadata.
+
+### Validated
+
+- Confirmed the guardrail is owned by `references/01-source-hierarchy.md` with only a short pointer in `SKILL.md` and README.
+- Confirmed the current stable Shopware release source exposes the 6.7 buy widget at `src/Storefront/Resources/views/storefront/component/buy-widget/buy-widget.html.twig` with `buy_widget_ordernumber_container`.
+
 ## [v0.7.1] - 2026-05-06
 
 ### Changed

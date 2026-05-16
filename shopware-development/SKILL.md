@@ -31,7 +31,7 @@ allowed-tools:
 
 1. Detect target version from root and extension `composer.json` first.
 2. Use targeted package checks, vendor metadata, or focused `composer.lock` search only when exact installed versions matter. Do not read the full lock file by default.
-3. Use Shopware docs as starting evidence, then verify behavior-sensitive claims against matching Shopware core or installed vendor code.
+3. Use Shopware docs as starting evidence, then verify behavior-sensitive claims and any named core/admin/storefront symbol against the matching Shopware core tag or installed vendor code; if no project version is pinned, resolve the latest stable release from Shopware changelog/GitHub releases and use that tag instead of `trunk`, beta notes, ADR memory, or old docs.
 4. For Symfony behavior, check component docs, framework or bundle integration docs, and reference or config docs before concluding.
 5. Treat ADRs, issues, forums, blogs, and attached material as context unless they match official docs or stable source behavior.
 

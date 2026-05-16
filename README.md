@@ -63,7 +63,7 @@ cd claude-shopware-skill
 Use `main` for the latest release, or pin a release:
 
 ```bash
-git checkout v0.7.1
+git checkout v0.7.2
 ```
 
 Personal install:
@@ -116,7 +116,7 @@ $skill-installer install https://github.com/biotech-shopware/claude-shopware-ski
 Pinned install:
 
 ```text
-$skill-installer install https://github.com/biotech-shopware/claude-shopware-skill/tree/v0.7.1/shopware-development
+$skill-installer install https://github.com/biotech-shopware/claude-shopware-skill/tree/v0.7.2/shopware-development
 ```
 
 Script fallback:
@@ -133,7 +133,7 @@ Pinned script fallback:
 python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
   --repo biotech-shopware/claude-shopware-skill \
   --path shopware-development \
-  --ref v0.7.1
+  --ref v0.7.2
 ```
 
 Direct filesystem install:
@@ -200,7 +200,8 @@ $shopware-development do a full end-to-end review. Use the skill as Shopware gua
 
 - Detect project version from `composer.json` first.
 - Use targeted package checks, vendor metadata, or focused `composer.lock` search only when exact installed versions matter.
-- Treat Shopware docs as starting evidence; verify behavior-sensitive guidance against matching core or installed vendor code.
+- Treat Shopware docs as starting evidence; verify behavior-sensitive guidance and named core/admin/storefront symbols against the relevant stable core release source or installed vendor code.
+- If no project version is pinned, resolve the latest stable release from the Shopware changelog or GitHub releases and use that tag instead of `trunk`, beta notes, ADR memory, or old docs.
 - For Symfony behavior, check component docs, framework or bundle integration docs, and reference or config docs.
 - Keep local workflow preferences in repo overlays such as `AGENTS.md` or `CLAUDE.md`.
 

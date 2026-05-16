@@ -15,6 +15,18 @@ For storefront accessibility questions, use this variant:
 3. Symfony docs when framework behavior matters to the implementation.
 4. This skill's distilled references.
 
+## Core Source Verification Gate
+
+Before naming or extending a Shopware core class, service id, route, Twig template path/block, storefront JS import, admin component/block, CLI command, event, or feature flag:
+
+1. Resolve the target version from project files first; if none is pinned, use the latest stable Shopware release from the changelog/GitHub releases.
+2. Open the matching Shopware core tag on `github.com/shopware/shopware` or installed `vendor/shopware/*` source; use `trunk` only for explicitly unreleased work.
+3. Verify the exact symbol/path exists and inspect the surrounding owner pattern before implementing.
+4. If docs, ADRs, beta notes, generated examples, or memory conflict with the matching core source, the matching core source wins.
+5. For Twig and Administration work, inspect the actual current template/component and block names before choosing an override target.
+6. If the symbol cannot be verified, state the verification gap and avoid hard-coding guessed names.
+7. Cite the checked core/vendor path or URL for version-sensitive decisions in the final answer.
+
 ## Ownership Boundaries
 
 Keep each concern in one place:
