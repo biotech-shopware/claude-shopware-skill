@@ -2,6 +2,26 @@
 
 All notable changes to the universal Shopware AI skill are documented in this file.
 
+## [v0.7.3] - 2026-08-04
+
+### Added
+
+- Added `integrations/coderabbit/shopware-review.md`, a 3,000-4,000 word review-only profile for CodeRabbit coding guidelines.
+- Added a source-coverage matrix mapping every skill reference to included, consolidated, or intentionally excluded CodeRabbit criteria.
+- Added README installation guidance for using the profile as `.rules/shopware-review.md` without unnecessary CodeRabbit YAML.
+
+### Corrected
+
+- Replaced the generic Symfony `DelayStamp` recommendation with Shopware transport-safe delayed-work guidance.
+- Replaced incomplete product and `StaticEntityRepository` test examples with complete, contract-shaped fixtures.
+- Completed the custom `EntityIndexer` example with the full 6.6/6.7 abstract lifecycle and preserved write context.
+
+### Validated
+
+- Verified the corrected indexer contract against Shopware `v6.7.12.2` and `v6.6.10.21` stable core tags.
+- Verified Shopware's `NoDelayStampRule` rejects `DelayStamp` because it is not compatible with every supported Messenger transport.
+- Confirmed every numbered reference contributes review criteria while skill-only routing, implementation workflow, output templates, link inventories, and platform-specific app/composable architecture remain outside the CodeRabbit profile.
+
 ## [v0.7.2] - 2026-05-16
 
 ### Changed

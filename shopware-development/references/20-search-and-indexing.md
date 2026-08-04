@@ -52,6 +52,7 @@ public function mapping(array $mapping): array
 - `iterate()` owns full rebuild chunking. Keep it bounded with `IteratorFactory` so `bin/console dal:refresh:index` can process large data sets safely.
 - `update()` should emit `EntityIndexingMessage` only for the changed IDs that actually need recomputation.
 - `handle()` runs on the worker path. Re-read current state there instead of trusting stale serialized entities.
+- Implement the complete `EntityIndexer` contract for 6.6 and 6.7: `getName()`, `iterate()`, `update()`, `handle()`, `getTotal()`, and `getDecorated()`.
 - If an indexer write would re-trigger indexing, use direct DBAL writes inside `handle()` or add the `EntityIndexerRegistry::DISABLE_INDEXING` state deliberately before writing through DAL.
 - If an indexer change implies a full rebuild, name that in rollout guidance and QA notes.
 
@@ -62,7 +63,8 @@ final class ExampleIndexer extends EntityIndexer
 {
     public function __construct(
         private readonly IteratorFactory $iteratorFactory,
-        private readonly EntityRepository $repository
+        private readonly EntityRepository $repository,
+        private readonly ExampleIndexUpdater $updater
     ) {
     }
 
@@ -71,7 +73,7 @@ final class ExampleIndexer extends EntityIndexer
         return 'my_plugin.example.indexer';
     }
 
-    public function iterate($offset): ?EntityIndexingMessage
+    public function iterate(?array $offset): ?EntityIndexingMessage
     {
         $iterator = $this->iteratorFactory->createIterator($this->repository->getDefinition(), $offset);
         $ids = $iterator->fetch();
@@ -82,18 +84,41 @@ final class ExampleIndexer extends EntityIndexer
 
         return new EntityIndexingMessage(array_values($ids), $iterator->getOffset());
     }
-}
-```
 
-```php
-public function update(EntityWrittenContainerEvent $event): ?EntityIndexingMessage
-{
-    $ids = $event->getPrimaryKeys(CustomerDefinition::ENTITY_NAME);
-    if ($ids === []) {
-        return null;
+    public function update(EntityWrittenContainerEvent $event): ?EntityIndexingMessage
+    {
+        $ids = $event->getPrimaryKeys(CustomerDefinition::ENTITY_NAME);
+        if ($ids === []) {
+            return null;
+        }
+
+        return new EntityIndexingMessage(array_values($ids), null, $event->getContext());
     }
 
-    return new EntityIndexingMessage(array_values($ids), null);
+    public function handle(EntityIndexingMessage $message): void
+    {
+        $ids = $message->getData();
+        if (!\is_array($ids)) {
+            return;
+        }
+
+        $ids = array_values(array_unique(array_filter($ids)));
+        if ($ids === []) {
+            return;
+        }
+
+        $this->updater->update($ids, $message->getContext());
+    }
+
+    public function getTotal(): int
+    {
+        return $this->iteratorFactory->createIterator($this->repository->getDefinition())->fetchCount();
+    }
+
+    public function getDecorated(): EntityIndexer
+    {
+        throw new DecorationPatternException(static::class);
+    }
 }
 ```
 

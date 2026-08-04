@@ -229,18 +229,10 @@ public function customerBadge(SalesChannelContext $context): JsonResponse
 - Use explicit message classes plus idempotent handlers for async work. Persist dedupe or state-transition guards before dispatch when duplicates would hurt.
 - Prefer separate transports for checkout-sensitive async work and low-priority bulk work.
 - On Shopware, move non-urgent work to `low_priority` via `LowPriorityMessageInterface` or `shopware.messenger.routing_overwrite` instead of letting it compete with checkout-adjacent async work.
-- Delay work with `DelayStamp` only when eventual consistency is acceptable and the retry story is clear.
+- Do not use Symfony `DelayStamp` as a portable Shopware default because it is not compatible with every supported Messenger transport. Prefer a scheduled task or persisted due-time queue when delayed execution is required; use transport-specific delay only after the project proves support.
 - Keep handler side effects bounded. Re-read fresh state inside the handler instead of serializing whole entities into the message.
 
 Example patterns:
-
-```php
-// Preferred: thin request path, async handoff with an explicit delay
-$this->messageBus->dispatch(
-    new SyncPartnerOrderMessage($orderId),
-    [new DelayStamp(5000)]
-);
-```
 
 ```php
 // Preferred: mark clearly non-urgent work as low priority

@@ -19,6 +19,10 @@ The installable skill folder is platform-neutral. Claude Code and Codex use the 
 ```text
 claude-shopware-skill/
 ├── CHANGELOG.md
+├── integrations/
+│   └── coderabbit/
+│       ├── coverage.md
+│       └── shopware-review.md
 ├── LICENSE
 ├── README.md
 └── shopware-development/
@@ -63,7 +67,7 @@ cd claude-shopware-skill
 Use `main` for the latest release, or pin a release:
 
 ```bash
-git checkout v0.7.2
+git checkout v0.7.3
 ```
 
 Personal install:
@@ -116,7 +120,7 @@ $skill-installer install https://github.com/biotech-shopware/claude-shopware-ski
 Pinned install:
 
 ```text
-$skill-installer install https://github.com/biotech-shopware/claude-shopware-skill/tree/v0.7.2/shopware-development
+$skill-installer install https://github.com/biotech-shopware/claude-shopware-skill/tree/v0.7.3/shopware-development
 ```
 
 Script fallback:
@@ -133,7 +137,7 @@ Pinned script fallback:
 python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
   --repo biotech-shopware/claude-shopware-skill \
   --path shopware-development \
-  --ref v0.7.2
+  --ref v0.7.3
 ```
 
 Direct filesystem install:
@@ -169,6 +173,21 @@ test -f "$tmp/codex/skills/shopware-development/agents/openai.yaml"
 test -f "$tmp/claude/skills/shopware-development/SKILL.md"
 test -f "$tmp/claude/skills/shopware-development/references/01-source-hierarchy.md"
 ```
+
+## CodeRabbit Review Guidelines
+
+`integrations/coderabbit/shopware-review.md` is a compressed, review-only profile derived from the skill. It excludes agent routing, implementation workflow, and PR-writing instructions so CodeRabbit receives only criteria that help it evaluate changed Shopware code.
+
+Install it in a Shopware repository as a root code-guideline file:
+
+```bash
+mkdir -p .rules
+cp integrations/coderabbit/shopware-review.md .rules/shopware-review.md
+```
+
+CodeRabbit detects `.rules/*` automatically. A `.coderabbit.yaml` entry is needed only when the project stores guidelines under another path. The source-to-profile maintenance matrix is in `integrations/coderabbit/coverage.md`.
+
+Official references: [CodeRabbit code guidelines](https://docs.coderabbit.ai/knowledge-base/code-guidelines) and [path instructions](https://docs.coderabbit.ai/configuration/path-instructions).
 
 ## Prompt Patterns
 

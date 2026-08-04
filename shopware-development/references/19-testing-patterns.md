@@ -37,15 +37,29 @@ final class ProductServiceTest extends TestCase
 final class ProductServiceTest extends TestCase
 {
     use IntegrationTestBehaviour;
+    use BasicTestDataBehaviour;
 
     public function testCreatesProduct(): void
     {
         $repository = $this->getContainer()->get('product.repository');
         $context = Context::createDefaultContext();
+        $productId = Uuid::randomHex();
 
-        $repository->create([['id' => Uuid::randomHex(), 'productNumber' => 'P-' . Uuid::randomHex()]], $context);
+        $repository->create([[
+            'id' => $productId,
+            'productNumber' => 'P-' . $productId,
+            'name' => 'Test product',
+            'stock' => 1,
+            'taxId' => $this->getValidTaxId(),
+            'price' => [[
+                'currencyId' => Defaults::CURRENCY,
+                'gross' => 10.0,
+                'net' => 8.4,
+                'linked' => false,
+            ]],
+        ]], $context);
 
-        static::assertTrue(true);
+        static::assertSame($productId, $repository->searchIds(new Criteria([$productId]), $context)->firstId());
     }
 }
 ```
@@ -61,11 +75,17 @@ final class ProductServiceTest extends TestCase
 
 - Prefer `StaticEntityRepository` or equivalent Shopware-friendly patterns for unit tests that need repository-like behavior without full DAL integration.
 - Do not mock DAL internals so deeply that the test only proves the mock arrangement.
+- Queue the actual result type expected by each repository call: an entity collection or `EntitySearchResult` for `search()`, an `IdSearchResult` or ID array for `searchIds()`, or a callable when the result depends on `Criteria`. Keep queued results in call order.
 
 ```php
 // Preferred: static repository in a unit test boundary
+$customer = (new CustomerEntity())->assign([
+    'id' => $customerId,
+    'email' => 'test@example.com',
+]);
+
 $repository = new StaticEntityRepository([
-    ['id' => $customerId, 'email' => 'test@example.com'],
+    new CustomerCollection([$customer]),
 ]);
 ```
 
