@@ -82,3 +82,65 @@ Preferred production worker commands:
 Bad: add a new command and scheduled task but only run php -l on one file.
 Good: run the targeted test or command check plus one container-boot or wiring sanity check.
 ```
+
+## 6.7 CLI Additions
+
+### Storefront Vite Dev Server
+
+`composer storefront:dev-server` (6.7.11+) provides HMR without a proxy. `composer watch:storefront` is deprecated. Fall back only when advising 6.6 / 6.7.0-6.7.10 projects.
+
+### Sales-Channel URL Rewrite
+
+```bash
+bin/console sales-channel:replace:url --from=https://old.example.com --to=https://new.example.com
+```
+
+Use in domain-migration runbooks. Source: release notes 6.7.5.
+
+### Cache Debug Commands
+
+- `bin/console cache:watch:delayed` — watch pending delayed invalidations.
+- `bin/console cache:clear:delayed` — flush pending invalidations manually.
+
+Full delayed-invalidation semantics in `23-cache-and-http-cache.md`.
+
+### Webhook Transport Consumer
+
+With `WEBHOOKS_REWORK`, include `webhook` in the transport list:
+
+```bash
+bin/console messenger:consume webhook async low_priority --time-limit=60 --memory-limit=512M
+```
+
+`shopware.admin_worker.transports` must prepend `webhook`. Rollback path: `bin/console webhook:drain-to-async`. Source: release notes 6.7.12.
+
+### Translation CLI (6.7.11+)
+
+- `bin/console translation:validate` (renamed from `snippets:validate`)
+- `bin/console translation:list`
+- `bin/console translation:install --locales it-IT,fr-FR` (interactive multi-select)
+
+Full snippet/translation details in `21-internationalization-and-snippets.md`.
+
+Source: release notes 6.7.11, UPGRADE-6.7.md §6.7.2.0.
+
+### Admin Codemod
+
+```bash
+composer run admin:code-mods -- --plugin-name MyPlugin --fix -v 6.7
+```
+
+Requires the plugin to live under `custom/plugins/`. Adds `// TODO` where manual work is needed.
+
+### `shopware-cli` Docker Image
+
+For reproducible fresh builds, use the `shopware-cli` Docker image. A `git clone` of the dev branch inside that image builds cleanly.
+
+Source: real-world Slack thread, August 2026.
+
+### Rector And Frosh Tools
+
+- `FriendsOfShopware/shopware-rector` for upgrade codemods. Use `ShopwareSetList::SHOPWARE_6_7_0` on every 6.6→6.7 upgrade.
+- `FriendsOfShopware/FroshTools` for in-admin queue/cache/task visibility.
+
+Full details in `25-patching-and-dependency-tooling.md`.

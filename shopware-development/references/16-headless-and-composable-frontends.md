@@ -54,3 +54,42 @@ Minimum questions to answer in a paired backend/frontend review:
 - Does the frontend eagerly fetch provider data during checkout render that could be deferred until payment selection?
 - Are payment SDK scripts, cart/config fetches, or provider-token requests duplicated across components?
 - Are browser logs or telemetry leaking tokens, context identifiers, vault identifiers, or payment responses?
+
+## 6.7 Composable Frontend Notes
+
+### `context.token` No Longer In Twig
+
+Store-API context tokens are no longer exposed in Twig (release notes 6.7.5). This closes reflected-XSS vectors (`GHSA-6w82-v552-wjw2`).
+
+- Do not surface `context.token` in Twig or SSR-rendered HTML on a headless storefront.
+- If the frontend needs the token, fetch it explicitly from a controlled backend endpoint that returns it once and lets the frontend store it in a `HttpOnly` cookie or memory.
+
+### Three Cache Layers
+
+A headless storefront in front of Shopware has three separate cache systems:
+
+1. Frontend cache (Nitro on Nuxt, Next cache, or equivalent).
+2. Edge cache (Varnish, Fastly, CloudFront).
+3. Shopware backend cache (Symfony cache in Redis + delayed invalidation).
+
+Invalidating one does not invalidate the others. Every write path that must show up on the frontend needs invalidation coordination across all three.
+
+Full HTTP-cache semantics in `23-cache-and-http-cache.md`.
+
+### Middleware Retry = Duplicate Orders
+
+When a composable frontend reports "duplicate orders", the root cause is almost always a middleware retry loop against Shopware's `checkout/order` endpoint, not a Shopware bug.
+
+- Middleware must retry only on network-level failure, not on any HTTP status.
+- Persist an idempotency key in middleware; check for an existing order before retrying.
+- Shopware's `checkout/order` is not idempotent by client-provided key by default. Enforce idempotency in middleware.
+
+Related: `07-payments.md` middleware retry section; `15-subscriptions-and-recurring-payments.md`.
+
+Source: real-world Slack thread, `#altus-nova_shopware`, July 2026.
+
+### WebScale, Fastly, Varnish
+
+External proxy plugins (WebScale, Fastly) hook Shopware's cache-tag system. They clear tags to their proxy — they do not clear Varnish directly. Never confuse `cluster_setup` (Symfony cache clustering) with HTTP cache. They are separate systems.
+
+Full details in `23-cache-and-http-cache.md`.

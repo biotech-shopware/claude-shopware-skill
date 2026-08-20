@@ -155,3 +155,39 @@ $services->set(ExampleIndexer::class)->tag('shopware.entity_indexer');
 - Does the custom search logic preserve language, visibility, and sales-channel scope?
 - What happens when Elasticsearch or OpenSearch is disabled or stale?
 - Is any search change going to force reindexing, and is that captured in rollout guidance?
+
+## Reindexing Endpoint With `only` Parameter
+
+Undocumented but works reliably: `POST /api/_action/indexing` with a JSON body targeting specific indexers.
+
+```bash
+curl -X POST https://shop.example.com/api/_action/indexing \
+    -H "Authorization: Bearer <admin-token>" \
+    -H "Content-Type: application/json" \
+    -d '{"only": ["category.indexer"]}'
+```
+
+- Returns `204 No Content`.
+- The `only` parameter schedules the indexing on the queue rather than running inline. Requires workers to be consuming.
+- Use for targeted rebuilds — e.g., a plugin migration that only affects category cache, without triggering a full `dal:refresh:index`.
+
+Source: real-world Slack thread, `#altus-nova_shopware`, August 2026.
+
+## Elasticsearch Env Vars
+
+Production settings for 6.7:
+
+- `SHOPWARE_ES_THROW_EXCEPTION=1` — fail loudly on ES outage instead of silently falling back to MySQL and melting the primary.
+- `SHOPWARE_ES_USE_LANGUAGE_ANALYZER=1` (6.7.11+) — enable language-specific analyzers.
+- `SHOPWARE_ADMIN_ES_ENABLED=1` and `ENABLE_OPENSEARCH_FOR_ADMIN_API=1` — enable admin ES. Then run `bin/console es:admin:index`.
+
+Source: release notes 6.7.5, 6.7.11; developer.shopware.com performance tweaks.
+
+## Queue Statistics With Frosh Tools
+
+Queue counts for indexing progress:
+
+- `GET /api/_action/frosh-tools/queue/list` (via `FriendsOfShopware/FroshTools`).
+- 6.6 caveat: per-message-type counters can be wrong. Only the `messenger.transport.{xyz}` counters are reliable in 6.6. In 6.7 both are reliable.
+
+Full observability tooling in `25-patching-and-dependency-tooling.md`.

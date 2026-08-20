@@ -95,3 +95,49 @@ $code = $requestDto->getWebhookCode();
 - PHP typing and explicit domain models matter most around DAL payloads, provider adapters, and custom entity state.
 - Keep framework examples aligned with Shopware extension points. If a Symfony pattern fights Shopware's route scopes, DAL, or state handlers, choose the Shopware-compatible variant.
 - If a safeguard is needed, tie it to a concrete failure mode in the actual Shopware code path instead of adding hypothetical protection everywhere.
+
+## 6.7 Runtime And Framework Notes
+
+### Symfony And PHP Versions
+
+- Symfony 7.3 baseline from Shopware 6.7.2.
+- Symfony 7.4 from 6.7.7.
+- PHP 8.2 minimum, 8.4 default recommended, 8.5 supported from 6.7.6+.
+- Recent patches drop 8.3 from the tested matrix. Avoid 8.3-only syntax.
+- `php-redis` extension v6.1+ required from 6.7.7.
+
+Source: release notes 6.7.2, 6.7.6, 6.7.7.
+
+### Constraints Use Named Arguments
+
+Symfony validator constraint constructors take named arguments instead of options arrays.
+
+```php
+// Bad
+$constraint = new CustomerEmailUnique(['salesChannelContext' => $context]);
+
+// Preferred
+$constraint = new CustomerEmailUnique(salesChannelContext: $context);
+```
+
+Source: UPGRADE-6.7.md §6.7.3.0.
+
+### `ResetInterface` For Long-Running Runtimes
+
+FrankenPHP and RoadRunner keep worker processes alive across requests. Services holding request-scoped state must implement `Symfony\Contracts\Service\ResetInterface::reset()` to clear it.
+
+```php
+final class RequestContextCache implements ResetInterface
+{
+    private array $cache = [];
+
+    public function reset(): void
+    {
+        $this->cache = [];
+    }
+}
+```
+
+Applies to per-request caches, current-context wrappers, per-request idempotency guards, and anything else that must not leak across requests.
+
+Source: release notes 6.7.2.

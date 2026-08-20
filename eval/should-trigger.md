@@ -1,0 +1,57 @@
+# Should-Trigger Prompts
+
+These prompts should reliably auto-invoke the `shopware-development` skill in Claude Code and Codex. Test in a fresh session; target hit rate ≥ 4/5.
+
+## Plugin work
+
+1. Review my Shopware plugin for P0/P1 security issues.
+2. Audit this Shopware plugin end-to-end with the 3-pass protocol.
+3. Fix a broken cart processor in my Shopware plugin.
+4. Migrate my Shopware plugin from 6.6 to 6.7.
+5. Add a new Store API route to my Shopware plugin.
+
+## Payments
+
+6. Add a payment handler for a new PSP in Shopware 6.7.
+7. Debug a webhook signature failure on my Shopware payment plugin.
+8. Convert my Shopware payment handler from `AsyncPaymentHandlerInterface` to `AbstractPaymentHandler`.
+9. Why does my Shopware payment plugin create duplicate orders?
+
+## Cart and checkout
+
+10. Fix a cart processor that is causing wrong tax totals in Shopware.
+11. Add a shipping-cost collector to my Shopware plugin.
+12. Explain how `CartBehavior::isRecalculation` maps to `CheckoutPermissions` in 6.7.
+13. Cache TaxJar responses in my Shopware cart to stop 500ms recalcs.
+
+## Cache and HTTP cache
+
+14. Why is my Shopware admin save not showing up in the storefront for 5 minutes?
+15. Debug Shopware cache invalidation on a Varnish-backed shop.
+16. Explain `sw-cache-hash` and `CACHE_REWORK` in Shopware 6.7.
+17. How do I use `sw-force-cache-invalidate` in Shopware?
+
+## Storefront and themes
+
+18. Extend a Shopware Twig template using `sw_extends`.
+19. My Shopware storefront JS is not updating focus after a modal closes.
+20. Migrate my Shopware admin plugin from Vuex to Pinia.
+21. Replace `controllerName` with `activeRoute` in a Shopware theme.
+
+## Admin and apps
+
+22. Convert my Shopware admin `sw-button` usages to `mt-button`.
+23. Set up a Shopware app manifest with least-privilege webhook subscriptions.
+24. Register an MCP tool on Shopware 6.7.
+
+## i18n
+
+25. Migrate my Shopware plugin snippets to the country-agnostic base file layout for 6.7.3.
+26. Prepare my Shopware project for Language Pack sunset in 6.8.
+
+## Ops and tooling
+
+27. Set up PHPStan for a Shopware 6.7 plugin.
+28. Patch a Shopware core bug with `composer-patches`.
+29. Disable Shopware `usage_data.collection_enabled` on a large catalog.
+30. Configure Shopware Messenger with a `webhook` transport.

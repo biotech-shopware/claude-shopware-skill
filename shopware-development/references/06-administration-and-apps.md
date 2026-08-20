@@ -140,3 +140,109 @@ For admin or app changes, verify:
 - dependency hygiene when adding SDKs or large NPM packages to the admin bundle
 - least-privilege app permissions, webhook signature handling, and action-button response behavior
 - no storefront-to-admin credential bridging or browser-side use of admin tokens
+
+## 6.7 Administration Changes
+
+### Vite + Pinia + Vue 3
+
+- Admin builds with Vite. Webpack is out.
+- Vue 2 compat layer is removed.
+- Components are async by default. Template refs may not exist pre-`@vue:mounted`; guard with the event or `nextTick`.
+- State management uses Pinia via `Shopware.Store.register({ id, state, getters, actions })`.
+- Vuex helpers renamed to `mapVuexState`, `mapVuexMutations`, `mapVuexGetters`, `mapVuexActions` (legacy). New code uses Pinia's `mapState`.
+- `vue-i18n` v10 drops `tc`. `$tc` is still shimmed to `$t` — migrate to `$t('key', { count })` now.
+
+A separate plugin version is required per major (6.7+).
+
+Source: UPGRADE-6.7.md §6.7.0.0, release notes 6.7.0.
+
+### Meteor Components (`mt-*`)
+
+Many `sw-*` primitives are renamed. Full mapping:
+
+- `sw-button` → `mt-button`
+- `sw-text-field` → `mt-text-field`
+- `sw-select-field` → `mt-select`
+- `sw-card` → `mt-card`
+- `sw-tabs` → `mt-tabs`
+- `sw-icon` → `mt-icon`
+- `sw-checkbox-field` → `mt-checkbox`
+- `sw-datepicker` → `mt-datepicker`
+- `sw-password-field` → `mt-password-field`
+- `sw-colorpicker` → `mt-colorpicker`
+- `sw-external-link` → `mt-external-link`
+- `sw-progress-bar` → `mt-progress-bar`
+- `sw-switch-field` → `mt-switch`
+- `sw-number-field` → `mt-number-field`
+- `sw-loader` → `mt-loader`
+- `sw-textarea-field` → `mt-textarea`
+- `sw-email-field` → `mt-email-field`
+- `sw-url-field` → `mt-url-field`
+- `sw-skeleton-bar` → `mt-skeleton-bar`
+- `sw-popover` → `mt-floating-ui`
+
+Prefer `mt-*` in 6.7 templates. Fall back to `sw-*` only when explicitly targeting 6.6. `mt-*` enforces Shopware Design System — expect behavioral changes beyond prop renames.
+
+To run one codebase across 6.6 and 6.7, set `deprecated="true"` on `sw-*` components to preserve old behavior.
+
+Source: UPGRADE-6.7.md §6.7.0.0.
+
+### Admin Codemod
+
+Run codemods for admin migration:
+
+```bash
+composer run admin:code-mods -- --plugin-name MyPlugin --fix -v 6.7
+```
+
+- Requires the plugin to live under `custom/plugins/`.
+- Adds `// TODO` comments where manual work is required. Do not assume 100% automation.
+
+### `sw-entity-listing` `items` → `dataSource`
+
+From 6.7.8, passing `items` to `sw-entity-listing` is deprecated. Pass `:dataSource="…"` instead.
+
+Source: release notes 6.7.8.
+
+### Rule Builder Condition Contract
+
+- `LineItemPurchasePriceRule`: `bool $isNet` → `?string $type` (`'gross'|'net'`, auto-migrated).
+- `LineItemCustomFieldRule` now throws `RuleException::unsupportedOperator()` (not `CartException`).
+- `CustomerBirthdayRule` no longer throws on null.
+- `LineItemProductStatesRule` deprecated → `LineItemProductTypeRule`.
+- Rule builder condition components `sw-condition-line-item-in-category`, `-purchase-price`, `-is-net-select` are deprecated for `sw-condition-generic`.
+- `sw-condition-base` no longer exposes `mapPropertyErrors('condition', […])` spreads or `conditionValue*Error` computeds. Use `sw-condition-field-errors` and read errors off the entity's error collection.
+
+Source: UPGRADE-6.7.md §6.7.12.0, §6.7.13.0.
+
+### Filesystem `visibility`
+
+`filesystems.<name>.config.visibility` is deprecated. Use `filesystems.<name>.visibility` at the top level in generated `config/packages/shopware.yaml` snippets.
+
+Source: UPGRADE-6.7.md §6.7.1.0.
+
+### OAuth `scope` Format
+
+`/api/oauth/token` requires space-delimited `scope: 'write admin'` (a string, not an array). Array form silently fails. `/api/oauth/authorize` is removed.
+
+Source: UPGRADE-6.7.md §6.7.0.0.
+
+### MCP Server Integration
+
+Experimental MCP endpoints at `/api/_mcp` and `/store-api/_mcp` — active whenever `symfony/mcp-bundle` is installed (the `MCP_SERVER` feature flag is removed in 6.7.14).
+
+Register capabilities with DI tags:
+
+- `mcp.tool`
+- `mcp.prompt`
+- `mcp.resource`
+
+CLI: `bin/console debug:mcp` lists registered capabilities. Classes are `@experimental` until 6.8 — do not inherit from them.
+
+Source: release notes 6.7.11, UPGRADE-6.7.md §6.7.14.
+
+### Payment/Shipping `technicalName` Non-Nullable
+
+`payment_method.technical_name` and `shipping_method.technical_name` are non-nullable in 6.7 (auto-migrated). Always set a plugin-prefixed `technicalName` in plugin migrations and method creation. Custom field set `name` must be unique per app (from 6.7.1). Payment or shipping methods without `technicalName` at upgrade time get `temporary_<id>` assigned automatically — set meaningful names before upgrade or lose the ability to reference them cleanly.
+
+Source: release notes 6.7.0, 6.7.1.

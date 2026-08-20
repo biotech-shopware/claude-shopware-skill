@@ -1,6 +1,6 @@
 # Version Targeting
 
-Index: default rule, detection order, 6.7 deltas, 6.6 compatibility, migration playbook, replacement strategy, anchors.
+Index: default rule, detection order, 6.7 deltas, PHP/Symfony/Redis versions, 6.6 compatibility, backport policy, migration playbook, replacement strategy, anchors.
 
 ## Default Rule
 
@@ -33,7 +33,30 @@ Use these as default assumptions for 6.7 work:
 - Translations
   Shopware 6.7.3 introduced the country-independent snippet base layer. Use base files such as `messages.en.base.json` and `messages.de.base.json`, keep country-specific files as small overrides, preserve empty former country-specific files where backward compatibility needs them, and validate with `translation:lint-filenames` plus `snippet:validate`.
 - Caching
-  Follow the current cache and HTTP cache docs. Do not depend on legacy assumptions like "logged-in users always disable cache."
+  Follow the current cache and HTTP cache docs. Do not depend on legacy assumptions like "logged-in users always disable cache." Delayed cache invalidation is the default in 6.7 (5-minute batching with `cache_rework` active). See `23-cache-and-http-cache.md`.
+
+## Runtime Version Matrix (6.7 series)
+
+- PHP: 8.2 minimum, 8.4 default recommended, 8.5 supported from 6.7.6+ (drop 8.3 in newer patch tests).
+- Symfony: 7.3 baseline from 6.7.2, upgraded to 7.4 from 6.7.7.
+- Redis: `php-redis` v6.1+ required from 6.7.7. Redis 7.0+ recommended for cluster/multi-node.
+- MySQL/MariaDB: unchanged; `group_concat_max_len >= 320000`, no `ONLY_FULL_GROUP_BY`.
+
+Source: release notes 6.7.2, 6.7.6, 6.7.7.
+
+## Language Pack Sunset (6.8)
+
+The Shopware Language Pack plugin is unsupported from Shopware 6.8. Migrate before that jump:
+
+```bash
+bin/console translation:install --locales it-IT,fr-FR
+```
+
+- Activate every needed language under Settings → Languages before install; inactive languages are ignored.
+- Repoint sales-channel domains from `LanguagePack en-US` snippet sets to `BASE en-US`; Language Pack ≥5.37.1 does this automatically.
+- If FK constraint errors appear during removal, upgrade to Shopware ≥6.7.7.0 and Language Pack ≥5.37.1 first.
+
+Source: developer.shopware.com/docs/guides/upgrades-migrations/language-pack-migration.html.
 
 ## 6.6 Compatibility Rules
 
@@ -43,6 +66,15 @@ When the project targets 6.6:
 - Keep admin migrations explicit. Do not force Pinia or Vite unless the project is already migrating.
 - Treat 6.7 translation-layer improvements as optional, not assumed.
 - Re-check payment handler contracts and extension points against 6.6 docs before applying 6.7 examples.
+
+## Backport Policy
+
+Not every Shopware fix is backported to older minors.
+
+- Example: `shopware/shopware` PR #18205 (language active-filter fix) ships only in 6.7.13.0+; there is no 6.6 backport planned.
+- Before assuming a fix exists on 6.6, check the PR's target branches on GitHub.
+- If the fix must exist on 6.6, apply a local patch with `cweagans/composer-patches`. See `25-patching-and-dependency-tooling.md`.
+- Document each patch with the upstream URL and the target version where it can be removed.
 
 ## Compatibility Strategy
 

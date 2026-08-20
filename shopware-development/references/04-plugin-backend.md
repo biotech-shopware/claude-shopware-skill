@@ -282,3 +282,116 @@ $this->messageBus->dispatch(new SyncPartnerOrderMessage($orderEntity, $request->
 - Do not build callback or return URLs from `HTTP_HOST` or other untrusted request host headers. Use configured sales-channel domains or explicit trusted configuration.
 
 If the integration is a payment provider, stop here and load `07-payments.md`.
+
+## 6.7 Core Changes That Affect Backend Code
+
+### Migrations And Schema
+
+- **FK naming changed** from `fk.<table>.<column>` to `fk__<table>__<column>` (double underscore) in DBAL 4. Any migration that references FK names by string breaks silently. Source: release notes 6.7.8.
+- **Translation-table references** now use `ON DELETE CASCADE` in new migrations.
+- **Use `\Shopware\Core\Framework\Util\Database\TableHelper`** for schema introspection in migrations. `EntityDefinitionQueryHelper::columnExists()`, `columnIsNullable()`, `tableExists()` are deprecated.
+- **`MigrationStep` parameter names changed**: `column` → `columnName`, `table` → `tableName`.
+
+### `EntityDefinition::__construct` Deprecated
+
+Calling `parent::__construct()` from an `EntityDefinition` subclass is deprecated for the next major. Do not emit `parent::__construct()` in generated entity definitions.
+
+Source: UPGRADE-6.7.md §6.7.2.0.
+
+### Custom Field Naming
+
+Custom field names may no longer contain hyphens or dots — they are used directly as Twig variable names. Use `snake_case`.
+
+### `ScheduledTaskHandler` Requires `LoggerInterface`
+
+From 6.7.13, `ScheduledTaskHandler` requires `Psr\Log\LoggerInterface` as a constructor argument. Update all custom scheduled tasks. The protected `markTaskRunning()`, `markTaskFailed()`, `rescheduleTask()` methods are deprecated; rely on the framework for run/failure/reschedule bookkeeping.
+
+Source: release notes 6.7.13.
+
+### Messenger Message Size Cap
+
+- 6.7.0 introduces a hard 256 KB cap on messages.
+- From 6.7.4 the limit is configurable via `shopware.messenger.message_max_kib_size` (default 1024 KiB; `0` disables).
+- Design messages to reference DB rows instead of carrying blobs. If a plugin really needs a bigger message, mention the config knob explicitly and warn that small messages are the correct long-term pattern.
+
+Source: release notes 6.7.0, 6.7.4.
+
+### Webhook Messenger Transport (`WEBHOOKS_REWORK`)
+
+Default in 6.8. With `WEBHOOKS_REWORK` on, webhooks get a dedicated DB-backed Messenger transport with fair scheduling and a retry ladder: 5s → 30s → 5min → 30min → 4h.
+
+- Consumers must include `webhook` in the transport list:
+  ```bash
+  bin/console messenger:consume webhook async low_priority
+  ```
+- `shopware.admin_worker.transports` must be prepended with `webhook`.
+- Rollback path: `bin/console webhook:drain-to-async`.
+
+Source: release notes 6.7.12, UPGRADE-6.7.md §6.7.12.0.
+
+### `NavigationRoute` Cache Key Event
+
+Default category levels are now cached per sales channel. Dynamic navigation must subscribe to `\Shopware\Core\Content\Category\SalesChannel\CategoryLevelLoaderCacheKeyEvent` to add cache-key data. Without the subscription, navigation goes stale or leaks across contexts.
+
+Source: UPGRADE-6.7.md §6.7.2.0, §6.7.3.0.
+
+### Sync API Foreign-Key Resolvers
+
+From 6.7.11 the Sync API accepts human-readable keys instead of UUIDs:
+
+- `currency.iso_code`
+- `locale.code`
+- `payment_method.technical_name`
+- `shipping_method.technical_name`
+- `document_type.technical_name`
+- `salutation.salutation_key`
+- `tax.tax_rate`
+
+Prefer these over UUID lookups in import/sync code.
+
+Source: release notes 6.7.11.
+
+### State Machine Per-Entity Locking
+
+From 6.7.11 `StateMachineRegistry::transition()` acquires per-entity locks to prevent duplicate history entries on concurrent transitions. Do not implement custom mutex/dedup logic around state transitions.
+
+Source: release notes 6.7.11.
+
+### Store-API `limit` Cap
+
+`shopware.api.store.max_limit` (default 100) caps the `limit` parameter on `/store-api/product-listing/{categoryId}`, `/store-api/search`, and `/store-api/search-suggest`. Fetch in pages; do not request unbounded limits.
+
+From 6.7.13 Store-API requests no longer start PHP sessions unless code explicitly does. Do not rely on side effects that depended on session start (e.g., cart token in `$_SESSION`).
+
+Source: UPGRADE-6.7.md §6.7.3.0, release notes 6.7.13.
+
+### `ResetInterface` For Long-Running Runtimes
+
+For FrankenPHP / RoadRunner runtime compat, any custom service holding request-scoped state (per-request caches, current context) must implement `Symfony\Contracts\Service\ResetInterface::reset()` to clear it between requests.
+
+Source: release notes 6.7.2.
+
+### Product `states` → `type` Model
+
+`product.states`, `order_line_item.states`, `LineItem::$states`, `StatesUpdater`, `ProductStatesBeforeChangeEvent`, and `ProductStatesChangedEvent` are deprecated in 6.7.7 in favor of `product.type` and `order_line_item.payload.product_type` / `LineItem::$payload['productType']`. Register custom types via `shopware.product.allowed_types` config.
+
+Source: release notes 6.7.7.
+
+### Sales Channel Repository Default
+
+Prefer sales-channel repositories to fetch data even when the project has only one sales channel. When many rules or plugins depend on that pattern, retrofitting later is expensive.
+
+If a plugin truly runs against exactly one sales channel with no filtering, document the deliberate skip.
+
+### Hard Limits On Data Fetches
+
+Always add a hard limit to plugin queries, even when a natural bound seems to exist. A schema change or data-model surprise can turn a "small" query into a runaway. Prefer `setLimit()` and pagination over any unbounded assumption.
+
+## Cross-References
+
+- Cache and HTTP cache details: `23-cache-and-http-cache.md`.
+- Cart, checkout, delivery, promotion pipeline: `18-cart-and-checkout-pipeline.md`.
+- External API caching in cart (tax, shipping providers): `24-external-api-caching-in-cart.md`.
+- Testing patterns: `19-testing-patterns.md`.
+- Patching, PHPStan, Frosh Tools: `25-patching-and-dependency-tooling.md`.
+

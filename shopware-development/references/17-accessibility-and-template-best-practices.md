@@ -185,3 +185,35 @@ Treat these as explicit red flags:
 - global `document.querySelector(...)` usage in storefront plugins that should be component-scoped
 - modal close flows that do not return focus to the invoking control
 - async add-to-cart, coupon, shipping, or checkout failures with no live status announcement
+
+## 6.7 Storefront Accessibility Baseline
+
+Shopware 6.7 ships EAA-driven markup changes:
+
+- `$font-size-base: 1rem` (16px) baseline.
+- `{% sw_icon %}` sets `aria-hidden="true"` by default. When rendering an icon with meaning (a status indicator, an action button that shows only the icon), pass `ariaHidden: false`.
+- Interactive controls use `<button>` / `<a>`, not styled hidden `<input type="radio">` (applies to language switcher, currency switcher, pagination).
+- Cart and order line items are `<ul>` / `<li>` (not `<div>`). Update custom line-item templates to inherit the new list semantics.
+- Product-card duplicate link removed — the product image no longer wraps a second anchor. Do not re-add wrapping links in overrides.
+- Modal triggers use `<button class="btn btn-link-inline">`, not styled `<a href="#">`.
+- New modal snippet keys use `%…ModalTagOpen%` params. Prefer the `-Modal` snippet key variants for privacy, revocation, and terms text.
+
+Source: release notes 6.7.0, UPGRADE-6.7.md §6.7.0.0.
+
+## Theme Snippet Keys Required In 6.8
+
+For theme configuration `label` and `helpText`, 6.7 introduces constructed snippet keys with the pattern:
+
+```
+sw-theme.<technicalName>.<tabName>.<blockName>.<sectionName>.<fieldName>.label
+sw-theme.<technicalName>.<tabName>.<blockName>.<sectionName>.<fieldName>.helpText
+```
+
+Required in 6.8.
+
+- API `label` / `helpText` deprecated → `labelSnippetKey` / `helpTextSnippetKey`.
+- `ThemeService::getThemeConfiguration()` deprecated → `ThemeConfigurationService::getPlainThemeConfiguration()`.
+
+When scaffolding a theme, add administration snippet files matching the constructed pattern. Do not read `label` / `helpText` from the theme config API — read the snippet keys.
+
+Source: UPGRADE-6.7.md §6.7.1.0.

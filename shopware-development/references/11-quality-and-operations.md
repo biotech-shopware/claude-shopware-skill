@@ -156,3 +156,99 @@ Treat these as explicit regression checks:
 - Prefer technical names, stable IDs, or persisted state markers over translated labels in task logic.
 - Avoid broad association trees in scheduled-task hydration unless every field is required for the batch decision.
 - If a task stores snapshots or support data, put a bound on retention and growth.
+
+## 6.7 Operational Defaults
+
+### Shopware Usage Data Collection
+
+Shopware core sends anonymous usage data to the Shopware account. On large catalogs (>50k products) this loops through all products slowly, dominating writer-replica CPU with `UsageData EntitySync` query for days.
+
+- The admin toggle for usage data does not always stick reliably.
+- Disable via YAML in project config for large-catalog production sites:
+
+  ```yaml
+  # config/packages/shopware.yaml
+  shopware:
+      usage_data:
+          collection_enabled: false
+  ```
+
+- Analytics app (`SwagAnalytics`) is separate and is not affected by this setting.
+- GMV tracking is separate and cannot be disabled the same way.
+
+Source: real-world plugin project observation, `#altus-nova_shopware`, July 2026.
+
+### Message Size Cap
+
+`shopware.messenger.message_max_kib_size` defaults to 1024 KiB in 6.7.4+ (256 KiB in 6.7.0). Design messages to reference DB rows instead of carrying blobs. Raise the config only after proving small messages cannot fit; a bigger message is not a long-term fix. Setting to `0` disables the cap (not recommended in production).
+
+Source: release notes 6.7.0, 6.7.4.
+
+### `maintenanceIpWhitelist` → `maintenanceIpAllowlist`
+
+Renamed from 6.7.13 for inclusive language. Update configs generated for 6.7.13+.
+
+Source: release notes 6.7.13.
+
+### `SHOPWARE_SKIP_WEBINSTALLER` For Read-Only FS
+
+For PaaS deployments or read-only filesystems, set `SHOPWARE_SKIP_WEBINSTALLER=1` to bypass the web installer and lock file.
+
+Source: UPGRADE-6.7.md §6.7.3.0.
+
+### Elasticsearch Env Vars
+
+- `SHOPWARE_ES_THROW_EXCEPTION=1` in production so ES outages fail loudly instead of silently falling back to MySQL and melting the primary.
+- `SHOPWARE_ES_USE_LANGUAGE_ANALYZER=1` when language-specific analysis is needed.
+- `SHOPWARE_ADMIN_ES_ENABLED=1` and `ENABLE_OPENSEARCH_FOR_ADMIN_API=1` for admin ES; then run `bin/console es:admin:index`.
+
+Full search/indexing details in `20-search-and-indexing.md`.
+
+Source: developer.shopware.com/docs/guides/hosting/performance/performance-tweaks.html, release notes 6.7.5, 6.7.11.
+
+### Performance Baseline
+
+- Enable HTTP cache: `SHOPWARE_HTTP_CACHE_ENABLED=1`. Put Varnish/Fastly in front for high-traffic.
+- Redis for delayed cache invalidation, number ranges, increments, and cluster lock storage. Never DB.
+- Disable Product Stream Indexer only when the project can tolerate category-cache expiration windows.
+- Use plain DBAL (not DAL) for perf-critical internal jobs.
+- MySQL: `group_concat_max_len ≥ 320000`; do not include `ONLY_FULL_GROUP_BY`.
+- `update_mail_variables_on_send: false` on high-volume sends.
+- Email via message queue only. Disable Symfony Messenger `auto_setup` in prod. Move sitemap generation off scheduled tasks to a real cron.
+- PHP: `zend.assertions=-1`, `opcache.enable_file_override=1`, `opcache.interned_strings_buffer=20`, authoritative Composer classmap. Consider `opcache.preload`.
+- Use zstd (not gzip) for cart/cache compression. Use `.env.local.php` (dumped) instead of `.env` parsing per request.
+
+Source: developer.shopware.com performance tweaks.
+
+### Frosh Tools Observability
+
+Install `FriendsOfShopware/FroshTools` on every non-trivial project for in-admin visibility. Queue-count endpoint:
+
+- `GET /api/_action/frosh-tools/queue/list`
+- 6.6 caveat: per-message-type counters can be wrong. Only the `messenger.transport.{xyz}` counters are reliable in 6.6. In 6.7 both are reliable.
+
+Full patching/tooling details in `25-patching-and-dependency-tooling.md`.
+
+Source: real-world Slack thread, `#altus-nova_shopware`, August 2026.
+
+### Static Analysis Baseline
+
+Pin PHPStan and php-cs-fixer to the versions Shopware core is tested against:
+
+- `phpstan/phpstan: 1.12.5` (with `phpstan/phpstan-symfony: 1.4.10`)
+- `friendsofphp/php-cs-fixer: 3.64.0`
+
+Scope analysis to `custom/plugins/*/src` only. Run PHPStan with `--memory-limit=2G`. Remediate per-plugin, not project-wide.
+
+Full setup in `25-patching-and-dependency-tooling.md`.
+
+Source: laenen.me PHPStan/PHPCS setup post.
+
+### MySQL Dump Canonical Form
+
+```bash
+mysqldump --compress --routines --hex-blob --single-transaction --no-tablespaces db \
+  | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' > dump.sql
+```
+
+Always strip `DEFINER=` — imports fail on target DBs otherwise. Full flag rationale in `25-patching-and-dependency-tooling.md`.

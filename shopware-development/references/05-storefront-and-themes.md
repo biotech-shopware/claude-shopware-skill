@@ -173,3 +173,92 @@ export default class AnalyticsWidgetPlugin extends Plugin {
 - If the change adds tracking, embeds, or third-party storefront scripts, verify consent and store-readiness impact explicitly.
 - Do not set global noindex or similar SEO-breaking directives from a theme override without scoping and intent.
 - For deeper storefront accessibility requirements, U.S. ecommerce baseline guidance, and WCAG-oriented review output, also load `17-accessibility-and-template-best-practices.md`.
+
+## 6.7 Storefront Changes
+
+### `controllerName` / `controllerAction` → `activeRoute`
+
+Deprecated in 6.7.3 across Twig, JS, and CSS.
+
+- Twig: use `activeRoute` (already resolved) instead of `controllerName` + `controllerAction`.
+- CSS: use `.is-active-route-*` classes instead of `.is-ctl-*` / `.is-act-*`. Generate the class with `activeRoute|replace({'.': '-'})`.
+- JS: use `window.activeRoute` instead of `window.controllerName` / `window.actionName`.
+
+Never emit the deprecated names in generated Twig, JS, or CSS.
+
+Source: UPGRADE-6.7.md §6.7.3.0, release notes 6.7.3.
+
+### Cookie Provider Replaced By Event
+
+`CookieProviderInterface` is deprecated. Register cookies via listener on `\Shopware\Core\Content\Cookie\Event\CookieGroupCollectEvent` using `CookieEntry` / `CookieGroup` structs. The new Store-API route is `\Shopware\Core\Content\Cookie\SalesChannel\CookieRoute` → `/store-api/cookie-groups`.
+
+Twig properties `snippet_name` / `snippet_description` are deprecated; use `name` / `description` (they handle both snippet keys and plain strings).
+
+Source: UPGRADE-6.7.md §6.7.3.0.
+
+### Global Storefront Event Bus (6.7.11+)
+
+- `window.Shopware.emit('Namespace:Event', payload)` and `window.Shopware.on('Namespace:Event', handler)` provide a cross-plugin bus. Prefer this over ad-hoc `document.dispatchEvent`.
+- `window.PluginManager.callPluginMethod(pluginName, methodName, ...args)` invokes a method on every live instance of a plugin. Prefer this over DOM lookups from another plugin.
+
+Source: release notes 6.7.11.
+
+### Vite Dev Server Replaces `composer watch:storefront`
+
+`composer storefront:dev-server` provides HMR without a proxy on 6.7.11+. `composer watch:storefront` is deprecated. Fall back only when advising 6.6 / 6.7.0-6.7.10 projects.
+
+Source: release notes 6.7.11.
+
+### Theme Config As CSS Custom Properties
+
+All `theme.json` fields (unless `scss: false`) are automatically exposed as native CSS variables using the SCSS name.
+
+- Use `var(--sw-color-brand-primary)` for runtime theme swapping.
+- Use SCSS variables only when the value must be resolved at compile time.
+
+Source: release notes 6.7.11.
+
+### `theme.json` Per-File References
+
+`style` / `script` entries can point to `@BundleName/path/to/file.(scss|js)` for surgical overrides instead of pulling a whole bundle. 6.7.11+.
+
+### `context.token` Removed From Twig
+
+The Store-API context token is no longer exposed in Twig. Do not reference `context.token` in templates. If a plugin needs the token client-side, pass it explicitly via a controller-managed endpoint.
+
+This closed a reflected-XSS vector: `GHSA-6w82-v552-wjw2`.
+
+Source: release notes 6.7.5.
+
+### ESI Header And Footer
+
+New routes `\header` and `\footer` render through ESI. New entry templates `@Storefront/storefront/layout/header.html.twig` and `.../footer.html.twig`. New blocks `base_esi_header` / `base_esi_footer` in `base.html.twig`.
+
+- Extend `header.html.twig` / `footer.html.twig` directly. Do not override inline `base.html.twig` blocks that are now empty.
+- Pass extra data via `StorefrontRenderEvent` or the `headerParameters` merge.
+- ESI render errors now throw. Configure `/_esi/global/header` and `/_esi/global/footer` in the reverse proxy (Symfony HttpCache, Nginx SSI/ESI, or Varnish).
+
+Full details in `23-cache-and-http-cache.md`.
+
+Source: release notes 6.7.0.
+
+### `sw_breadcrumb_full*` Requires `SalesChannelContext`
+
+`sw_breadcrumb_full` and `sw_breadcrumb_full_by_id` require the full `SalesChannelContext` (not `context.context`). Call `sw_breadcrumb_full(category, context)` in Twig.
+
+Source: UPGRADE-6.7.md §6.7.1.0.
+
+### Accessibility Markup Baseline (EAA)
+
+6.7.0 sets `$font-size-base: 1rem` (16px) and switches key controls to semantic markup:
+
+- Language/currency widgets and pagination use `<button>` / `<a>` (not styled hidden radios).
+- Cart line items are `<ul>` / `<li>` (not `<div>`).
+- Product-card duplicate link removed — the image no longer wraps a second anchor.
+- Modal triggers use `<button class="btn btn-link-inline">`.
+- `{% sw_icon %}` sets `aria-hidden="true"` by default. When rendering an icon with meaning, pass `ariaHidden: false`.
+- New modal snippet keys use `%…ModalTagOpen%` params. Prefer the `-Modal` snippet key variants.
+
+Full accessibility guidance in `17-accessibility-and-template-best-practices.md`.
+
+Source: release notes 6.7.0, UPGRADE-6.7.md §6.7.0.0.

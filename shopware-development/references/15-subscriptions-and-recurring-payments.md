@@ -87,3 +87,23 @@ Minimum questions to answer in a review:
 - Does recurring order creation reuse stale order totals or stale transaction amounts?
 - Can duplicate scheduler runs or duplicate webhooks create duplicate charges or skip a renewal cycle?
 - Are provider payloads, signatures, tokens, or customer identifiers logged or stored more broadly than necessary?
+
+## 6.7 Recurring Payment Notes
+
+### `AbstractPaymentHandler::recurring()` And `supports()`
+
+The single 6.7 payment handler exposes `recurring()` for the renewal charge and `supports()` to gate whether recurring is available for a given transaction. Do not extend the deprecated `RecurringPaymentHandlerInterface`; migrate to `AbstractPaymentHandler` with a `supports()` capability check.
+
+Full contract in `07-payments.md`.
+
+Source: release notes 6.7.0.
+
+## Middleware Retry Loops Cause Duplicate Renewals
+
+Same failure mode as duplicate orders: a middleware retry loop against the Shopware renewal endpoint creates duplicate charges when the response is lost but the renewal actually succeeded.
+
+- Verify middleware retry policy: what status codes trigger retry? Retry only on network-level failure, never on any HTTP response.
+- Persist an idempotency key in the middleware and check for existing renewal before retrying.
+- On the plugin side, the renewal endpoint should be safe under duplicate calls with the same idempotency key.
+
+Related: `07-payments.md` middleware retry section; `16-headless-and-composable-frontends.md` composable frontend contract.

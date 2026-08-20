@@ -1,4 +1,4 @@
 interface:
   display_name: "Shopware Development"
-  short_description: "Shopware 6.6/6.7 plugin, pragmatic coding, review, cache, queue, cart, indexing, accessibility, payment, and recurring skill"
-  default_prompt: "Use $shopware-development for Shopware 6 implementation or review with guardrails, not a cap."
+  short_description: "Shopware 6.6/6.7 plugin, pragmatic coding, code review protocol, cache/HTTP cache, delayed invalidation, cart, external-API caching in cart, queue, indexing, accessibility, payment (AbstractPaymentHandler), recurring, and patching (composer-patches, shopware-rector, Frosh Tools)"
+  default_prompt: "Use $shopware-development for Shopware 6 planning, implementation, review, or research with guardrails, not a cap."

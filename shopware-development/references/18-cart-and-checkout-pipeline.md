@@ -175,3 +175,52 @@ Minimum questions to answer in cart or checkout reviews:
 - Are cart validators cheap and deterministic?
 - Does any cart, confirm, or checkout page loader trigger writes, remote I/O, or heavy recalculation?
 - If payment is involved, where does payment authority rejoin the cart or order flow?
+
+## 6.7 Cart Pipeline Changes
+
+### `CartBehavior::isRecalculation` → `CheckoutPermissions`
+
+`CartBehavior::isRecalculation` is deprecated. Use granular permission constants from `CheckoutPermissions`.
+
+- Check permissions on `CartBehavior` (or `SalesChannelContext`) instead of `isRecalculation()`.
+- For in-memory calculations that must not persist, set `SKIP_CART_PERSISTENCE` and honor it in `CartVerifyPersistEvent::setShouldPersist`.
+
+Source: UPGRADE-6.7.md §6.7.2.0.
+
+### `FilterableInterface` For Filtered Price Definitions
+
+From 6.7.4, price definitions that need to be filtered by any cart processor must implement `\Shopware\Core\Checkout\Cart\Price\Struct\FilterableInterface` and provide `getFilter(): LineItemCollection`.
+
+Without the interface, custom price definitions are silently excluded from filter operations.
+
+Source: UPGRADE-6.7.md §6.7.4.0.
+
+### Order `primaryOrderDelivery` And `primaryOrderTransaction`
+
+Since 6.7.1, `Order::primaryOrderDelivery` and `Order::primaryOrderTransaction` replace `.deliveries.first()` and `.transactions.first()`. Migration backfills existing orders. `OrderConverter` still puts the primary first in the collection for BC — but new code should use the explicit primary references in Twig and PHP.
+
+Source: release notes 6.7.1, UPGRADE-6.7.md §6.7.1.0.
+
+### Product `states` → `type` Model
+
+`product.states`, `order_line_item.states`, `LineItem::$states`, `StatesUpdater`, `ProductStatesBeforeChangeEvent`, `ProductStatesChangedEvent` are deprecated in 6.7.7 in favor of `product.type` and `order_line_item.payload.product_type` / `LineItem::$payload['productType']`.
+
+- Register custom product types via `shopware.product.allowed_types` config.
+- Migrate reads from `product.states` to `product.type`.
+
+Source: release notes 6.7.7.
+
+## Cart-Token vs Context-Token Pitfall
+
+A common failure on shipping-quote, cart-preview, and configurator routes.
+
+- Overriding cart token via `sw-cart-token` GET parameter but not overriding context token loads the correct cart but evaluates rules against the wrong context.
+- Symptom: only shipping methods for the calling context are visible, cross-checked against a possibly different cart, producing wrong or missing shipping options.
+- Correct pattern: use the `sw-context-token` HTTP header to override the context. Cart and context resolve consistently from the same token.
+- If a wishlist / shared-cart flow really requires a separate cart token, gate the route with signed URLs plus expiration; do not accept cart-token override via query string for state-mutating routes.
+
+Full details in `07-payments.md`.
+
+## External API In Cart
+
+Any cart-time call to a tax, shipping, personalization, or third-party API must follow the caching contract in `24-external-api-caching-in-cart.md`. TTL required, deterministic cache key, admin invalidation route.

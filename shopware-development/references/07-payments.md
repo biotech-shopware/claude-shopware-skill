@@ -181,3 +181,96 @@ Cross-reference example:
 ```text
 If the payment issue is really caused by collector or processor ordering, move the cart behavior into 18-cart-and-checkout-pipeline.md and keep only the payment authority rule here.
 ```
+
+## 6.7 Payment Handler Contract
+
+`AbstractPaymentHandler` consolidates five legacy interfaces:
+
+- `SynchronousPaymentHandlerInterface`
+- `AsynchronousPaymentHandlerInterface`
+- `PreparedPaymentHandlerInterface`
+- `RecurringPaymentHandlerInterface`
+- `RefundPaymentHandlerInterface`
+
+All are deprecated in 6.7. New payment plugins extend `\Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AbstractPaymentHandler` and implement:
+
+- `pay()`
+- `finalize()`
+- `validate()`
+- `recurring()`
+- `refund()`
+- `supports()` — the capability check that gates recurring / refund / partial-refund flows
+
+Register with a single DI tag: `shopware.payment.method`. Drop `.sync`, `.async`, `.prepared`, `.recurring`, `.refund` tags.
+
+Handlers receive only `orderTransactionId`, request info, and `Context`. The handler must load its own order data — nothing else is passed.
+
+Source: release notes 6.7.0; developer.shopware.com/docs/guides/plugins/plugins/checkout/payment/add-payment-plugin.html.
+
+### `technicalName` Discipline
+
+Payment method `technicalName` is non-nullable in 6.7 (auto-migrated). Always set a plugin-prefixed value:
+
+```php
+$paymentMethodData = [
+    'handlerIdentifier' => MyPaymentHandler::class,
+    'technicalName' => 'my_plugin_credit_card',  // required, plugin-prefixed
+    // ...
+];
+```
+
+If a plugin ships without `technicalName`, 6.7 assigns `temporary_<id>` — you lose stable reference for the method.
+
+### SwagPayPal 6.7 Reference Architecture
+
+Model complex payment plugins on the SwagPayPal 6.7 refactor:
+
+- Single `AbstractPaymentMethodHandler` base class.
+- One subclass per payment method (Credit Card, PayPal, Pay Later, etc.).
+- Three lifecycle methods define the contract: `pay()`, `finalize()`, `executeOrder()`.
+- Override `executeOrder()` for custom logic. Never duplicate core `pay`/`finalize`.
+- Remove any references to deleted `AbstractPaymentBuilder` — replace legacy patch builders with standardized methods.
+
+Source: shopware.com/en/news/optimizing-the-paypal-payment-handler-for-6-7-release/.
+
+### Order `primaryOrderTransaction`
+
+Since 6.7.1, `Order::primaryOrderTransaction` replaces `.transactions.first()`. The migration backfills existing orders. `OrderConverter` still puts the primary first in the collection for BC, but new code should read `order.primaryOrderTransaction`.
+
+Same rule for `Order::primaryOrderDelivery`.
+
+Source: release notes 6.7.1, UPGRADE-6.7.md §6.7.1.0.
+
+## Cart Token vs Context Token
+
+A common failure mode on shipping-quote and cart-preview routes.
+
+- Overriding the cart token via a `sw-cart-token` GET parameter but not overriding the context token loads the correct cart items but **evaluates rules against the wrong context**. This surfaces as: only shipping methods available for the calling context are visible, but they are crosschecked against a different cart — producing wrong or missing shipping method options.
+- The correct pattern: use the `sw-context-token` HTTP header to override the context. Both cart and context resolve consistently from the same token.
+- Never accept cart-token override via query string for state-mutating routes. If a wishlist or shared-cart flow really requires it, document the constraint and gate the route with signed URLs plus expiration.
+
+Source: real-world plugin review, August 2026.
+
+## Middleware Retry = Duplicate Orders
+
+When a headless or composable frontend reports "duplicate orders", the root cause is almost always a middleware retry loop, not a Shopware bug.
+
+- Verify: what does the middleware do when the Shopware /store-api/checkout/order call returns a 5xx? A 4xx?
+- Common wrong: retry on any non-2xx.
+- Correct: retry only on network-level failure. On any HTTP response, inspect status and decide idempotently. Distinguish "order was actually created but response was lost" from "order was rejected".
+- Shopware's `checkout/order` endpoint is not idempotent by client-provided key. If middleware needs safe retry, it must persist an idempotency key and check for an existing order before retrying.
+
+Related: see `15-subscriptions-and-recurring-payments.md` and `16-headless-and-composable-frontends.md` for the multi-repo triangulation pass on this.
+
+Source: real-world plugin review, `#altus-nova_shopware`, July 2026.
+
+## External API In Cart (Tax, Shipping, Personalization)
+
+Every payment or checkout plugin that calls an external API from cart processors must follow the caching contract in `24-external-api-caching-in-cart.md`:
+
+- Cache every response with a TTL.
+- Cache key includes shipping origin, delivery address, cart amount, shipping amount, line-item fingerprint, provider customer id, sales channel id, currency.
+- Expose admin invalidation route (global + per-customer).
+- Live-check on order placement if entry older than 30 minutes.
+
+Source: real-world TaxJar plugin review threads, August 2026.

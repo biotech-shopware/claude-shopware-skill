@@ -51,6 +51,10 @@ Keep each concern in one place:
 - Shopware-specific testing patterns belong in `19-testing-patterns.md`.
 - Search, Elasticsearch, and OpenSearch rules belong in `20-search-and-indexing.md`.
 - Snippet, translation, and localization rules belong in `21-internationalization-and-snippets.md`.
+- Code review protocol, 3-pass process, report naming, and prior-review validation belong in `22-code-review-protocol.md`.
+- HTTP cache, delayed invalidation, `CACHE_REWORK`, `sw-cache-hash`, and Varnish/Fastly integration belong in `23-cache-and-http-cache.md`.
+- External-API caching inside cart calculation (tax, shipping, personalization) belongs in `24-external-api-caching-in-cart.md`.
+- Composer patches, PHPStan/PHPCS pinning, shopware-rector, Frosh Tools, and DB-dump tooling belong in `25-patching-and-dependency-tooling.md`.
 
 Do not repeat the same rule in multiple files unless the split would otherwise hide a critical safety boundary. Use short cross-references instead.
 

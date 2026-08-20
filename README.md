@@ -25,6 +25,13 @@ claude-shopware-skill/
 │       └── shopware-review.md
 ├── LICENSE
 ├── README.md
+├── .claude-plugin/           # dev branch only: Claude Code plugin manifest
+│   └── plugin.json
+├── docs/                     # dev branch only
+│   └── verify-install.md
+├── eval/                     # dev branch only
+│   ├── should-trigger.md
+│   └── should-not-trigger.md
 └── shopware-development/
     ├── SKILL.md
     ├── agents/
@@ -50,8 +57,17 @@ claude-shopware-skill/
         ├── 18-cart-and-checkout-pipeline.md
         ├── 19-testing-patterns.md
         ├── 20-search-and-indexing.md
-        └── 21-internationalization-and-snippets.md
+        ├── 21-internationalization-and-snippets.md
+        ├── 22-code-review-protocol.md          # v0.8.0-dev
+        ├── 23-cache-and-http-cache.md          # v0.8.0-dev
+        ├── 24-external-api-caching-in-cart.md  # v0.8.0-dev
+        └── 25-patching-and-dependency-tooling.md # v0.8.0-dev
 ```
+
+## Branches
+
+- **`main`** — stable, currently `v0.7.3`. Use this for production installs.
+- **`dev`** — preview of the next release (currently `v0.8.0-dev`). Adds four reference files (22-25), expanded frontmatter (`when_to_use`, `paths`, `argument-hint`, expanded `allowed-tools`), and Claude Code plugin manifest. See [CHANGELOG.md](CHANGELOG.md) for full v0.8.0-dev change list. Install this branch to preview; expect changes before release.
 
 ## Install And Use
 
@@ -64,10 +80,16 @@ git clone https://github.com/biotech-shopware/claude-shopware-skill.git
 cd claude-shopware-skill
 ```
 
-Use `main` for the latest release, or pin a release:
+Use `main` for the latest stable release, or pin a release:
 
 ```bash
 git checkout v0.7.3
+```
+
+To preview the next version:
+
+```bash
+git checkout dev
 ```
 
 Personal install:

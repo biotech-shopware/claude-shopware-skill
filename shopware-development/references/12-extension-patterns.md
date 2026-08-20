@@ -83,3 +83,48 @@ Example pattern:
 Bad: store variant-generation rules and stream membership as unindexed product customFields and query them at scale.
 Good: use Shopware property groups, product streams, or a dedicated custom entity when the data drives operational catalog behavior.
 ```
+
+## 6.7 Extension Pattern Changes
+
+### Custom Fields In XML (Not Manifest Inline)
+
+From 6.7.13, inline `<custom-fields>` in `manifest.xml` is deprecated. Move to `Resources/config/custom-fields.xml`.
+
+```xml
+<!-- Resources/config/custom-fields.xml -->
+<custom-fields>
+    <custom-field-set>
+        <name>my_plugin_products</name>
+        <fields>
+            <text>
+                <name>my_plugin_sku_supplier</name>
+                <include-in-search>true</include-in-search>
+            </text>
+        </fields>
+    </custom-field-set>
+</custom-fields>
+```
+
+From 6.7.7 custom fields are **not searchable by default** — opt in explicitly with `<include-in-search>true</include-in-search>` per field.
+
+From 6.7.13 the `Immutable` DAL flag protects `custom_field.name`, `custom_field.type`, `custom_field_set.name`. Do not attempt to update fields marked immutable.
+
+Source: release notes 6.7.7, 6.7.13.
+
+### Cookie Provider Replaced By Event
+
+`CookieProviderInterface` is deprecated. Register cookies via listener on `\Shopware\Core\Content\Cookie\Event\CookieGroupCollectEvent` using `CookieEntry` / `CookieGroup` structs. The new Store-API route is `/store-api/cookie-groups` (`\Shopware\Core\Content\Cookie\SalesChannel\CookieRoute`).
+
+Twig properties `snippet_name` / `snippet_description` deprecated → `name` / `description` (handle both snippet keys and plain strings).
+
+Source: UPGRADE-6.7.md §6.7.3.0.
+
+### Rule Builder Condition Contract
+
+- `LineItemProductStatesRule` deprecated → `LineItemProductTypeRule`. Register custom types via `shopware.product.allowed_types` config.
+- `LineItemPurchasePriceRule` `bool $isNet` → `?string $type` (`'gross'|'net'`, auto-migrated).
+- `LineItemCustomFieldRule` now throws `RuleException::unsupportedOperator()` (not `CartException`).
+- `CustomerBirthdayRule` no longer throws on null.
+- Deprecated admin components: `sw-condition-line-item-in-category`, `sw-condition-line-item-purchase-price`, `sw-condition-line-item-is-net-select`. Use `sw-condition-generic`.
+
+Source: UPGRADE-6.7.md §6.7.7.0, §6.7.12.0, §6.7.13.0.
