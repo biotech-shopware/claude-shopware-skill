@@ -59,7 +59,7 @@ Minimum questions to answer in a paired backend/frontend review:
 
 ### `context.token` No Longer In Twig
 
-Store-API context tokens are no longer exposed in Twig (release notes 6.7.5). This closes reflected-XSS vectors (`GHSA-6w82-v552-wjw2`).
+Store-API context tokens are no longer exposed in Twig (release notes 6.7.5.0), "to prevent potential security vulnerabilities".
 
 - Do not surface `context.token` in Twig or SSR-rendered HTML on a headless storefront.
 - If the frontend needs the token, fetch it explicitly from a controlled backend endpoint that returns it once and lets the frontend store it in a `HttpOnly` cookie or memory.

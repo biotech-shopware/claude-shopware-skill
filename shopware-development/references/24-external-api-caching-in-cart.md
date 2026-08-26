@@ -10,7 +10,7 @@ The failure mode is not slowness. It is correctness: an uncached lookup returnin
 
 ## Mandatory Cache Contract
 
-Every plugin that calls an external API from a `CartDataCollector` or `CartProcessor` implements this cache contract:
+Every plugin that calls an external API from a `CartDataCollectorInterface` or `CartProcessorInterface` implements this cache contract:
 
 1. **Cache every response.** No pass-through calls during cart calculation.
 2. **Use a deterministic cache key.** See the components list below.
@@ -80,12 +80,25 @@ The ideal case is: the provider notifies Shopware when a customer's status chang
 - This requires a webhook endpoint on the plugin's Admin API surface, signed and idempotent.
 - Not all providers push status changes. When the provider does not, document the gap and rely on TTL + admin invalidation.
 
+## Auditing An Existing Cache
+
+The contract above is for a plugin with no cache. Auditing one that already has a cache is a different exercise, and checking the key against a fixed list is not enough — the list does not know what this provider returns.
+
+Work from the payload, not from the list:
+
+1. **Enumerate the fields of the cached payload.** What does the provider actually return, and which of those values does the plugin use?
+2. **For each returned field, ask what inputs determine it.** A tax rate depends on delivery address, product tax class, and customer exemption status. A shipping quote depends on weight, dimensions, and origin.
+3. **Name every value-determining input that is absent from the cache key.** Each one is a staleness bug: change that input, get the old answer.
+4. **Check the inverse too** — inputs in the key that determine nothing. These fragment the cache and cost hit rate without buying correctness.
+
+The output is a list shaped "field X depends on input Y; Y is not in the key," which is directly actionable and survives the provider adding fields later.
+
 ## Review Prompts
 
 When reviewing a plugin that calls an external API in cart:
 
 - Does every cart-time call go through a cache?
-- What is the cache key? Does it include all six components above?
+- What is the cache key? Does it include all seven components above?
 - What is the TTL? Is there any indefinite entry?
 - Is there an admin invalidation route? Is it ACL-protected?
 - Is there a live-check on order placement?

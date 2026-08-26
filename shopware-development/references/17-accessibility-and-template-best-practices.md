@@ -191,7 +191,7 @@ Treat these as explicit red flags:
 Shopware 6.7 ships EAA-driven markup changes:
 
 - `$font-size-base: 1rem` (16px) baseline.
-- `{% sw_icon %}` sets `aria-hidden="true"` by default. When rendering an icon with meaning (a status indicator, an action button that shows only the icon), pass `ariaHidden: false`.
+- `{% sw_icon %}` sets `aria-hidden="true"` by default. When rendering an icon with meaning (a status indicator, an icon-only button), pass `ariaHidden: false` **together with** `ariaLabel: '…'`. The template injects `aria-label` only when both are present, so `ariaHidden: false` alone exposes an unnamed `<svg>` — worse than leaving it hidden.
 - Interactive controls use `<button>` / `<a>`, not styled hidden `<input type="radio">` (applies to language switcher, currency switcher, pagination).
 - Cart and order line items are `<ul>` / `<li>` (not `<div>`). Update custom line-item templates to inherit the new list semantics.
 - Product-card duplicate link removed — the product image no longer wraps a second anchor. Do not re-add wrapping links in overrides.

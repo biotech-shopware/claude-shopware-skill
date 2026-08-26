@@ -31,13 +31,13 @@ Use these as default assumptions for 6.7 work:
 - Administration
   Use the official Vue 3, Pinia, and Vite migration docs when the task includes admin modernization. Treat these as explicit migrations, not incidental cleanup.
 - Translations
-  Shopware 6.7.3 introduced the country-independent snippet base layer. Use base files such as `messages.en.base.json` and `messages.de.base.json`, keep country-specific files as small overrides, preserve empty former country-specific files where backward compatibility needs them, and validate with `translation:lint-filenames` plus `snippet:validate`.
+  Shopware 6.7.3 introduced the country-independent snippet base layer. Use base files such as `messages.en.base.json` and `messages.de.base.json`, keep country-specific files as small overrides, preserve empty former country-specific files where backward compatibility needs them, and validate with `bin/console translation:lint-filenames` plus `bin/console translation:validate`.
 - Caching
-  Follow the current cache and HTTP cache docs. Do not depend on legacy assumptions like "logged-in users always disable cache." Delayed cache invalidation is the default in 6.7 (5-minute batching with `cache_rework` active). See `23-cache-and-http-cache.md`.
+  Follow the current cache and HTTP cache docs. Do not depend on legacy assumptions like "logged-in users always disable cache." Delayed cache invalidation is on by default in 6.7 with 5-minute batching. The `CACHE_REWORK` feature flag is a **separate, opt-in, experimental** change (`default: false` through 6.7.13) that becomes the default in 6.8 — do not assume Store-API HTTP caching or rule-filtered `sw-cache-hash` are live. See `23-cache-and-http-cache.md`.
 
 ## Runtime Version Matrix (6.7 series)
 
-- PHP: 8.2 minimum, 8.4 default recommended, 8.5 supported from 6.7.6+ (drop 8.3 in newer patch tests).
+- PHP: **8.2 is the floor**. `shopware/core` declares `~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0` through 6.7.13; 8.5 support was added in 6.7.6. Because 8.2 is the minimum, target 8.2-compatible syntax unless the project pins higher.
 - Symfony: 7.3 baseline from 6.7.2, upgraded to 7.4 from 6.7.7.
 - Redis: `php-redis` v6.1+ required from 6.7.7. Redis 7.0+ recommended for cluster/multi-node.
 - MySQL/MariaDB: unchanged; `group_concat_max_len >= 320000`, no `ONLY_FULL_GROUP_BY`.
@@ -71,7 +71,7 @@ When the project targets 6.6:
 
 Not every Shopware fix is backported to older minors.
 
-- Example: `shopware/shopware` PR #18205 (language active-filter fix) ships only in 6.7.13.0+; there is no 6.6 backport planned.
+- Example: `shopware/shopware` PR #18205 ("perf: Improve category breadcrumb updater") first ships in 6.7.13.0 with no 6.6 backport. Check the PR's own target branches on GitHub rather than assuming a fix reached the older minor.
 - Before assuming a fix exists on 6.6, check the PR's target branches on GitHub.
 - If the fix must exist on 6.6, apply a local patch with `cweagans/composer-patches`. See `25-patching-and-dependency-tooling.md`.
 - Document each patch with the upstream URL and the target version where it can be removed.

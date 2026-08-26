@@ -2,6 +2,97 @@
 
 All notable changes to the universal Shopware AI skill are documented in this file.
 
+## [v0.9.0-dev] - 2026-08-26 (dev branch)
+
+A correctness release. The skill's own rules were reviewed the way code is reviewed, against Shopware core source and official docs. **33 defects were found and fixed.** Nine placed code or config where it would never execute; one actively inverted into a production incident; three would fatal or fail validation at runtime.
+
+### Corrected — silent no-op and inverted rules
+
+These are recorded rather than quietly edited, because the reason a rule was wrong is worth more than the rule.
+
+- **`/api/_action/indexing` with `{"only": [...]}` did the opposite of what was documented.** That route reads no request body; it calls `sendIndexingMessage([], $skips)`, and an empty list means *every registered indexer*. The documented "targeted rebuild" queued a full site-wide reindex and returned `200`, not `204`. The route that accepts `only` is `POST /api/_action/index` (singular). Sourced from a Slack thread and encoded without verification. `references/20`.
+- **`updateDestructive()` — "separate destructive operations into it"** meant required schema work never ran. `runMigrations()` → `migrateInPlace()` → `MigrationRuntime::migrate()` calls `update()` only; `updateDestructive()` is reachable solely from `bin/console database:migrate-destructive`, which merchants do not run for plugins. `references/04`, `03`.
+- **`CategoryLevelLoaderCacheKeyEvent` namespaced `Category\SalesChannel\`** — the real namespace is `Category\Event\`. `::class` resolves without an existence check, so a subscriber registered cleanly and never fired, producing exactly the stale/leaked navigation the rule existed to prevent. `references/04`, `23`.
+- **Elasticsearch decoration example defined `mapping()`** — the contract is `getMapping(Context $context)`. The decorator compiled, was never called, and the custom field silently never reached the index. `references/20`.
+- **Rector guidance named a package that does not exist** (`friendsofshopware/shopware-rector`; real is `frosh/shopware-rector`), the wrong namespace (`Frosh\Rector\Set`), and four rules that the `SHOPWARE_6_7_0` set does not contain — including the payment-handler migration it promised. `references/25`.
+- **`snippet:validate` (singular) is not a command.** Real name is `translation:validate`; `snippets:validate` is a deprecated alias. `references/21`, `11`, `02`.
+- **`Bash(bin/console dal:list *)` and `Bash(bin/console framework:describe:* *)`** pre-approved commands that do not exist. Replaced with `dal:validate` and `framework:schema`. `SKILL.md`.
+- **`routing_overwrite` YAML key used doubled backslashes.** YAML single-quoted scalars do not process escapes, so the key was a literal two-backslash string that never matched `$message::class`. The transport override was silently ignored. `references/14`.
+- **The `custom-fields.xml` example was XSD-invalid** — `name` is a required *attribute* not a child element, and `label` and `related-entities` were missing. The file is validated at install/update, so it threw rather than degrading. `references/12`.
+- **The "Preferred" cart collector example fataled on the hot path.** `Criteria::addFields()` switches the read to partial mode, returning `PartialEntity` (an `ArrayEntity` with no getters), so `$product?->getName()` threw `Error: Call to undefined method` on every recalculation that found a product. `references/18`.
+
+### Corrected — auto-invocation regressions
+
+- **Removed the `paths` frontmatter block.** Documented behavior is that it *limits* activation to file-matching contexts, so conceptual questions — "how do I add a Shopware payment handler?", "migrate 6.6 to 6.7" — stopped auto-invoking the skill, contradicting the trigger phrases `when_to_use` advertised. Malformed globs also fail silently. Anthropic's guidance for hybrid skills is to omit `paths` and rely on `description`.
+- **Frontmatter exceeded the 1,536-character cap** (1,631). The truncated tail was the file-25 trigger phrases added in the same release. Trimmed to 1,154 with 382 characters of headroom.
+
+### Corrected — wrong facts
+
+- `CACHE_REWORK` presented as the 6.7 default. It is `default: false`, experimental, opt-in — and still `default: false` on 6.8-dev. Delayed invalidation is default-on *independently* of it. `references/02`, `23`.
+- `shopware.cache.invalidation.delay` does not exist in 6.7; the key is `delay_enabled` (boolean, default `true`). The 6.6 key was `delay` (integer, default `0` — off). The "20 seconds / 5 minutes" pair was `InvalidateCacheTask::getDefaultInterval()`, a scheduled-task cadence, mislabelled as the delay config — a self-contradiction with the same file's own interval section. `references/23`.
+- Scheduled task named `shopware.scheduled_task.invalidate_cache`; the real name is `shopware.invalidate_cache`. `references/23`.
+- `CACHE_REWORK` "makes 12 Store-API endpoints cacheable" while listing 14; the release notes say 21. `sw-cache-hash` narrowing is by `RuleAreas::PRODUCT_AREA`, not "price-relevant". `references/23`.
+- Five legacy payment interfaces described as "deprecated in 6.7" — they were **removed in 6.7.0.0**. `references/07`.
+- Payment `pay()` examples used `AsyncPaymentTransactionStruct` (deleted in 6.7.0.0) with a signature incompatible with `AbstractPaymentHandler::pay()`, producing a PHP fatal. The block was labelled "Preferred". `references/07`.
+- `validate()` documented as the place to check `orderTransactionId` — it runs *before* the order is persisted, so no transaction exists. Also noted: `validate()` is not called on after-order payment retries, a security-relevant gap. `references/07`.
+- `ScheduledTaskHandler` logger requirement dated 6.7.13; required since **6.7.0.0**. `references/04`.
+- Messenger 256 KB cap described as hard; enforcement is opt-in via `enforce_message_size` (`defaultFalse()`). `references/04`.
+- `MigrationStep` rename `table` → `tableName` does not exist (still `$table`); named-argument use throws. Real renames are `column`→`columnName`, `column`→`foreignKeyName`, `index`→`indexName`. `references/04`.
+- MCP endpoints described as active whenever the bundle is installed, with the flag "removed in 6.7.14". `MCP_SERVER` is `default: false` on every released 6.7, and 6.7.14 does not exist yet. `references/06`.
+- PHPStan pinned to 1.12.5; Shopware 6.7 is tested against **2.x** — the exact mismatch the rule claimed to prevent. `references/25`.
+- `SHOPWARE_ES_THROW_EXCEPTION` and `SHOPWARE_ES_USE_LANGUAGE_ANALYZER` presented as hardening steps; both already default to `1`. `ENABLE_OPENSEARCH_FOR_ADMIN_API` conflated with admin ES — it is a separate experimental flag, and `ADMIN_OPENSEARCH_URL` was missing. `references/20`.
+- `GHSA-6w82-v552-wjw2` cited for the `context.token` Twig removal in two files. That advisory is a login-page reflected XSS via `waitTime`/`errorSnippet`. The rule is correct; the citation was not. Now cites release notes 6.7.5.0. `references/05`, `16`.
+- PR #18205 described as a "language active-filter fix"; it is "perf: Improve category breadcrumb updater". `references/02`.
+- PHP "8.4 recommended, 8.3 dropped" was unverifiable — core declares `~8.2 || ~8.3 || ~8.4 || ~8.5`. Now states 8.2 as the floor. `references/02`.
+- ESI routes written as `\header` / `\footer`; real route names are `frontend.header` / `frontend.footer` at `/_esi/global/…` since 6.7.1. `references/05`, `23`.
+- OAuth array-form scope "silently fails"; it is rejected with an error. `references/06`.
+- Symfony `timeout` presented as a total-time bound in the "Preferred" HTTP client example. It is an idle timeout; added `max_duration`. `references/09`.
+- `ecs-fix` composer script is Shopware's deprecated name; current is `cs-fix`. `--compress` is deprecated in MySQL 8.4 and a no-op locally. `CartDataCollector`/`CartProcessor` missing the `Interface` suffix. Cache-key component count said six, listed seven. `references/25`, `24`.
+- `FilterableInterface::getFilter()` documented as returning `LineItemCollection`; it returns `?Rule`, and its consumers are the promotion packagers, not "any cart processor". `references/18`.
+- Custom-field version numbers were swapped: declarative XML and `include-in-search` are **6.7.13**, the `Immutable` flag is **6.7.7**. The claim that fields "became non-searchable by default in 6.7.7" described a change that never happened — `includeInSearch` has always defaulted to `false`. `references/12`.
+- `sw-condition-line-item-is-net-select` does not exist; the component is `sw-condition-is-net-select`. `references/12`.
+- `translation:validate` attributed to 6.7.11; the rename landed in **6.7.3** (UPGRADE §6.7.3.0, not §6.7.2.0). `references/14`.
+- `shopware.admin_worker.transports` "must prepend `webhook`" — the core default already includes it; only overrides need the change. `references/14`.
+- `composer storefront:dev-server` exists only in a `shopware/shopware` source checkout. Production-template projects use `shopware-cli project storefront-watch`. `references/14`.
+- `ariaHidden: false` alone leaves an icon unnamed — the template injects `aria-label` only when `ariaLabel` is also set. `references/17`.
+- `RecurringPaymentHandlerInterface` described as deprecated; **removed in 6.7.0.0**. `references/15`.
+- `order_line_item.payload.product_type` is camelCase `payload.productType` in the DAL deprecation flag and at runtime. `references/18`.
+- `sw-cart-token` presented as a platform parameter; no such parameter exists in core. Reworded as the plugin-authored convention it is. `references/07`, `18`.
+- **Seven dead documentation URLs** in the docs map, all replaced and re-verified as HTTP 200. `references/10`.
+
+### Added
+
+- **`references/26-plugin-lifecycle-and-activation.md`** — the gap behind the original feedback. Covers the seven lifecycle methods (there is no `postActivate()`), the version-bump chain and why the gate sits in the *callers* rather than in `updatePlugin()`, that `composer.json` edits alone do nothing for `vendor/` plugins without `composer update`, that migrations and custom-field sync do not run on activate, that `plugin:update:all` skips inactive plugins, that `plugin:install --activate --refresh` silently skips activation, and that `update()` syncs custom fields with `deleteMissingXml: true`.
+- **Enumeration rule** in `22`: one correct instance of a pattern is not evidence about the others; enumerate every instance in the changed file.
+- **Sibling comparison** in `22`: when a file holds two or more constructs of the same shape, compare them before judging any one.
+- **`## Checked and Dismissed`** in `22`: name the categories swept clean and the evidence, so a review that looked can be told from one that did not.
+- **Follow-the-code closing pass** in `08`: risk order decides what to read first, not what to look for.
+- **`## Source of Record and Contract Evidence`** in `08`: establish the authoritative system per entity before reviewing writes; contract evidence is not execution evidence.
+- **Personalisation finding shape** in `23`: logged-in state is not customer identity; personalised output in a shared cacheable response is a data-exposure defect.
+- **`## Auditing An Existing Cache`** in `24`: enumerate the cached payload's fields, then name value-determining inputs absent from the key.
+- **Coverage as a finding** in `19`: when a diff touches queue handlers, external writes, price resolution, ownership checks, migrations, or lifecycle hooks, state which have tests.
+- **Registered-but-inert code** in `09`: empty subscribers, pure-delegation decorators, unused injected dependencies, and subscribers keyed on never-dispatched events.
+
+### Changed
+
+- `08` now states it owns severity *assignment* while `22` owns *output format per severity*; the two previously defined P0/P1 incompatibly with neither deferring.
+- Frontmatter trimmed and reordered to put the highest-value triggers first.
+
+### Deliberately not done
+
+- **No second new reference file.** The feedback proposed a `27-contract-and-requirements-review.md`. Its Shopware-specific half (source-of-record per entity) was folded into `08`; its generic half — read the ticket, compare requirement to code — fails Anthropic's "only add context Claude doesn't already have" test, and a third review file would create routing ambiguity against `08` and `22` for no token saving. Net new files: 1, not 2.
+
+### Validated
+
+- 26 reference files; 26 Reference Map entries; SKILL.md 166 lines (limit 500).
+- `description` + `when_to_use` = 1,154 chars against the 1,536 cap.
+- Zero occurrences of the corrected harmful strings; the only remaining mentions of `snippet:validate` and `/api/_action/indexing` are the warnings telling readers not to use them.
+- `agents/openai.yaml` unchanged — Codex compatibility preserved.
+
+### Note on sources
+
+Two of the worst defects (`/api/_action/indexing`, and one cache claim) came from Slack-sourced material added in v0.8.0-dev and encoded without checking against core. Slack and project-anecdote sources are now the lowest-confidence input class in this repo and should be verified before encoding, not after.
+
 ## [v0.8.0-dev] - 2026-08-21 (dev branch)
 
 This entry documents the `dev` branch. It is not merged to `main` yet. Install v0.7.3 from `main` for production; install this from `dev` to preview.

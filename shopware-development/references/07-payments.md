@@ -63,37 +63,54 @@ Example:
 
 Code shape example:
 
+The 6.7 signature is fixed by `AbstractPaymentHandler::pay()`. Do not use `AsyncPaymentTransactionStruct` or `SalesChannelContext` here — the former was removed in 6.7.0.0 and the latter is not passed; a mismatched signature is a PHP fatal, not a soft warning.
+
 ```php
 // Bad: browser token and request amount become local payment truth
-public function pay(RequestDataBag $data, SalesChannelContext $context, AsyncPaymentTransactionStruct $transaction): RedirectResponse
-{
+public function pay(
+    Request $request,
+    PaymentTransactionStruct $transaction,
+    Context $context,
+    ?Struct $validateStruct
+): ?RedirectResponse {
     $this->transactionRepository->update([[
-        'id' => $transaction->getOrderTransaction()->getId(),
+        'id' => $transaction->getOrderTransactionId(),
         'stateId' => 'paid',
-        'customFields' => ['provider_token' => $data->get('token')],
-    ]], $context->getContext());
+        'customFields' => ['provider_token' => $request->request->get('token')],
+    ]], $context);
 
-    return new RedirectResponse($data->get('successUrl'));
+    return new RedirectResponse($request->request->get('successUrl'));
 }
 ```
 
 ```php
-// Preferred: persist operation intent, verify later, and keep local state server-authoritative
-public function pay(RequestDataBag $data, SalesChannelContext $context, AsyncPaymentTransactionStruct $transaction): RedirectResponse
-{
+// Preferred: persist operation intent, verify later, keep local state server-authoritative
+public function pay(
+    Request $request,
+    PaymentTransactionStruct $transaction,
+    Context $context,
+    ?Struct $validateStruct
+): ?RedirectResponse {
+    $orderTransactionId = $transaction->getOrderTransactionId();
+
     $this->paymentOperationService->prepare(
-        $transaction->getOrderTransaction()->getId(),
-        $data->getAlnum('providerToken'),
+        $orderTransactionId,
+        (string) $request->request->getAlnum('providerToken'),
         $context
     );
 
-    return new RedirectResponse($this->paymentOrchestrator->createRedirect($transaction, $context));
+    return new RedirectResponse(
+        $this->paymentOrchestrator->createRedirect($orderTransactionId, $context)
+    );
 }
 ```
 
+The handler receives only `orderTransactionId`, request data, and `Context`. Load any order detail it needs itself.
+
 ## Correctness Rules
 
-- Use `validate()` for prepared-payment invariants such as `orderTransactionId`, server-side prepared references, currency, amount, and merchant-account checks.
+- Use `validate()` for prepared-payment invariants that exist **before the order does**: cart currency and amount, server-side prepared references, and merchant-account checks. `validate()` runs before the order is persisted, so there is no `orderTransactionId` and no `order_transaction` row yet — a guard on those either dead-codes or blocks every order placement. Bind transaction-scoped invariants in `pay()`, which receives `PaymentTransactionStruct::getOrderTransactionId()`.
+- `validate()` is **not** called on after-order payment flows (`/store-api/handle-payment`, used for retries and payment-method changes when `afterOrderEnabled` is on). Re-assert any security-relevant invariant in `pay()` rather than relying on `validate()` alone.
 - Key provider operations by `orderTransactionId` or a provider-side unique reference.
 - Persist an operation row before outbound provider calls and back it with unique indexes so retries return the previous result instead of duplicating side effects.
 - Only verified payment handlers, verified callbacks, or reconciliation services may create authoritative local transaction rows or mark payment as successful.
@@ -192,7 +209,7 @@ If the payment issue is really caused by collector or processor ordering, move t
 - `RecurringPaymentHandlerInterface`
 - `RefundPaymentHandlerInterface`
 
-All are deprecated in 6.7. New payment plugins extend `\Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AbstractPaymentHandler` and implement:
+All five were deprecated in 6.6 and **removed in 6.7.0.0** — referencing any of them on 6.7 is a fatal, not a deprecation notice. New payment plugins extend `\Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AbstractPaymentHandler` and implement:
 
 - `pay()`
 - `finalize()`
@@ -245,7 +262,7 @@ Source: release notes 6.7.1, UPGRADE-6.7.md §6.7.1.0.
 
 A common failure mode on shipping-quote and cart-preview routes.
 
-- Overriding the cart token via a `sw-cart-token` GET parameter but not overriding the context token loads the correct cart items but **evaluates rules against the wrong context**. This surfaces as: only shipping methods available for the calling context are visible, but they are crosschecked against a different cart — producing wrong or missing shipping method options.
+- A plugin-defined `sw-cart-token` GET parameter (there is no such platform parameter in core) that overrides the cart token without overriding the context token loads the correct cart items but **evaluates rules against the wrong context**. This surfaces as: only shipping methods available for the calling context are visible, but they are crosschecked against a different cart — producing wrong or missing shipping method options.
 - The correct pattern: use the `sw-context-token` HTTP header to override the context. Both cart and context resolve consistently from the same token.
 - Never accept cart-token override via query string for state-mutating routes. If a wishlist or shared-cart flow really requires it, document the constraint and gate the route with signed URLs plus expiration.
 

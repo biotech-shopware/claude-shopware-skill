@@ -46,7 +46,22 @@ If accessibility is the primary review goal, inspect navigation, forms, focus ma
 9. accessibility when the request or surface makes it material
 10. extensibility and upgrade safety
 
+Then close with one pass that **follows the code rather than the checklist**. Read the changed files start to finish and follow what they actually call, regardless of which categories above are already satisfied.
+
+The risk order decides what to read first. It does not decide what to look for. A review that only answers the loaded checklist confirms the rules it brought and misses everything those rules do not name — including defects in files already labelled "deep-read".
+
+## Source of Record and Contract Evidence
+
+Some defects are not code errors: the code works and contradicts a documented requirement.
+
+- Before reviewing anything that **writes** an entity, establish which system is the source of record for it. Shopware, an ERP, a PIM, and an external pricing service can each be authoritative for different fields on the same entity. A plugin writing a field it does not own is a defect even when it runs correctly.
+- Evidence hierarchy: the contract (ticket, spec, ADR) for **intent**; source code for **behavior**; official docs for **platform behavior**. Do not settle an intent question from code, or a behavior question from a ticket.
+- Finding shape for this class: *"implementation X contradicts requirement Y"* — cite both sides.
+- A ticket marked Done, a filled checklist, and a checked-in test are **contract evidence, not execution evidence**. They record what was intended, not what runs.
+
 ## Severity Model
+
+Severity is assigned here, on impact. The output format for each severity is governed by `22-code-review-protocol.md`.
 
 - P0
   Security vulnerabilities, payment trust-boundary failures, hot-path regressions, cache-collapse risks, broken idempotency.

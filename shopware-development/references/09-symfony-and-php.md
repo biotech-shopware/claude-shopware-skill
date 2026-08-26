@@ -44,7 +44,7 @@ final class SyncController
 ```
 
 ```php
-// Preferred: timeout-bounded HttpClient wrapper
+// Preferred: bound both idle time and total duration
 final class ProviderClient
 {
     public function __construct(private readonly HttpClientInterface $httpClient)
@@ -54,11 +54,14 @@ final class ProviderClient
     public function fetchStatus(string $reference): array
     {
         return $this->httpClient->request('GET', '/status/' . $reference, [
-            'timeout' => 5,
+            'timeout' => 5,        // idle timeout between chunks
+            'max_duration' => 10,  // hard ceiling on the whole request
         ])->toArray();
     }
 }
 ```
+
+Symfony's `timeout` is an **idle** timeout, not a wall-clock bound — a provider that trickles bytes holds the worker indefinitely under `timeout` alone. Always pair it with `max_duration` on request-path calls, where slow providers can exhaust PHP-FPM capacity.
 
 ## PHP Baseline
 
@@ -95,6 +98,19 @@ $code = $requestDto->getWebhookCode();
 - PHP typing and explicit domain models matter most around DAL payloads, provider adapters, and custom entity state.
 - Keep framework examples aligned with Shopware extension points. If a Symfony pattern fights Shopware's route scopes, DAL, or state handlers, choose the Shopware-compatible variant.
 - If a safeguard is needed, tie it to a concrete failure mode in the actual Shopware code path instead of adding hypothetical protection everywhere.
+
+## Registered But Inert Code
+
+Code that is wired into the container but does nothing is a real finding, not a style note. It costs a dispatch on every matching request and misleads the next reader into thinking a behavior exists.
+
+Report these:
+
+- **Empty subscriber bodies** — a registered listener whose method body is empty or only logs. The event still dispatches to it.
+- **Pure-delegation decorators** — a decorator that forwards every method to `$this->inner` unchanged. It adds an indirection layer and implies an override that is not there.
+- **Unused injected dependencies** — constructor parameters never referenced. Each one is an eagerly built service.
+- **Subscribers keyed on an event that is never dispatched** — usually a wrong FQCN. These register cleanly and never fire; see the `CategoryLevelLoaderCacheKeyEvent` case in `04-plugin-backend.md`.
+
+The last one is the dangerous variant: it looks like working code and silently produces the exact bug the subscriber was written to prevent.
 
 ## 6.7 Runtime And Framework Notes
 

@@ -49,6 +49,22 @@ These prompts should reliably auto-invoke the `shopware-development` skill in Cl
 25. Migrate my Shopware plugin snippets to the country-agnostic base file layout for 6.7.3.
 26. Prepare my Shopware project for Language Pack sunset in 6.8.
 
+## Plugin lifecycle
+
+31. Why didn't my custom field installer run after deploying?
+32. Do I need a version bump for this Shopware plugin change to take effect?
+33. What does `updateDestructive()` actually do in a Shopware plugin?
+34. My Shopware migration works on a fresh install but not on existing shops.
+35. What order should plugin refresh, update, and activate run in on deploy?
+
+## Conceptual — no file open
+
+These must trigger with an empty working directory. They are what the removed `paths` field was suppressing.
+
+36. How do I add a payment handler in Shopware 6.7?
+37. Explain Shopware delayed cache invalidation.
+38. What changed for plugins between Shopware 6.6 and 6.7?
+
 ## Ops and tooling
 
 27. Set up PHPStan for a Shopware 6.7 plugin.

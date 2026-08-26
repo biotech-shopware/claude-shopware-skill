@@ -101,6 +101,21 @@ $repository = new StaticEntityRepository([
 - After adding decorators, handlers, or scheduled tasks, run at least one boot-path or container-compilation check.
 - If a migration changes entity structure, add one integration test that proves the repository shape still works after boot.
 
+## Coverage As A Review Finding
+
+When a diff touches any of these, state which of them have regression tests:
+
+- queue handlers and message consumers
+- writes to external systems
+- price, tax, or shipping resolution
+- ownership and ACL checks
+- migrations and schema changes
+- plugin lifecycle hooks that need a version bump to run (see `26-plugin-lifecycle-and-activation.md`)
+
+Report the gap as a finding with a severity, not as a footnote. One unit test across a large PHP codebase is a P1, not a metric to cite approvingly.
+
+Name what is untested rather than the count: "the renewal handler and the tax-exemption path have no coverage" is actionable; "coverage is low" is not.
+
 ## Admin and Frontend Notes
 
 - Keep admin E2E coverage targeted. Use it when build/runtime behavior matters more than isolated service logic.

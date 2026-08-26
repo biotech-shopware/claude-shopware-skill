@@ -28,7 +28,7 @@ When a 6.6 page is needed, start with the same path under `/docs/v6.6/` and conf
 - plugin lifecycle: `https://developer.shopware.com/docs/guides/plugins/plugins/plugin-fundamentals/plugin-lifecycle.html`
 - database migrations: `https://developer.shopware.com/docs/guides/plugins/plugins/plugin-fundamentals/database-migrations.html`
 - use plugin configuration: `https://developer.shopware.com/docs/guides/plugins/plugins/plugin-fundamentals/use-plugin-configuration.html`
-- add custom CLI commands: `https://developer.shopware.com/docs/guides/plugins/plugins/plugin-fundamentals/add-custom-cli-commands.html`
+- add custom CLI commands: `https://developer.shopware.com/docs/guides/plugins/plugins/plugin-fundamentals/add-custom-commands.html`
 
 ## Data, Cart, Cache, and Async
 
@@ -38,7 +38,7 @@ When a 6.6 page is needed, start with the same path under `/docs/v6.6/` and conf
 - Store API guide index: `https://developer.shopware.com/docs/guides/plugins/plugins/framework/store-api/`
 - add Store API route: `https://developer.shopware.com/docs/guides/plugins/plugins/framework/store-api/add-store-api-route.html`
 - override existing Store API route: `https://developer.shopware.com/docs/guides/plugins/plugins/framework/store-api/override-existing-route.html`
-- cache concept: `https://developer.shopware.com/docs/concepts/framework/cache.html`
+- cache concept: `https://developer.shopware.com/docs/guides/hosting/performance/caches.html`
 - HTTP cache: `https://developer.shopware.com/docs/concepts/framework/http_cache.html`
 - plugin caching guide: `https://developer.shopware.com/docs/guides/plugins/plugins/framework/caching/`
 - hosting caches: `https://developer.shopware.com/docs/guides/hosting/performance/caches.html`
@@ -89,13 +89,13 @@ When a 6.6 page is needed, start with the same path under `/docs/v6.6/` and conf
 - add custom module: `https://developer.shopware.com/docs/guides/plugins/plugins/administration/module-component-management/add-custom-module.html`
 - add ACL rules: `https://developer.shopware.com/docs/guides/plugins/plugins/administration/permissions-error-handling/add-acl-rules.html`
 - data handling: `https://developer.shopware.com/docs/guides/plugins/plugins/administration/data-handling-processing/using-data-handling.html`
-- using services: `https://developer.shopware.com/docs/guides/plugins/plugins/administration/services-utilities/using-services.html`
+- using services: `https://developer.shopware.com/docs/guides/plugins/plugins/administration/services-utilities/injecting-services.html`
 - adding snippets: `https://developer.shopware.com/docs/guides/plugins/plugins/administration/templates-styling/adding-snippets.html`
 - Vue 3 upgrade: `https://developer.shopware.com/docs/guides/plugins/plugins/administration/system-updates/vue3.html`
 - Pinia upgrade: `https://developer.shopware.com/docs/guides/plugins/plugins/administration/system-updates/pinia.html`
 - Vite upgrade: `https://developer.shopware.com/docs/guides/plugins/plugins/administration/system-updates/vite.html`
 - app administration: `https://developer.shopware.com/docs/guides/plugins/apps/administration/`
-- add custom module to an app: `https://developer.shopware.com/docs/guides/plugins/apps/administration/add-custom-module.html`
+- add custom module to an app: `https://developer.shopware.com/docs/guides/plugins/apps/administration/add-custom-modules.html`
 
 ## Payments
 
@@ -108,14 +108,14 @@ When a 6.6 page is needed, start with the same path under `/docs/v6.6/` and conf
 - security reference: `https://developer.shopware.com/docs/resources/references/security.html`
 - logging: `https://developer.shopware.com/docs/guides/hosting/configurations/observability/logging.html`
 - PHPUnit guide: `https://developer.shopware.com/docs/guides/plugins/plugins/testing/php-unit.html`
-- PHP integration testing: `https://developer.shopware.com/docs/guides/plugins/plugins/testing/php-integration.html`
+- PHP integration testing: `https://developer.shopware.com/docs/guides/development/testing/unit/php-unit.html`
 - Shopware CLI: `https://developer.shopware.com/docs/products/cli/`
-- Shopware CLI validation: `https://developer.shopware.com/docs/products/cli/validation.html`
+- Shopware CLI validation: `https://developer.shopware.com/docs/products/tools/cli/validation.html`
 - add rate limiter to API route: `https://developer.shopware.com/docs/guides/plugins/plugins/framework/rate-limiter/add-rate-limiter-to-api-route.html`
 - quality guidelines for store extensions: `https://developer.shopware.com/docs/resources/guidelines/testing/store/quality-guidelines-plugins/`
 - store review errors: `https://developer.shopware.com/docs/guides/development/monetization/store-review-errors.html`
 - translation extension upgrade: `https://developer.shopware.com/docs/resources/references/upgrades/core/translation/extension-translation.html`
-- fallback language selection: `https://developer.shopware.com/docs/concepts/translations/fallback-language-selection.html`
+- fallback language selection: `https://developer.shopware.com/docs/concepts/framework/translations/fallback-language-selection.html`
 - snippets concept: `https://developer.shopware.com/docs/concepts/translations/`
 
 ## Symfony

@@ -35,16 +35,20 @@ return $this->productSearchRoute->load(
 - Preserve language, sales-channel, and visibility semantics when extending indexed data.
 - When decorating existing indexers or Elasticsearch definitions, keep the change additive and compatible with the decorated service.
 
+The contract on `AbstractElasticsearchDefinition` is `getMapping(Context $context): array` — there is no `mapping()` method. A decorator that defines `mapping()` compiles, is never called, and the field silently never reaches the index.
+
 ```php
 // Preferred: extend mapping and fetch together through decoration
-public function mapping(array $mapping): array
+public function getMapping(Context $context): array
 {
-    $mapping = $this->inner->mapping($mapping);
+    $mapping = $this->inner->getMapping($context);
     $mapping['properties']['myField'] = AbstractElasticsearchDefinition::KEYWORD_FIELD;
 
     return $mapping;
 }
 ```
+
+Pair it with `fetch(array $ids, Context $context): array` so the indexed field is actually populated.
 
 ## Entity Indexer Lifecycle
 
@@ -156,32 +160,48 @@ $services->set(ExampleIndexer::class)->tag('shopware.entity_indexer');
 - What happens when Elasticsearch or OpenSearch is disabled or stale?
 - Is any search change going to force reindexing, and is that captured in rollout guidance?
 
-## Reindexing Endpoint With `only` Parameter
+## Targeted Reindexing
 
-Undocumented but works reliably: `POST /api/_action/indexing` with a JSON body targeting specific indexers.
+Two routes look similar and behave very differently. Pick deliberately.
+
+**`POST /api/_action/index`** (singular) accepts an `only` list and reindexes just those indexers. Returns `204 No Content`.
 
 ```bash
-curl -X POST https://shop.example.com/api/_action/indexing \
+curl -X POST https://shop.example.com/api/_action/index \
     -H "Authorization: Bearer <admin-token>" \
     -H "Content-Type: application/json" \
     -d '{"only": ["category.indexer"]}'
 ```
 
-- Returns `204 No Content`.
-- The `only` parameter schedules the indexing on the queue rather than running inline. Requires workers to be consuming.
-- Use for targeted rebuilds — e.g., a plugin migration that only affects category cache, without triggering a full `dal:refresh:index`.
+**`POST /api/_action/indexing`** (with `-ing`) reads **no request body**. It calls `sendIndexingMessage([], $skips)`, and an empty list means *every registered indexer*. Sending `{"only": [...]}` to this route does not narrow anything — it queues a **full site-wide reindex**, and returns `200` with `{}`, not `204`.
 
-Source: real-world Slack thread, `#altus-nova_shopware`, August 2026.
+Never use `/api/_action/indexing` for a targeted rebuild. On a large catalog it is a production incident.
+
+The CLI equivalent is explicit and safer:
+
+```bash
+bin/console dal:refresh:index --only=category.indexer
+```
+
+Source: `Framework/Api/Controller/CacheController.php` (`/api/_action/index`, reads `only`); `Framework/Api/Controller/IndexingController.php` (`/api/_action/indexing`, header-only); `EntityIndexerRegistry::sendIndexingMessage()` empty-array semantics.
 
 ## Elasticsearch Env Vars
 
-Production settings for 6.7:
+Both of these already default to `"1"` in `elasticsearch.yaml`. Setting them changes nothing on a default install — check for an existing `.env` override before treating either as a hardening step:
 
-- `SHOPWARE_ES_THROW_EXCEPTION=1` — fail loudly on ES outage instead of silently falling back to MySQL and melting the primary.
-- `SHOPWARE_ES_USE_LANGUAGE_ANALYZER=1` (6.7.11+) — enable language-specific analyzers.
-- `SHOPWARE_ADMIN_ES_ENABLED=1` and `ENABLE_OPENSEARCH_FOR_ADMIN_API=1` — enable admin ES. Then run `bin/console es:admin:index`.
+- `SHOPWARE_ES_THROW_EXCEPTION` — default `1`. When `0`, ES failures degrade silently to MySQL, which can melt the primary under load.
+- `SHOPWARE_ES_USE_LANGUAGE_ANALYZER` — default `1`, present from **6.7.7**.
 
-Source: release notes 6.7.5, 6.7.11; developer.shopware.com performance tweaks.
+Admin Elasticsearch is a separate setup and needs both of:
+
+- `ADMIN_OPENSEARCH_URL` — the admin ES/OpenSearch host. Omitting it leaves admin ES non-functional.
+- `SHOPWARE_ADMIN_ES_ENABLED=1`
+
+then `bin/console es:admin:index`.
+
+`ENABLE_OPENSEARCH_FOR_ADMIN_API` is **not** part of admin ES. It is a separate experimental feature flag (`default: false`) that routes supported Admin API entity searches through OpenSearch.
+
+Source: `src/Elasticsearch/Resources/config/packages/elasticsearch.yaml`; `Framework/Resources/config/packages/feature.yaml`.
 
 ## Queue Statistics With Frosh Tools
 

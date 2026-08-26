@@ -1,30 +1,24 @@
 ---
 name: shopware-development
 description: >-
-  Review, plan, implement, refactor, or debug Shopware 6 changes. Use when a
-  user asks to review a Shopware plugin, fix a cart processor, add a payment
-  handler, debug cache invalidation, migrate 6.6 to 6.7, extend the Store API
-  or Admin API, add a custom entity, edit a Twig template, migrate admin
-  components to Meteor, work with subscriptions or recurring payments, audit
-  accessibility (WCAG/EAA), or explain any Shopware 6-specific behavior.
-  Targets Shopware 6.7 by default with explicit Shopware 6.6 compatibility
-  handling. Covers plugin backend, DAL, Store API, Admin API, HTTP cache,
-  Varnish, delayed cache invalidation, Messenger queues, custom indexers,
-  Elasticsearch/OpenSearch, cart and checkout pipeline, storefront Twig, JS
-  and SCSS, administration (Meteor, Pinia, Vite), app extensions, payments
-  (AbstractPaymentHandler), subscriptions and recurring flows,
-  saved-payment-method ownership, snippets and i18n, cart-token vs
-  context-token pitfalls, headless and composable frontends, code reviews
-  with a 3-pass protocol, and multi-plugin audits.
+  Review, plan, implement, refactor, or debug Shopware 6 changes. Targets
+  Shopware 6.7 with explicit 6.6 compatibility handling. Covers plugin
+  backend and DAL, plugin lifecycle and version bumps, cart and checkout
+  pipeline, payments (AbstractPaymentHandler), subscriptions and recurring
+  flows, HTTP cache and delayed invalidation, Varnish, Messenger queues,
+  custom indexers, Elasticsearch/OpenSearch, storefront Twig/JS/SCSS,
+  administration (Meteor, Pinia, Vite), app extensions, Store API and Admin
+  API, snippets and i18n, accessibility (WCAG/EAA), headless frontends,
+  code review with a 3-pass protocol, and multi-plugin audits.
 when_to_use: >-
-  Trigger phrases include: "review my Shopware plugin", "audit this Shopware
-  code", "fix Shopware cart / checkout / payment / cache", "add a Shopware
-  payment handler", "migrate 6.6 to 6.7", "why is Shopware invalidating too
-  much cache", "Shopware Twig template", "Shopware Meteor / Pinia / Vite",
-  "TaxJar-style external API cache in cart", "Shopware accessibility audit",
-  "Store API extension", "Admin API decoration", "recurring payment
-  ownership", "shopware indexer / reindex", "shopware snippet / translation",
-  "Frosh Tools", "shopware-rector", "composer-patches for Shopware".
+  Use for any Shopware 6 question, whether or not a file is open. Trigger
+  phrases: "review my Shopware plugin", "audit this Shopware code", "fix
+  Shopware cart / checkout / payment / cache", "add a Shopware payment
+  handler", "migrate 6.6 to 6.7", "why didn't my migration or custom field
+  installer run", "why is Shopware invalidating too much cache", "Shopware
+  Twig template", "Shopware Meteor / Pinia / Vite", "Shopware accessibility
+  audit", "Store API extension", "shopware indexer / reindex", "shopware
+  snippet / translation".
 argument-hint: "[plan|implement|review|audit|research] <task description>"
 allowed-tools:
   - Read
@@ -41,29 +35,16 @@ allowed-tools:
   - Bash(composer why *)
   - Bash(composer audit *)
   - Bash(bin/console debug:* *)
-  - Bash(bin/console dal:list *)
+  - Bash(bin/console dal:validate *)
   - Bash(bin/console cache:watch:delayed *)
   - Bash(bin/console cache:clear:delayed *)
   - Bash(bin/console messenger:stats *)
   - Bash(bin/console messenger:failed:show *)
-  - Bash(bin/console framework:describe:* *)
+  - Bash(bin/console framework:schema *)
   - Bash(bin/console scheduled-task:list *)
   - Bash(bin/console translation:list *)
   - Bash(bin/console translation:validate *)
   - Bash(bin/console feature:list *)
-paths:
-  - composer.json
-  - "**/composer.json"
-  - "custom/**"
-  - "src/**/*.php"
-  - "src/**/*.twig"
-  - "src/**/*.scss"
-  - "src/**/*.vue"
-  - "Resources/**"
-  - "**/theme.json"
-  - "**/manifest.xml"
-  - "**/services.xml"
-  - "**/config.xml"
 ---
 
 # Shopware Development
@@ -102,6 +83,7 @@ When the routing matrix points to a number like `07`, open `references/07-paymen
 | `snippet`, `translation`, `locale`, `i18n`, `messages.*.base.json`, `translation:install` | `21` | `05` storefront, `06` admin, `02` 6.7.3+ base snippets |
 | `patch`, `composer-patches`, `PHPStan`, `php-cs-fixer`, `shopware-rector`, `Frosh Tools` | `25` | `11` for quality gates, `14` for CLI, `02` for backport policy |
 | `external API in cart`, `TaxJar`, `Avalara`, `tax calculation cache`, `third-party cart data` | `24` | `18` pipeline, `04` DI, `11` operations |
+| `plugin lifecycle`, `version bump`, `plugin:refresh`, `plugin:update`, `updateDestructive`, `custom field installer`, `didn't run after deploy` | `26` | `04` migrations, `12` custom fields, `02` version split |
 
 Accessibility, ADA, WCAG, VPAT, screen reader, keyboard, form, focus, modal, storefront UX, or frontend audit tasks always read `05`, `10`, and `17`.
 
@@ -131,6 +113,8 @@ Before proposing or editing, inventory mutation surfaces, trust boundaries, owne
 - Never assume the admin worker runs in production. Prefer CLI workers with explicit transports and failure queues.
 - Never assume the default `shopware.usage_data.collection_enabled: true` is safe on large catalogs. Set it to `false` in YAML for production sites over ~50k products.
 - Never edit `vendor/` directly. Use `cweagans/composer-patches` for vendor patches (details in `25`).
+- A change that only runs from a plugin lifecycle hook needs a version bump to execute on already-installed shops. Fresh installs and tests never surface the gap. Details in `26`.
+- Never put required work in `updateDestructive()`. Plugin install and update never call it.
 - Validate after each chunk with the narrowest useful checks and report remaining risk.
 
 ## Reference Map
@@ -160,6 +144,7 @@ Before proposing or editing, inventory mutation surfaces, trust boundaries, owne
 - [references/23-cache-and-http-cache.md](references/23-cache-and-http-cache.md) delayed invalidation, CACHE_REWORK, `sw-cache-hash`, Varnish/Fastly integration
 - [references/24-external-api-caching-in-cart.md](references/24-external-api-caching-in-cart.md) TaxJar-style caching contract, TTL, cache-key components, admin invalidation
 - [references/25-patching-and-dependency-tooling.md](references/25-patching-and-dependency-tooling.md) composer-patches, PHPStan/PHPCS pinning, shopware-rector, Frosh Tools, mysqldump
+- [references/26-plugin-lifecycle-and-activation.md](references/26-plugin-lifecycle-and-activation.md) lifecycle methods, version bump chain, what needs a bump to deploy, `updateDestructive`
 
 ## It's Working If
 

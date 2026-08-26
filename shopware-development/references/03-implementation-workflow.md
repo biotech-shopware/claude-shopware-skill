@@ -75,7 +75,7 @@ Guardrails:
 Pick checks that match the change:
 
 - PHP backend: static analysis, unit/integration tests, targeted console commands
-- migrations: migration execution plan, index coverage, destructive update separation
+- migrations: migration execution plan, index coverage, and proof the work actually executes — nothing the plugin needs may sit in `updateDestructive()`, and lifecycle-hook changes need a version bump to run on already-installed shops (see `26-plugin-lifecycle-and-activation.md`)
 - storefront: template rendering path, JS build or lint if present, accessibility and SEO sanity
 - administration: build/test path used by the repo, ACL behavior, API responses
 - payments: redirect/finalize flow, webhook verification, idempotency, retry safety

@@ -34,7 +34,7 @@ Good: use proper translation associations and read them in the correct language-
 
 ## Validation and Release Checks
 
-- For 6.7.3+ translation work, run `translation:lint-filenames` and `snippet:validate` where available.
+- For 6.7.3+ translation work, run `bin/console translation:lint-filenames` and `bin/console translation:validate`.
 - Check storefront and admin snippet resolution separately when both surfaces changed.
 - If the plugin supports 6.6 and 6.7, verify the filename strategy before bulk-renaming snippet files.
 
@@ -62,7 +62,7 @@ Source: developer.shopware.com/docs/resources/references/adr/2025-09-01-adding-a
 
 ## Snippet CLI (6.7.11+)
 
-- `bin/console translation:validate` (renamed from `snippets:validate`)
+- `bin/console translation:validate` — the current name. `snippets:validate` remains as a deprecated alias slated for removal in 6.8. `snippet:validate` (singular) is not a command; it only ever resolved through Symfony's namespace abbreviation and will stop working.
 - `bin/console translation:list`
 - `bin/console translation:install --locales it-IT,fr-FR` (interactive multi-select supported)
 - `SnippetValidator` becomes `@internal` — do not extend.

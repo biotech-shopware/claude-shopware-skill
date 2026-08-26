@@ -6,10 +6,15 @@ Index: delayed invalidation, `CACHE_REWORK`, `sw-cache-hash`, cache state deprec
 
 Shopware batches cache-tag invalidations by default in 6.7 (immediate in 6.6 unless configured).
 
-- Config key: `shopware.cache.invalidation.delay`. `0` = instant, `>0` = delayed and requires the `shopware.scheduled_task.invalidate_cache` scheduled task to be enabled.
-- Default `delay` differs per version:
-  - 6.6 default: `20` seconds.
-  - 6.7 default with `cache_rework` active: `5 minutes` (300 seconds).
+The config key changed between majors — using the 6.6 name on 6.7 fails config validation with "Unrecognized option":
+
+| Version | Key | Type | Default |
+| --- | --- | --- | --- |
+| 6.6 | `shopware.cache.invalidation.delay` | integer seconds | `0` (delayed invalidation **off**) |
+| 6.7 | `shopware.cache.invalidation.delay_enabled` | boolean | `true` (delayed invalidation **on**) |
+
+Delayed invalidation requires the `shopware.invalidate_cache` scheduled task to be running. Its cadence is a **separate** setting from the delay flag — see the interval section below; do not conflate them.
+
 - Delayed storage: `shopware.cache.invalidation.delay_options.storage` — `mysql` by default; Redis for multi-node.
 - If a plugin write must invalidate instantly (admin save that must show up in the storefront), send the `sw-force-cache-invalidate: 1` request header on the write.
 - Debug pending invalidations: `bin/console cache:watch:delayed`.
@@ -19,14 +24,22 @@ Sources: Shopware 6.7 UPGRADE guide, release notes 6.7.0.
 
 ## CACHE_REWORK Feature Flag
 
-`CACHE_REWORK` (renamed from `CACHE_CONTEXT_HASH_RULES_OPTIMIZATION` in 6.7.5) opts into the new Store-API HTTP-cache model.
+`CACHE_REWORK` opts into the new Store-API HTTP-cache model. The older `CACHE_CONTEXT_HASH_RULES_OPTIMIZATION` flag still exists separately and is marked deprecated in favour of it — the two coexist, it was not a rename.
 
-- Default in 6.8. Optional in 6.7.
-- Makes 12 Store-API endpoints HTTP-cacheable via per-endpoint policies: breadcrumb, category, navigation, CMS, product, seo-url, country, currency, language, salutation, media, cross-selling, reviews, search.
+- **Opt-in and experimental.** `default: false` through 6.7.13 and still `default: false` on 6.8-dev. The *behaviour* is slated to become default in the next major, but do not assume the flag is on anywhere you have not checked.
+- Makes **21** Store-API routes HTTP-cacheable via per-endpoint policies (12 pre-existing GET routes plus 9 added in 6.7.6).
 - Cache stays active for logged-in customers and non-empty carts. Endpoints that must not cache per-user data must set `no-store` explicitly via the `_noStore` route attribute.
-- Narrows `sw-cache-hash`: only price-relevant rule IDs are included. Content that varies by other rules must extend via `ResolveCacheRelevantRuleIdsExtension` or use the `RuleAreas` DAL flag.
+- Narrows `sw-cache-hash` to rule IDs flagged `RuleAreas::PRODUCT_AREA` — the product rule area, which is broader than and not the same as "price-relevant". Content varying by other rule areas must extend via `ResolveCacheRelevantRuleIdsExtension` or the `RuleAreas` DAL flag.
 
 Source: release notes 6.7.5, 6.7.6.
+
+## Finding Shape: Personalised Output In A Shared Response
+
+Logged-in state is **not** customer identity. With `CACHE_REWORK`, cacheable Store-API responses stay cached for logged-in customers, so "the user is logged in" no longer implies "this response is private".
+
+Any endpoint whose body varies by customer — prices, entitlements, saved addresses, wishlist state, tax exemption — and does not set `_noStore` is serving one customer's data to another from cache.
+
+Report this as a **data-exposure defect**, not a merchandising or personalisation bug. The blast radius is every customer sharing that cache key, and the failure is silent: nothing errors, the wrong body is simply returned.
 
 ## Deprecated Cache Symbols (removed in 6.8)
 
@@ -50,7 +63,7 @@ Source: release notes 6.7.0.
 
 6.7.0 renders header and footer through Symfony ESI.
 
-- New routes: `\header`, `\footer`.
+- New route names: `frontend.header`, `frontend.footer`. Paths: `/_esi/global/header` and `/_esi/global/footer` (the paths changed in 6.7.1; 6.7.0 used `/header` and `/footer`).
 - New entry templates: `@Storefront/storefront/layout/header.html.twig` and `.../footer.html.twig`.
 - New blocks in `base.html.twig`: `base_esi_header`, `base_esi_footer`.
 - ESI render errors now throw; they were silently swallowed before.
@@ -73,7 +86,7 @@ External HTTP-cache plugins hook the Shopware cache-tag system.
 
 A single large surrogate-key purge (~45,000 keys observed on a single admin save) at an edge cache causes an origin TTFB spike ~8 seconds after the purge as misses arrive.
 
-- Batch: leave `shopware.cache.invalidation.delay > 0` in production so many small writes coalesce into one purge.
+- Batch: keep delayed invalidation enabled in production (`delay_enabled: true` on 6.7, `delay > 0` on 6.6) so many small writes coalesce into one purge.
 - Bound: never purge with unbounded tag arrays (e.g., "all products"). Prefer targeted tags.
 - Observe: alert on edge-purge count and origin request-rate step-changes; correlate with admin activity.
 
@@ -81,7 +94,7 @@ A single large surrogate-key purge (~45,000 keys observed on a single admin save
 
 `NavigationRoute` caches category level per sales channel in 6.7.
 
-- Any plugin varying navigation by customer group, B2B context, or feature flag must subscribe to `\Shopware\Core\Content\Category\SalesChannel\CategoryLevelLoaderCacheKeyEvent` to add cache-key data.
+- Any plugin varying navigation by customer group, B2B context, or feature flag must subscribe to `\Shopware\Core\Content\Category\Event\CategoryLevelLoaderCacheKeyEvent` to add cache-key data. Note `Category\Event\`, not `Category\SalesChannel\` — a subscriber on the wrong FQCN registers cleanly and never fires.
 - Without the subscription, navigation goes stale or leaks across contexts.
 
 Source: UPGRADE-6.7.md §6.7.2.0, §6.7.3.0.

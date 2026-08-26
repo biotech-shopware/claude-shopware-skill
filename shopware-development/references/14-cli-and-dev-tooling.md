@@ -49,8 +49,10 @@ shopware:
     enable_admin_worker: false
   messenger:
     routing_overwrite:
-      'Your\\Custom\\Message\\RebuildPartnerSnapshotMessage': low_priority
+      'Your\Custom\Message\RebuildPartnerSnapshotMessage': low_priority
 ```
+
+Use **single** backslashes. YAML single-quoted scalars do not process escapes, so `'Your\\Custom\\…'` is the literal two-backslash string and never matches `$message::class`. The override is then silently ignored and the message keeps default routing.
 
 ```text
 Preferred production worker commands:
@@ -87,7 +89,9 @@ Good: run the targeted test or command check plus one container-boot or wiring s
 
 ### Storefront Vite Dev Server
 
-`composer storefront:dev-server` (6.7.11+) provides HMR without a proxy. `composer watch:storefront` is deprecated. Fall back only when advising 6.6 / 6.7.0-6.7.10 projects.
+`composer storefront:dev-server` (6.7.11+) provides HMR without a proxy, and deprecates `composer watch:storefront`.
+
+Both scripts exist only in a `shopware/shopware` source checkout. The `shopware/production` template — what most plugin and agency projects use — defines neither. There, use `shopware-cli project storefront-watch`.
 
 ### Sales-Channel URL Rewrite
 
@@ -112,11 +116,11 @@ With `WEBHOOKS_REWORK`, include `webhook` in the transport list:
 bin/console messenger:consume webhook async low_priority --time-limit=60 --memory-limit=512M
 ```
 
-`shopware.admin_worker.transports` must prepend `webhook`. Rollback path: `bin/console webhook:drain-to-async`. Source: release notes 6.7.12.
+The core default for `shopware.admin_worker.transports` already includes `webhook` (`["webhook", "async", "low_priority"]`). Only if you override that key in `config/packages/shopware.yaml` do you need to prepend it yourself. Rollback path: `bin/console webhook:drain-to-async`. Source: release notes 6.7.12, UPGRADE-6.7.md §6.7.12.0.
 
-### Translation CLI (6.7.11+)
+### Translation CLI
 
-- `bin/console translation:validate` (renamed from `snippets:validate`)
+- `bin/console translation:validate` — renamed from `snippets:validate` in **6.7.3** (UPGRADE-6.7.md §6.7.3.0). The old plural name survives as a deprecated alias until 6.8.
 - `bin/console translation:list`
 - `bin/console translation:install --locales it-IT,fr-FR` (interactive multi-select)
 

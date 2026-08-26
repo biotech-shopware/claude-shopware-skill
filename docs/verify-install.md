@@ -1,13 +1,40 @@
 # Verify Install
 
-Four-step checklist after installing the skill to `~/.claude/skills/shopware-development/` (personal) or `.claude/skills/shopware-development/` (project).
+Checklist after installing the skill to `~/.claude/skills/shopware-development/` (personal) or `.claude/skills/shopware-development/` (project).
+
+## Step 0 — Maintainer regression guards
+
+Run these from the repo root before releasing. Each one corresponds to a defect class that shipped in v0.8.0-dev; they fail loudly rather than relying on care.
+
+```bash
+cd shopware-development
+
+# Frontmatter budget — description + when_to_use must stay under 1,536 chars.
+# v0.8.0-dev shipped at 1,631, silently truncating its own trigger phrases.
+awk '/^description: >-/{f=1;next} /^when_to_use: >-/{f=2;next} /^[a-z-]+:/{f=0}
+     f==1{d=d" "$0} f==2{w=w" "$0}
+     END{gsub(/  +/," ",d); gsub(/  +/," ",w); c=length(d)+length(w);
+         print (c<1536 ? "PASS ("c")" : "FAIL ("c", over by "c-1536")")}' SKILL.md
+
+# No `paths` key — it restricts auto-invocation to file-matching contexts.
+grep -c '^paths:' SKILL.md   # expect 0
+
+# Reference count matches the Reference Map.
+ls references/ | wc -l
+grep -c '^- \[references/' SKILL.md
+
+# Known-bad strings must not reappear.
+grep -rn "Separate destructive operations into\|dal:list\|framework:describe\|GHSA-6w82-v552-wjw2" references/ SKILL.md
+```
+
+Two checks that need a human: every `bin/console` and `composer` command named anywhere in the skill must exist on the target version, and every release-note / advisory citation must actually support the claim attached to it. Both classes shipped wrong in v0.8.0-dev.
 
 ## Step 1 — File presence
 
 ```bash
 ls ~/.claude/skills/shopware-development/SKILL.md
 ls ~/.claude/skills/shopware-development/references/ | wc -l
-# Expected: 25 files (01 through 25)
+# Expected: 26 files (01 through 26)
 
 ls ~/.claude/skills/shopware-development/agents/openai.yaml
 # Expected: exists (Codex compatibility)

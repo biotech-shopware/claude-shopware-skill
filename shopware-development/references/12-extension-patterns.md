@@ -90,14 +90,20 @@ Good: use Shopware property groups, product streams, or a dedicated custom entit
 
 From 6.7.13, inline `<custom-fields>` in `manifest.xml` is deprecated. Move to `Resources/config/custom-fields.xml`.
 
+The file is XSD-validated at install/update, so a malformed one throws rather than degrading quietly. On a field, `name` is a required **attribute**; `label` and `related-entities` are required elements.
+
 ```xml
-<!-- Resources/config/custom-fields.xml -->
+<!-- src/Resources/config/custom-fields.xml -->
 <custom-fields>
     <custom-field-set>
         <name>my_plugin_products</name>
+        <label>My Plugin Product Fields</label>
+        <related-entities>
+            <product/>
+        </related-entities>
         <fields>
-            <text>
-                <name>my_plugin_sku_supplier</name>
+            <text name="my_plugin_sku_supplier">
+                <label>Supplier SKU</label>
                 <include-in-search>true</include-in-search>
             </text>
         </fields>
@@ -105,11 +111,11 @@ From 6.7.13, inline `<custom-fields>` in `manifest.xml` is deprecated. Move to `
 </custom-fields>
 ```
 
-From 6.7.7 custom fields are **not searchable by default** — opt in explicitly with `<include-in-search>true</include-in-search>` per field.
+`includeInSearch` has always defaulted to `false`. 6.7.13 did not change that default — it added a way to declare it in XML rather than only through the Admin UI or Admin API. Existing extensions are unaffected.
 
-From 6.7.13 the `Immutable` DAL flag protects `custom_field.name`, `custom_field.type`, `custom_field_set.name`. Do not attempt to update fields marked immutable.
+From **6.7.7** the `Immutable` DAL flag protects `custom_field.name`, `custom_field.type`, and `custom_field_set.name`. Do not attempt to update fields marked immutable.
 
-Source: release notes 6.7.7, 6.7.13.
+Source: `System/CustomField/Schema/custom-fields-1.0.xsd`; `CustomFieldSet::REQUIRED_FIELDS`; release notes 6.7.7 (Immutable) and 6.7.13 (declarative XML).
 
 ### Cookie Provider Replaced By Event
 
@@ -125,6 +131,6 @@ Source: UPGRADE-6.7.md §6.7.3.0.
 - `LineItemPurchasePriceRule` `bool $isNet` → `?string $type` (`'gross'|'net'`, auto-migrated).
 - `LineItemCustomFieldRule` now throws `RuleException::unsupportedOperator()` (not `CartException`).
 - `CustomerBirthdayRule` no longer throws on null.
-- Deprecated admin components: `sw-condition-line-item-in-category`, `sw-condition-line-item-purchase-price`, `sw-condition-line-item-is-net-select`. Use `sw-condition-generic`.
+- Deprecated admin components: `sw-condition-line-item-in-category`, `sw-condition-line-item-purchase-price`, `sw-condition-is-net-select`. Use `sw-condition-generic`.
 
 Source: UPGRADE-6.7.md §6.7.7.0, §6.7.12.0, §6.7.13.0.

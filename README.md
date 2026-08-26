@@ -61,13 +61,16 @@ claude-shopware-skill/
         ├── 22-code-review-protocol.md          # v0.8.0-dev
         ├── 23-cache-and-http-cache.md          # v0.8.0-dev
         ├── 24-external-api-caching-in-cart.md  # v0.8.0-dev
-        └── 25-patching-and-dependency-tooling.md # v0.8.0-dev
+        ├── 25-patching-and-dependency-tooling.md # v0.8.0-dev
+        └── 26-plugin-lifecycle-and-activation.md # v0.9.0-dev
 ```
 
 ## Branches
 
 - **`main`** — stable, currently `v0.7.3`. Use this for production installs.
-- **`dev`** — preview of the next release (currently `v0.8.0-dev`). Adds four reference files (22-25), expanded frontmatter (`when_to_use`, `paths`, `argument-hint`, expanded `allowed-tools`), and Claude Code plugin manifest. See [CHANGELOG.md](CHANGELOG.md) for full v0.8.0-dev change list. Install this branch to preview; expect changes before release.
+- **`dev`** — preview of the next release (currently `v0.9.0-dev`). Adds five reference files (22-26), expanded frontmatter (`when_to_use`, `argument-hint`, expanded `allowed-tools`), and a Claude Code plugin manifest.
+
+  **v0.9.0-dev is primarily a correctness release**: 33 defects in the skill's own rules were found and fixed by auditing them against Shopware core source — including nine that placed code or config where it would never execute, and one that inverted into a full production reindex. If you installed `v0.8.0-dev`, reinstall from this branch. See [CHANGELOG.md](CHANGELOG.md) and [RELEASE-NOTES-v0.9.0.md](RELEASE-NOTES-v0.9.0.md).
 
 ## Install And Use
 

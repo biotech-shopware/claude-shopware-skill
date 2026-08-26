@@ -223,19 +223,20 @@ Source: UPGRADE-6.7.md §6.7.1.0.
 
 ### OAuth `scope` Format
 
-`/api/oauth/token` requires space-delimited `scope: 'write admin'` (a string, not an array). Array form silently fails. `/api/oauth/authorize` is removed.
+`/api/oauth/token` requires space-delimited `scope: 'write admin'` (a string, not an array). Since the `league/oauth2-server` 9.x upgrade, non-spec-compliant requests are rejected with an error rather than accepted. `/api/oauth/authorize` is removed.
 
 Source: UPGRADE-6.7.md §6.7.0.0.
 
 ### MCP Server Integration
 
-Experimental MCP endpoints at `/api/_mcp` and `/store-api/_mcp` — active whenever `symfony/mcp-bundle` is installed (the `MCP_SERVER` feature flag is removed in 6.7.14).
+Experimental MCP endpoints at `/api/_mcp` and `/store-api/_mcp`.
+
+**Requires `MCP_SERVER=1` on every released 6.7** — the flag is `default: false` through 6.7.13. It is removed in the upcoming 6.7.14, which is not released yet. Do not assume MCP is reachable on a shop you have not checked.
 
 Register capabilities with DI tags:
 
-- `mcp.tool`
-- `mcp.prompt`
-- `mcp.resource`
+- Admin: `mcp.tool`, `mcp.prompt`, `mcp.resource`
+- Store API: `shopware.store_api_mcp.tool`, `shopware.store_api_mcp.prompt`, `shopware.store_api_mcp.resource`
 
 CLI: `bin/console debug:mcp` lists registered capabilities. Classes are `@experimental` until 6.8 — do not inherit from them.
 

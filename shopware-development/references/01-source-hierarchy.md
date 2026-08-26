@@ -55,6 +55,7 @@ Keep each concern in one place:
 - HTTP cache, delayed invalidation, `CACHE_REWORK`, `sw-cache-hash`, and Varnish/Fastly integration belong in `23-cache-and-http-cache.md`.
 - External-API caching inside cart calculation (tax, shipping, personalization) belongs in `24-external-api-caching-in-cart.md`.
 - Composer patches, PHPStan/PHPCS pinning, shopware-rector, Frosh Tools, and DB-dump tooling belong in `25-patching-and-dependency-tooling.md`.
+- Plugin lifecycle methods, version-bump requirements, activation ordering, and `updateDestructive` semantics belong in `26-plugin-lifecycle-and-activation.md`.
 
 Do not repeat the same rule in multiple files unless the split would otherwise hide a critical safety boundary. Use short cross-references instead.
 

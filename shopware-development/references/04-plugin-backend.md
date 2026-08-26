@@ -139,7 +139,7 @@ $code = $config->getWebhookCode();
 
 - Keep schema changes idempotent where possible.
 - Keep large data backfills out of `update()`. Ship schema first, backfill asynchronously in batches, and add final constraints or indexes only after the data is ready.
-- Separate destructive operations into `updateDestructive()`.
+- Put every change the plugin needs into `update()`. Plugin install and update **never** call `updateDestructive()` — it is reachable only from `bin/console database:migrate-destructive`, which merchants effectively never run for plugins. Work placed there silently never executes. Handle removal in `uninstall()`. See `26-plugin-lifecycle-and-activation.md`.
 - Add indexes that match real filters, joins, and sort keys.
 - Add composite unique indexes where they enforce idempotency or natural uniqueness for operational tables.
 - Use parameter binding for manual SQL.
@@ -287,10 +287,13 @@ If the integration is a payment provider, stop here and load `07-payments.md`.
 
 ### Migrations And Schema
 
-- **FK naming changed** from `fk.<table>.<column>` to `fk__<table>__<column>` (double underscore) in DBAL 4. Any migration that references FK names by string breaks silently. Source: release notes 6.7.8.
+- **FK naming changed** in the migration generator / `SchemaBuilder` from `fk.<table>.<column>` to `fk__<table>__<column>` (double underscore). This applies to **newly generated** constraints; constraints already present in a migrated database keep their old names. Audit both spellings when a migration drops or renames a foreign key by string. Source: release notes 6.7.8.
 - **Translation-table references** now use `ON DELETE CASCADE` in new migrations.
-- **Use `\Shopware\Core\Framework\Util\Database\TableHelper`** for schema introspection in migrations. `EntityDefinitionQueryHelper::columnExists()`, `columnIsNullable()`, `tableExists()` are deprecated.
-- **`MigrationStep` parameter names changed**: `column` → `columnName`, `table` → `tableName`.
+- **Use `\Shopware\Core\Framework\Util\Database\TableHelper`** for schema introspection. `EntityDefinitionQueryHelper::columnExists()` and `tableExists()` are deprecated in favour of it. `columnIsNullable()` is deprecated as unused and has **no** `TableHelper` replacement.
+- **`MigrationStep` named-parameter renames** — the table parameter is still `$table`, do not rename it:
+  - `dropColumnIfExists`: `column` → `columnName`
+  - `dropForeignKeyIfExists`: `column` → `foreignKeyName`
+  - `dropIndexIfExists`: `index` → `indexName`
 
 ### `EntityDefinition::__construct` Deprecated
 
@@ -304,17 +307,21 @@ Custom field names may no longer contain hyphens or dots — they are used direc
 
 ### `ScheduledTaskHandler` Requires `LoggerInterface`
 
-From 6.7.13, `ScheduledTaskHandler` requires `Psr\Log\LoggerInterface` as a constructor argument. Update all custom scheduled tasks. The protected `markTaskRunning()`, `markTaskFailed()`, `rescheduleTask()` methods are deprecated; rely on the framework for run/failure/reschedule bookkeeping.
+Since **6.7.0.0**, `ScheduledTaskHandler` requires a non-nullable `Psr\Log\LoggerInterface` constructor argument (it was optional and nullable in 6.6). Handlers registered through the container — the standard plugin path — need no change; hand-constructed handlers hit `ArgumentCountError`.
 
-Source: release notes 6.7.13.
+Separately, from **6.7.13** the protected `markTaskRunning()`, `markTaskFailed()`, and `rescheduleTask()` hooks are deprecated. Rely on the framework for run/failure/reschedule bookkeeping.
 
-### Messenger Message Size Cap
+Source: release notes 6.7.13; `ScheduledTaskHandler` constructor at v6.6.10.6 vs v6.7.0.0.
 
-- 6.7.0 introduces a hard 256 KB cap on messages.
-- From 6.7.4 the limit is configurable via `shopware.messenger.message_max_kib_size` (default 1024 KiB; `0` disables).
-- Design messages to reference DB rows instead of carrying blobs. If a plugin really needs a bigger message, mention the config knob explicitly and warn that small messages are the correct long-term pattern.
+### Messenger Message Size Limit
 
-Source: release notes 6.7.0, 6.7.4.
+Message-size enforcement is **opt-in and off by default**:
+
+- `shopware.messenger.enforce_message_size` — `defaultFalse()`. The size listener returns early while this is false, so nothing is capped out of the box.
+- `shopware.messenger.message_max_kib_size` — default `1024` KiB; applies only when enforcement is enabled. `0` disables.
+- Design messages to reference DB rows instead of carrying blobs regardless of the setting. Do not raise the limit as a first response — small messages are the correct long-term pattern.
+
+Source: `Framework/DependencyInjection/Configuration.php` (`enforce_message_size` `defaultFalse()`, `message_max_kib_size` `defaultValue(1024)`); `MessageQueueSizeRestrictListener`.
 
 ### Webhook Messenger Transport (`WEBHOOKS_REWORK`)
 
@@ -331,7 +338,9 @@ Source: release notes 6.7.12, UPGRADE-6.7.md §6.7.12.0.
 
 ### `NavigationRoute` Cache Key Event
 
-Default category levels are now cached per sales channel. Dynamic navigation must subscribe to `\Shopware\Core\Content\Category\SalesChannel\CategoryLevelLoaderCacheKeyEvent` to add cache-key data. Without the subscription, navigation goes stale or leaks across contexts.
+Default category levels are now cached per sales channel. Dynamic navigation must subscribe to `\Shopware\Core\Content\Category\Event\CategoryLevelLoaderCacheKeyEvent` to add cache-key data. Without the subscription, navigation goes stale or leaks across contexts.
+
+Note the namespace: `Category\Event\`, not `Category\SalesChannel\`. A subscriber keyed on a wrong FQCN still registers cleanly — `::class` resolves at compile time without an existence check — and then never fires, producing exactly the stale/leaked navigation this rule exists to prevent.
 
 Source: UPGRADE-6.7.md §6.7.2.0, §6.7.3.0.
 

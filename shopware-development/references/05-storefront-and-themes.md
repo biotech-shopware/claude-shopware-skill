@@ -226,13 +226,13 @@ Source: release notes 6.7.11.
 
 The Store-API context token is no longer exposed in Twig. Do not reference `context.token` in templates. If a plugin needs the token client-side, pass it explicitly via a controller-managed endpoint.
 
-This closed a reflected-XSS vector: `GHSA-6w82-v552-wjw2`.
+Source: release notes 6.7.5.0 — "The `context.token` variable is no longer available in twig rendering context to prevent potential security vulnerabilities."
 
 Source: release notes 6.7.5.
 
 ### ESI Header And Footer
 
-New routes `\header` and `\footer` render through ESI. New entry templates `@Storefront/storefront/layout/header.html.twig` and `.../footer.html.twig`. New blocks `base_esi_header` / `base_esi_footer` in `base.html.twig`.
+Header and footer render through ESI under route names `frontend.header` and `frontend.footer` (paths `/_esi/global/header` and `/_esi/global/footer` since 6.7.1; 6.7.0 used `/header` and `/footer`). New entry templates `@Storefront/storefront/layout/header.html.twig` and `.../footer.html.twig`. New blocks `base_esi_header` / `base_esi_footer` in `base.html.twig`.
 
 - Extend `header.html.twig` / `footer.html.twig` directly. Do not override inline `base.html.twig` blocks that are now empty.
 - Pass extra data via `StorefrontRenderEvent` or the `headerParameters` merge.

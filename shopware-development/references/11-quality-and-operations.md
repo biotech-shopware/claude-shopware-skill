@@ -97,7 +97,7 @@ Good cache rollout check:
 - Keep coding standards aligned with Shopware conventions.
 - Do not ship or leave behind `die`, `exit`, or `var_dump`.
 - Validate and package distributable extensions with Shopware CLI when the project uses it.
-- For 6.7.3+ translation work, add `translation:lint-filenames` and `snippet:validate` to CI when possible.
+- For 6.7.3+ translation work, add `bin/console translation:lint-filenames` and `bin/console translation:validate` to CI when possible.
 - Run at least one container-compile or boot-path check when service wiring, decorators, handlers, or scheduled tasks changed.
 - For cache, queue, or indexing work, add one targeted operational check: cache-hit behavior, worker consume path, failed-message command, or `dal:refresh:index` on a safe environment.
 
@@ -180,7 +180,7 @@ Source: real-world plugin project observation, `#altus-nova_shopware`, July 2026
 
 ### Message Size Cap
 
-`shopware.messenger.message_max_kib_size` defaults to 1024 KiB in 6.7.4+ (256 KiB in 6.7.0). Design messages to reference DB rows instead of carrying blobs. Raise the config only after proving small messages cannot fit; a bigger message is not a long-term fix. Setting to `0` disables the cap (not recommended in production).
+Message-size enforcement is **off by default**: `shopware.messenger.enforce_message_size` is `defaultFalse()`, and the listener returns immediately unless it is true. `shopware.messenger.message_max_kib_size` (default 1024 KiB, introduced in 6.7.4) applies only once enforcement is enabled. Design messages to reference DB rows instead of carrying blobs regardless — a bigger limit is not a long-term fix.
 
 Source: release notes 6.7.0, 6.7.4.
 
@@ -198,9 +198,9 @@ Source: UPGRADE-6.7.md §6.7.3.0.
 
 ### Elasticsearch Env Vars
 
-- `SHOPWARE_ES_THROW_EXCEPTION=1` in production so ES outages fail loudly instead of silently falling back to MySQL and melting the primary.
-- `SHOPWARE_ES_USE_LANGUAGE_ANALYZER=1` when language-specific analysis is needed.
-- `SHOPWARE_ADMIN_ES_ENABLED=1` and `ENABLE_OPENSEARCH_FOR_ADMIN_API=1` for admin ES; then run `bin/console es:admin:index`.
+- `SHOPWARE_ES_THROW_EXCEPTION` and `SHOPWARE_ES_USE_LANGUAGE_ANALYZER` both already default to `1`. Confirm an existing `.env` has not overridden them rather than treating setting them as a hardening step.
+- Admin ES needs `ADMIN_OPENSEARCH_URL` **and** `SHOPWARE_ADMIN_ES_ENABLED=1`; then run `bin/console es:admin:index`. Omitting the URL leaves it non-functional.
+- `ENABLE_OPENSEARCH_FOR_ADMIN_API` is a separate experimental **feature flag** (`default: false`) for routing Admin API entity searches through OpenSearch — not part of admin ES setup.
 
 Full search/indexing details in `20-search-and-indexing.md`.
 
@@ -235,8 +235,10 @@ Source: real-world Slack thread, `#altus-nova_shopware`, August 2026.
 
 Pin PHPStan and php-cs-fixer to the versions Shopware core is tested against:
 
-- `phpstan/phpstan: 1.12.5` (with `phpstan/phpstan-symfony: 1.4.10`)
-- `friendsofphp/php-cs-fixer: 3.64.0`
+- Shopware **6.7**: `phpstan/phpstan ^2.1`, `phpstan/phpstan-symfony ^2.0`, `friendsofphp/php-cs-fixer ^3.95`
+- Shopware **6.6**: `phpstan/phpstan 1.12.x`, `phpstan/phpstan-symfony 1.4.x`, `friendsofphp/php-cs-fixer 3.64.x`
+
+PHPStan 1.x against a 6.7 codebase is the exact mismatch this rule exists to prevent — core's PHPStan-2 extension packages will not install.
 
 Scope analysis to `custom/plugins/*/src` only. Run PHPStan with `--memory-limit=2G`. Remediate per-plugin, not project-wide.
 

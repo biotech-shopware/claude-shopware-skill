@@ -92,7 +92,7 @@ Minimum questions to answer in a review:
 
 ### `AbstractPaymentHandler::recurring()` And `supports()`
 
-The single 6.7 payment handler exposes `recurring()` for the renewal charge and `supports()` to gate whether recurring is available for a given transaction. Do not extend the deprecated `RecurringPaymentHandlerInterface`; migrate to `AbstractPaymentHandler` with a `supports()` capability check.
+The single 6.7 payment handler exposes `recurring()` for the renewal charge and `supports()` to gate whether recurring is available for a given transaction. `RecurringPaymentHandlerInterface` was **removed in 6.7.0.0** — code referencing it will not load. Migrate to `AbstractPaymentHandler` with a `supports()` capability check.
 
 Full contract in `07-payments.md`.
 

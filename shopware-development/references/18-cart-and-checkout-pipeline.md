@@ -49,7 +49,6 @@ public function collect(CartDataCollection $data, Cart $original, SalesChannelCo
     }
 
     $criteria = new Criteria($ids);
-    $criteria->addFields(['id', 'name']);
 
     $products = $this->productRepository->search($criteria, $context->getContext());
     $data->set('my-plugin.products', $products->getEntities());
@@ -67,6 +66,10 @@ public function process(CartDataCollection $data, Cart $original, Cart $toCalcul
     }
 }
 ```
+
+Do not add `$criteria->addFields([...])` here. `addFields()` switches the read into partial mode, and the hydrator then returns `PartialEntity` (an `ArrayEntity`) instead of `ProductEntity`. `PartialEntity` has no `__call` and no getters, so `$product?->getName()` throws `Error: Call to undefined method` on every recalculation that finds a product — on the cart hot path.
+
+If you do need partial reads, access values with `$product?->get('name')` and drop the `ProductEntity` type hints.
 
 ## Processor Ordering and Recalculation
 
@@ -189,7 +192,9 @@ Source: UPGRADE-6.7.md §6.7.2.0.
 
 ### `FilterableInterface` For Filtered Price Definitions
 
-From 6.7.4, price definitions that need to be filtered by any cart processor must implement `\Shopware\Core\Checkout\Cart\Price\Struct\FilterableInterface` and provide `getFilter(): LineItemCollection`.
+From 6.7.4, price definitions that participate in promotion filtering must implement `\Shopware\Core\Checkout\Cart\Price\Struct\FilterableInterface` and provide `getFilter(): ?Rule`.
+
+The consumers are the promotion calculator and discount packagers, not every cart processor.
 
 Without the interface, custom price definitions are silently excluded from filter operations.
 
@@ -203,7 +208,7 @@ Source: release notes 6.7.1, UPGRADE-6.7.md §6.7.1.0.
 
 ### Product `states` → `type` Model
 
-`product.states`, `order_line_item.states`, `LineItem::$states`, `StatesUpdater`, `ProductStatesBeforeChangeEvent`, `ProductStatesChangedEvent` are deprecated in 6.7.7 in favor of `product.type` and `order_line_item.payload.product_type` / `LineItem::$payload['productType']`.
+`product.states`, `order_line_item.states`, `LineItem::$states`, `StatesUpdater`, `ProductStatesBeforeChangeEvent`, `ProductStatesChangedEvent` are deprecated in 6.7.7 in favor of `product.type` and `order_line_item.payload.productType` / `LineItem::$payload['productType']` (camelCase — the DAL deprecation flag names `payload.productType`).
 
 - Register custom product types via `shopware.product.allowed_types` config.
 - Migrate reads from `product.states` to `product.type`.
@@ -214,7 +219,7 @@ Source: release notes 6.7.7.
 
 A common failure on shipping-quote, cart-preview, and configurator routes.
 
-- Overriding cart token via `sw-cart-token` GET parameter but not overriding context token loads the correct cart but evaluates rules against the wrong context.
+- A plugin-defined `sw-cart-token` GET parameter (not a Shopware platform feature) that overrides the cart token without overriding the context token loads the correct cart but evaluates rules against the wrong context.
 - Symptom: only shipping methods for the calling context are visible, cross-checked against a possibly different cart, producing wrong or missing shipping options.
 - Correct pattern: use the `sw-context-token` HTTP header to override the context. Cart and context resolve consistently from the same token.
 - If a wishlist / shared-cart flow really requires a separate cart token, gate the route with signed URLs plus expiration; do not accept cart-token override via query string for state-mutating routes.

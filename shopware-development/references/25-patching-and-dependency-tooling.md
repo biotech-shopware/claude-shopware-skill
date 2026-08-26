@@ -1,6 +1,6 @@
 # Patching And Dependency Tooling
 
-Index: composer-patches, PHPStan/PHPCS pinning, ecs-fix, shopware-rector, Frosh Tools, mysqldump canonical form, security auditing.
+Index: composer-patches, PHPStan/PHPCS pinning, cs-fix, shopware-rector, Frosh Tools, mysqldump canonical form, security auditing.
 
 ## `cweagans/composer-patches` For Vendor Patches
 
@@ -46,17 +46,19 @@ Some Shopware fixes ship only in 6.7 (or a specific 6.7.x) and are not backporte
 
 Pin analysis tools to the versions Shopware core is tested against. Mismatched versions produce false positives on core-installed extensions.
 
-Current recommendation (verify against Shopware's own `composer.json` for the target 6.7.x):
+Shopware 6.7 is tested against **PHPStan 2.x**. Pinning 1.x causes exactly the mismatch this rule exists to prevent, and PHPStan 1→2 is a breaking config and rule-level change.
 
 ```json
 {
   "require-dev": {
-    "phpstan/phpstan": "1.12.5",
-    "phpstan/phpstan-symfony": "1.4.10",
-    "friendsofphp/php-cs-fixer": "3.64.0"
+    "phpstan/phpstan": "^2.1",
+    "phpstan/phpstan-symfony": "^2.0",
+    "friendsofphp/php-cs-fixer": "^3.95"
   }
 }
 ```
+
+Verify against the target tag's own `composer.json` rather than trusting this block — at v6.7.12.2 core requires `phpstan/phpstan 2.1.43`, `phpstan/phpstan-symfony 2.0.15`, `friendsofphp/php-cs-fixer 3.95.8`.
 
 Run PHPStan with a raised memory limit and scoped paths (never analyze `vendor/`):
 
@@ -66,12 +68,13 @@ vendor/bin/phpstan analyse --memory-limit=2G custom/plugins/YourPlugin/src
 
 Answer "yes" to Composer's PHPStan extension-installer trust prompt or extensions (like `phpstan-symfony`) won't register.
 
-Wire php-cs-fixer through an `ecs-fix` composer script:
+Wire php-cs-fixer through a `cs-fix` composer script. Shopware's current script names are `cs` / `cs-fix`; the older `ecs` / `ecs-fix` names survive only as deprecation shims that print a notice.
 
 ```json
 {
   "scripts": {
-    "ecs-fix": "vendor/bin/php-cs-fixer fix custom/plugins/YourPlugin/src",
+    "cs": "vendor/bin/php-cs-fixer fix --dry-run --diff custom/plugins/YourPlugin/src",
+    "cs-fix": "vendor/bin/php-cs-fixer fix -v custom/plugins/YourPlugin/src",
     "phpstan": "vendor/bin/phpstan analyse --memory-limit=2G custom/plugins/YourPlugin/src"
   }
 }
@@ -79,14 +82,16 @@ Wire php-cs-fixer through an `ecs-fix` composer script:
 
 Remediate per-plugin / per-folder, not project-wide. Project-wide initial baselines produce merge conflicts on every branch.
 
-## `FriendsOfShopware/shopware-rector`
+## `frosh/shopware-rector`
 
 Rector rule sets for Shopware upgrades. Run on every major-version upgrade.
+
+The Packagist name is `frosh/shopware-rector` and the namespace is `Frosh\Rector\Set` — `friendsofshopware/shopware-rector` does not exist and `FriendsOfShopware\ShopwareRector\Set` is a class-not-found.
 
 Install:
 
 ```bash
-composer require --dev friendsofshopware/shopware-rector
+composer require --dev frosh/shopware-rector
 ```
 
 Config:
@@ -94,7 +99,7 @@ Config:
 ```php
 // rector.php
 use Rector\Config\RectorConfig;
-use FriendsOfShopware\ShopwareRector\Set\ShopwareSetList;
+use Frosh\Rector\Set\ShopwareSetList;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([__DIR__ . '/custom/plugins/YourPlugin/src']);
@@ -104,12 +109,15 @@ return static function (RectorConfig $rectorConfig): void {
 
 Run: `vendor/bin/rector process`.
 
-Relevant `SHOPWARE_6_7_0` rules include:
+What `SHOPWARE_6_7_0` actually contains:
 
-- `InterfaceReplacedWithAbstractClassRector` — migrates deprecated interfaces (like `AsyncPaymentHandlerInterface`) to `AbstractPaymentHandler`.
-- `AddArgumentToClassWithoutDefaultRector` — adds new required constructor args (e.g., `LoggerInterface` on `ScheduledTaskHandler`).
-- `MakeClassConstructorArgumentRequiredRector` — flags previously-optional args now required.
-- `ThumbnailGenerateSingleToMultiGenerateRector` — thumbnail API migration.
+- a v6.7 renaming map
+- `SymfonySetList::COMPOSER_BASED`
+- `AddEntityNameToEntityExtension`
+- `AddLoggerToScheduledTaskConstructorRector`
+- `ChangeReturnTypeOfClassMethodRector`
+
+It does **not** automate the payment-handler migration. `InterfaceReplacedWithAbstractClassRector` is a generic configurable rule shipping no `AsyncPaymentHandlerInterface → AbstractPaymentHandler` mapping, and `ThumbnailGenerateSingleToMultiGenerateRector` is a 6.5 rule. Expect to migrate payment handlers by hand.
 
 For 6.5 legacy work still in flight: `MigrateCaptchaAnnotationToRouteRector`, `MigrateLoginRequiredAnnotationToRouteRector`, `MigrateRouteScopeToRouteDefaults`, `ContextMetadataExtensionToStateRector`, `FakerPropertyToMethodCallRector`.
 
@@ -151,7 +159,7 @@ mysqldump \
 
 Every flag matters:
 
-- `--compress` reduces wire load on remote dumps.
+- `--compress` only affects remote dumps and is deprecated in MySQL 8.4. Drop it for local dumps.
 - `--routines` includes stored procedures/functions plugin migrations may install.
 - `--hex-blob` writes binary columns safely.
 - `--single-transaction` produces a consistent snapshot on a live DB.
