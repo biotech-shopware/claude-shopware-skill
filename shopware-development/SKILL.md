@@ -6,7 +6,8 @@ description: >-
   backend and DAL, plugin lifecycle and version bumps, cart and checkout
   pipeline, payments (AbstractPaymentHandler), subscriptions and recurring
   flows, HTTP cache and delayed invalidation, Varnish, Messenger queues,
-  custom indexers, Elasticsearch/OpenSearch, storefront Twig/JS/SCSS,
+  custom indexers, Elasticsearch/OpenSearch, CMS elements and blocks
+  (Shopping Experiences), storefront Twig/JS/SCSS,
   administration (Meteor, Pinia, Vite), app extensions, Store API and Admin
   API, snippets and i18n, accessibility (WCAG/EAA), headless frontends,
   code review with a 3-pass protocol, and multi-plugin audits.
@@ -18,7 +19,7 @@ when_to_use: >-
   installer run", "why is Shopware invalidating too much cache", "Shopware
   Twig template", "Shopware Meteor / Pinia / Vite", "Shopware accessibility
   audit", "Store API extension", "shopware indexer / reindex", "shopware
-  snippet / translation".
+  snippet / translation", "Shopware CMS element / block", "slot config".
 argument-hint: "[plan|implement|review|audit|research] <task description>"
 allowed-tools:
   - Read
@@ -83,6 +84,7 @@ When the routing matrix points to a number like `07`, open `references/07-paymen
 | `snippet`, `translation`, `locale`, `i18n`, `messages.*.base.json`, `translation:install` | `21` | `05` storefront, `06` admin, `02` 6.7.3+ base snippets |
 | `patch`, `composer-patches`, `PHPStan`, `php-cs-fixer`, `shopware-rector`, `Frosh Tools` | `25` | `11` for quality gates, `14` for CLI, `02` for backport policy |
 | `external API in cart`, `TaxJar`, `Avalara`, `tax calculation cache`, `third-party cart data` | `24` | `18` pipeline, `04` DI, `11` operations |
+| `CMS`, `Shopping Experiences`, `cms element`, `cms block`, `slot config`, `slotConfig`, `sw-cms`, `CmsElementResolver` | `27` | `05` storefront templates, `06` admin components, `23` rule-based visibility, `21` translated content |
 | `plugin lifecycle`, `version bump`, `plugin:refresh`, `plugin:update`, `updateDestructive`, `custom field installer`, `didn't run after deploy` | `26` | `04` migrations, `12` custom fields, `02` version split |
 
 Accessibility, ADA, WCAG, VPAT, screen reader, keyboard, form, focus, modal, storefront UX, or frontend audit tasks always read `05`, `10`, and `17`.
@@ -145,6 +147,7 @@ Before proposing or editing, inventory mutation surfaces, trust boundaries, owne
 - [references/24-external-api-caching-in-cart.md](references/24-external-api-caching-in-cart.md) TaxJar-style caching contract, TTL, cache-key components, admin invalidation
 - [references/25-patching-and-dependency-tooling.md](references/25-patching-and-dependency-tooling.md) composer-patches, PHPStan/PHPCS pinning, shopware-rector, Frosh Tools, mysqldump
 - [references/26-plugin-lifecycle-and-activation.md](references/26-plugin-lifecycle-and-activation.md) lifecycle methods, version bump chain, what needs a bump to deploy, `updateDestructive`
+- [references/27-cms-elements-and-blocks.md](references/27-cms-elements-and-blocks.md) slot config storage and override merge, `sw-cms-inherit-wrapper`, admin registration and previews, custom page types, resolvers, rule-based visibility, translating CMS content
 
 ## It's Working If
 

@@ -21,6 +21,8 @@ Index: config, Flow Builder, CMS, import/export, media, rules, line items, mail,
 
 ## CMS Elements and Blocks
 
+Deep reference: `27-cms-elements-and-blocks.md` (slot config storage, override merge, inheritance wrappers, previews, page types, resolvers, rule-based visibility).
+
 - Split CMS work into admin registration, storefront template, data resolver, and data struct responsibilities.
 - Load data in the resolver and attach a struct to the slot; do not query inside Twig.
 - Keep configuration-driven ordering and defaults explicit.
