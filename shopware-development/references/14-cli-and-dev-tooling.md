@@ -37,7 +37,7 @@ final class SyncCommand extends Command
 - If CLI workers are configured, disable the admin worker explicitly in `config/packages/shopware.yaml`.
 - Consume the transports you actually configured. Keep checkout-relevant async work separate from low-priority transport consumption.
 - Use `shopware.messenger.routing_overwrite` when a specific Shopware message should be forced onto `low_priority` or another transport without changing the message class.
-- Use process supervision such as `systemd` or `supervisor` for long-running workers instead of relying on manual shells.
+- Use process supervision such as `systemd` or `supervisor` for long-running workers instead of relying on manual shells or cron.
 - Include failed-message inspection and retry commands in operator guidance when the project depends on Messenger.
 
 Example:
@@ -68,6 +68,8 @@ Preferred production worker commands:
 - Keep generated resources, migrations, and build output out of the most aggressive analysis paths when that matches the team's setup.
 
 ## Local Development and Debugging
+
+For the `shopware-cli project dev` Docker environment (generated compose, running commands in `web`, rebuilds, local queue/search, production-dump safety), see `28-local-dev-environment.md`.
 
 - Prefer reproducible local environments over machine-specific assumptions.
 - Use targeted profiling and debugging for hot paths instead of leaving verbose debug tooling enabled by default.

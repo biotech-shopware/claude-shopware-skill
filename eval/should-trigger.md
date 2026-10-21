@@ -71,3 +71,10 @@ These must trigger with an empty working directory. They are what the removed `p
 28. Patch a Shopware core bug with `composer-patches`.
 29. Disable Shopware `usage_data.collection_enabled` on a large catalog.
 30. Configure Shopware Messenger with a `webhook` transport.
+
+## Local environment
+
+43. Start my Shopware project locally with `shopware-cli project dev`.
+44. Migrate my Shopware project from devenv to shopware-cli and Docker.
+45. Why does my local Shopware storefront show no products after an import?
+46. Disable OpenSearch in my local Shopware Docker environment.
