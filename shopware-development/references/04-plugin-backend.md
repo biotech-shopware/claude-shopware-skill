@@ -396,6 +396,81 @@ If a plugin truly runs against exactly one sales channel with no filtering, docu
 
 Always add a hard limit to plugin queries, even when a natural bound seems to exist. A schema change or data-model surprise can turn a "small" query into a runaway. Prefer `setLimit()` and pagination over any unbounded assumption.
 
+### Write Events Carry Only The Written Fields
+
+`EntityWriteResult::getPayload()` is built from the write command, so it holds only the fields that were part of that write, plus the primary key. The admin saves only changed fields. A subscriber that reads a foreign key or flag from the payload (`productId`, `active`) sees it on the first insert and almost never again, so later updates, toggles, and edits are silently ignored.
+
+- Load the missing fields by ID instead of expecting them in the payload.
+- To see old and new values, request a change set: in a `PreWriteValidationEvent` listener, call `requestChangeSet()` on the relevant `ChangeSetAware` commands, then read `EntityWriteResult::getChangeSet()`.
+- **Deletes never fire `<entity>.written`.** They dispatch `EntityDeletedEvent` named `<entity>.deleted`. Recalculations, cache invalidation, and aggregates that only listen to `.written` drift after a delete.
+
+```php
+// Bad: only the first save carries productId; toggling `active` later never invalidates
+public function onWritten(EntityWrittenEvent $event): void
+{
+    foreach ($event->getPayloads() as $payload) {
+        if (isset($payload['productId'])) {
+            $this->invalidate($payload['productId']);
+        }
+    }
+}
+
+// Preferred: resolve the owner from the written IDs and also listen to my_entity.deleted
+public static function getSubscribedEvents(): array
+{
+    return [
+        'my_entity.written' => 'onChanged',
+        'my_entity.deleted' => 'onChanged',
+    ];
+}
+```
+
+For deletes, read the owner ID before the row is gone: listen to `EntityDeleteEvent` (dispatched before the delete), load what you need, and register follow-up work with `$event->addSuccess(…)`. Afterwards the row can't be loaded.
+
+### Custom Translations Need A System-Language Row
+
+Translated fields are read from a subquery that starts **from the system-language translation row** and joins the other languages in the chain onto it (`TranslationFieldResolver::getTranslationQuery()`, "use the system language to enforce we have a record"). If an entity has a translation only in French and none in the system language, the French value is never returned, even in a French context.
+
+- When a custom translatable entity can be created in a non-system language, also write an (empty) system-language translation row.
+- Data imported only in a shop language, without the system-language row, reads as empty.
+
+### `EntitySearchResult` Collection Methods Are Deprecated For 6.8
+
+Recent 6.7 releases (present by 6.7.14) deprecate almost every collection method on `EntitySearchResult` for 6.8: `getElements()`, `first()`, `last()`, `get()`, `count()`, `isEmpty()`, `has()`, `getIds()`, `map()`, `filter()`, `slice()`, `sortByIdArray()`, and `getIterator()`, so a plain `foreach` over the result too. The result wrapper becomes immutable.
+
+```php
+// Bad: deprecated in 6.7, removed in 6.8
+foreach ($repository->search($criteria, $context) as $entity) { /* ... */ }
+$first = $repository->search($criteria, $context)->first();
+
+// Preferred
+$entities = $repository->search($criteria, $context)->getEntities();
+foreach ($entities as $entity) { /* ... */ }
+$first = $entities->first();
+```
+
+Fix the whole call site, not only the method the first deprecation notice names; the next line usually triggers the next notice.
+
+### Doctrine DBAL 4
+
+6.7 ships Doctrine DBAL 4 (6.6 used DBAL 3). DBAL 4 removed `Connection::PARAM_STR_ARRAY` and `Connection::PARAM_INT_ARRAY`. Use the `ArrayParameterType` enum:
+
+```php
+use Doctrine\DBAL\ArrayParameterType;
+
+$connection->fetchAllAssociative(
+    'SELECT id FROM product WHERE id IN (:ids)',
+    ['ids' => Uuid::fromHexToBytesList($ids)],
+    ['ids' => ArrayParameterType::BINARY],
+);
+```
+
+Also check custom `Type` classes, `fetchAll*` signatures, and any code that relied on implicit DBAL 3 behaviour when upgrading.
+
+### No Dynamic Properties On Structs
+
+Shopware supports PHP 8.2+, where creating a property that isn't declared is deprecated. `Struct` does not opt in with `#[AllowDynamicProperties]`. Declare the property on your own struct, or attach data to core structs and entities with `addExtension()` / `addArrayExtension()` instead of `$entity->myValue = …`.
+
 ## Cross-References
 
 - Cache and HTTP cache details: `23-cache-and-http-cache.md`.

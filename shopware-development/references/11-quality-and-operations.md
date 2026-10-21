@@ -114,6 +114,24 @@ Good: after changing services.xml, a handler, and a scheduled task, run targeted
 - Register storefront cookies with the cookie consent manager when the feature sets them.
 - For third-party storefront widgets or embeds, verify consent impact, keyboard/focus/status behavior, and ask for a VPAT or vendor accessibility statement when the feature is accessibility-sensitive. See `17-accessibility-and-template-best-practices.md` for the storefront audit baseline.
 - Use store quality guidelines and store review errors as release gates, not as cleanup after the implementation is done.
+- Ship a plugin icon at `src/Resources/config/plugin.png`. `shopware-cli extension validate` reports its absence as an error.
+- Ship new Flow Builder flows **inactive**. `flow.active` defaults to `false` in the DAL and the database; don't set `active: true` in a migration or installer. A flow that sends mail or changes data must be switched on by the merchant.
+- Write a short note for the Store tester. Say what is inactive by default, where the feature shows up, what it does **not** need (keys, accounts, theme changes), and which less obvious features to try. "I installed it and nothing happened" is the most common avoidable rejection.
+
+### Store Listing And Uploads With `shopware-cli`
+
+`shopware-cli account producer extension …` manages the Store side from the repository:
+
+| Command | Effect |
+| --- | --- |
+| `account producer extension info pull <path>` | Writes the current listing (texts, FAQ, images, icon) into the extension's `.config/shopware-extension.yml` and `src/Resources/store/` |
+| `account producer extension info push <path>` | Pushes that local config to the listing. Does **not** upload a version |
+| `account producer extension upload <zip>` | Uploads a new version and, unless `--skip-for-review-result`, waits for the automated code review |
+| `account producer extension list` | Lists your extensions |
+
+- Log in once with `shopware-cli account login`; in CI set `SHOPWARE_CLI_ACCOUNT_CLIENT_ID` / `SHOPWARE_CLI_ACCOUNT_CLIENT_SECRET` (created in the Shopware Account under the extension partner's development settings).
+- Observed behaviour of `info push` (0.19.x): listing images are **replaced**, not merged, and the Store name and short description are taken from `composer.json` `extra.label` / `extra.description`. Keep those in sync before pushing, or a push overwrites texts edited in the Account.
+- Gate push and upload jobs behind tags, and check the tag against the `composer.json` version before uploading.
 
 ## Common Failure Modes
 
