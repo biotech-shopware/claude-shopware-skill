@@ -187,6 +187,42 @@ To run one codebase across 6.6 and 6.7, set `deprecated="true"` on `sw-*` compon
 
 Source: UPGRADE-6.7.md §6.7.0.0.
 
+**Event names differ between the two flavours.** `mt-*` fields bind `model-value` and emit `update:model-value`. Legacy `sw-*` fields (for example `sw-text-editor`) bind `value` and emit `update:value`. Core's own CMS text config uses both, behind `METEOR_TEXT_EDITOR`. A listener on the wrong event never fires and nothing warns you. When swapping a component, check its `emits` and rename the listener. In 6.7, `sw-select-field` renders `mt-select` with `:options` and drops child `<option>` elements, so pass options as data.
+
+### Runtime Pitfalls (Vue 3 Admin)
+
+Verified against the 6.7.15 administration source.
+
+- **`sw-entity-listing` emits `update-records` for data you passed in.** Its `dataSource`/`items` watchers and `createdComponent()` all call `applyResult()`, which emits `update-records`. A parent that reloads its list on `@update-records` feeds new data back in and triggers the next load: an endless loop of search requests (*observed*: about 29 a second). Handle `update-records` only for results the listing fetched itself (after a delete or paging), or don't reload on it at all.
+
+    ```js
+    // Bad: every load triggers the next one
+    onUpdateRecords() { this.getList(); }
+
+    // Preferred: ignore our own data; only adopt results the listing loaded itself
+    onUpdateRecords(result) {
+        if (result === this.items) { return; }
+        this.items = result;
+    }
+    ```
+
+- **Route query read only in `created()` goes stale.** Vue Router reuses the component when you navigate to the same route with a different query (dashboard link → filtered list). `created()` doesn't run again, so filters taken from `$route.query` keep the old values. Watch `$route.query`, or use `beforeRouteUpdate`, and debounce: one watcher per filter fires one reload per filter on reset.
+- **`ApiService.getBasicHeaders()` always sets `Content-Type: application/json`.** Passing `FormData` with those headers sends a multipart body without its boundary, and PHP sees no file. For uploads, build the headers and remove `Content-Type` so the browser sets `multipart/form-data; boundary=…` itself:
+
+    ```js
+    const headers = this.getBasicHeaders();
+    delete headers['Content-Type'];
+    return this.httpClient.post('/_action/my-plugin/import', formData, { headers });
+    ```
+
+- **The router doesn't exist yet when plugin scripts run.** `Application.bootFullApplication()` runs `loadPlugins()` first. `createRouterInstance()` runs later, inside `view.initDependencies()`. `Shopware.Application.getContainer('init').router.getRouterInstance()` returns `null` in a plugin's `main.js`, so `router.beforeEach()` guards can't be attached there. Use a module's `routeMiddleware(next, currentRoute)` or change the route definitions before the router is built (for example, set `redirect` on a registered route object). If a guard needs the live router, add it from a component that mounts after boot.
+
+### Admin Layout, Theming, And Branding
+
+- **`sw-page` has two side areas.** The `side-content` slot is a left column (grid, `$sw-page-side-content-default-width: 440px`), suited to a vertical tab menu (`mt-tabs` with `vertical`). The `sidebar` slot is the right-hand `sw-sidebar` with `sw-sidebar-item`s. Core lists put filters and refresh there (`sw-product-list`). Put listing filters in the right sidebar to match core. To narrow the left column, override with a selector more specific than core's `.sw-page .sw-page__content.has--side-content`, or load order decides the winner.
+- **When you add a left column, re-check centring.** Core still centres the search bar and smart bar on the full page width, so content centred in the remaining area looks shifted by half the column width (*observed*).
+- **Dark mode.** The 6.7 admin (present by 6.7.14) switches appearance with `data-theme="dark"`. The Meteor tokens (`@shopware-ag/meteor-tokens`, `deliverables/administration/dark.css`) redefine the `--color-*` custom properties under `[data-theme='dark']`. Use the tokens (`var(--color-background-primary-default)`, `var(--color-text-primary-default)`, `var(--color-border-primary-default)`) instead of hardcoded colours, and use `[data-theme="dark"] &` only for exceptions, as core does in `sw-cms-slot.scss`. Keep colours that preview customer-facing output (a banner canvas, a mail preview) independent of the admin theme. Test every custom module in both appearances.
+
 ### Admin Codemod
 
 Run codemods for admin migration:
