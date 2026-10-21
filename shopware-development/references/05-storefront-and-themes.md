@@ -139,12 +139,28 @@ export default class AnalyticsWidgetPlugin extends Plugin {
 </button>
 ```
 
+### Plugins Inside Replaced Markup Run Once
+
+`PluginManager` initialises plugins on the DOM it finds. Some core widgets that refresh by replacing their markup don't re-initialise plugins inside the new content. `CartWidget` (`plugin/header/cart-widget.plugin.js`) sets `this.el.innerHTML` from session storage and again after each fetch. A plugin attached to an element inside the cart widget runs on the first render only, usually before the data it needs exists.
+
+- Attach the plugin to an element **outside** the replaced markup and listen for the widget's events. `CartWidget` publishes `insertStoredContent` and `fetch` through its emitter, which dispatches them as DOM `CustomEvent`s on the widget element, so `addEventListener('fetch', …)` on `[data-cart-widget]` works.
+- When your own code replaces markup that contains plugins, call `window.PluginManager.initializePluginsInParentElement(el)` afterwards.
+- Carry data for JS in a `<template>` or `data-*` attribute rather than a hidden `<div>` inside a link. Templates are never rendered and screen readers skip them.
+
 ## SCSS and Theme Work
 
 - Respect theme inheritance.
 - Prefer variables, configuration, and stable CSS hooks over brittle selectors.
 - Keep overrides local to the feature.
 - Do not mix a large redesign with unrelated backend refactors.
+
+### CSS Gotchas
+
+- **Icons sit 0.25em low on purpose.** Core `_icon.scss` sets `.icon > svg { position: relative; top: 0.25em; }` to align icons with running text. In a flex row that already centres its items, the icon ends up a few pixels too low. Reset `top: 0` only for that component, not globally.
+- **`overflow-x: hidden` on `html`/`body` breaks `position: sticky`.** `hidden` makes the element a scroll container, so sticky children stick to it instead of the viewport. To prevent horizontal scroll and keep sticky working, use `overflow-x: clip`.
+- **Use `100dvh`, not `100vh`, for full-height mobile panels.** On iOS Safari `100vh` is the height with the toolbar collapsed. A menu sized `calc(100vh - …)` puts its bottom content behind the browser toolbar. `dvh` follows the visible viewport.
+- **Find horizontal scroll at the source.** Common causes are fixed-width embeds (third-party iframes with a `width` attribute; give them `max-width: 100%`), the negative margins of a block's `.row` in a full-width CMS section, and fixed pixel font sizes that don't fit a 375px screen. Don't hide the overflow globally.
+- **Bootstrap utilities sometimes use `!important`.** `.text-primary` and similar classes set their colour with `!important`. Overriding one in a single place needs a more specific selector *and* `!important`, scoped to that component. This is not the case anymore in newer versions of Bootstrap but will be true for any older existing projects or themes.
 
 ## Performance and Cache
 

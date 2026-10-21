@@ -2,6 +2,35 @@
 
 All notable changes to the universal Shopware AI skill are documented in this file.
 
+## [Unreleased] - admin-storefront-pitfalls branch
+
+Admin and storefront pitfalls from recent project work, checked against the Shopware 6.7.15 administration and storefront source. Items that could not be traced to source are marked *observed*.
+
+### Added
+
+- **`06-administration-and-apps.md`**:
+  - `mt-*` fields emit `update:model-value` while legacy `sw-*` fields emit `update:value`, and `sw-select-field` drops `<option>` children.
+  - New "Runtime Pitfalls (Vue 3 Admin)" section:
+    - `sw-entity-listing` emits `update-records` for data passed in, which makes reload-on-update loop forever
+    - a route query read only in `created()` goes stale because the component is reused
+    - `getBasicHeaders()` forces a JSON `Content-Type`, which breaks multipart uploads
+    - the router is created after `loadPlugins()`, so use `routeMiddleware` or route definitions instead of `beforeEach` in `main.js`
+  - New "Admin Layout, Theming, And Branding" section:
+    - the `sw-page` `side-content` (left, 440px) and `sidebar` (right, filters) slots
+    - dark mode through `data-theme="dark"` and Meteor `--color-*` tokens
+- **`05-storefront-and-themes.md`**:
+  - `CartWidget` replaces its `innerHTML`, so plugins inside it run once; listen to its `fetch`/`insertStoredContent` DOM events or use `initializePluginsInParentElement()`.
+  - CSS gotchas:
+    - the `.icon > svg { top: 0.25em }` offset
+    - `overflow-x: clip` instead of `hidden` to keep `position: sticky` working
+    - `100dvh` instead of `100vh` on iOS
+    - finding the source of horizontal scroll
+    - Bootstrap utilities that use `!important`
+
+### Corrected
+
+- The earlier gap list said `mt-*` fields emit `update:value`. Core shows the opposite: `mt-*` emits `update:model-value`, and only legacy `sw-*` fields emit `update:value`. The reference states it correctly.
+
 ## [v0.9.0-dev] - 2026-08-26 (dev branch)
 
 A correctness release. The skill's own rules were reviewed the way code is reviewed, against Shopware core source and official docs. **33 defects were found and fixed.** Nine placed code or config where it would never execute; one actively inverted into a production incident; three would fatal or fail validation at runtime.
