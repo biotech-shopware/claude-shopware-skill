@@ -25,12 +25,16 @@ Good: use proper translation associations and read them in the correct language-
 - Do not duplicate the same text across storefront and administration files unless the scopes are truly separate.
 - Validate filename and directory conventions when shipping the extension.
 - When a translation key changes, update the code and snippet files together.
+- **Database snippets win over files.** `SnippetService` merges snippets edited in the admin (Settings > Snippets, `snippet` table) over the file snippets with `array_replace_recursive`. When a changed file value doesn't show, check the `snippet` table for an override of that key in the active snippet set.
+- **Regional locales fall back to the canonical locale's files on 6.7.10+.** For `nl-BE`, `SnippetFileCollection::getSnippetFilesWithLocaleFallback()` loads `nl-NL` files first, then `nl-BE` files on top (the canonical locale is `<lang>-<LANG>`, except `en` → `en-GB`). Shipping only `nl-NL` covers a `nl-BE` storefront. Before 6.7.10 it does not; ship the regional file or a country-agnostic base file (6.7.3+) when supporting older 6.7 releases.
 
 ## Entity Translations
 
 - Use translation associations for content that truly belongs to the entity and changes by language.
 - Keep fallback behavior explicit when the current language lacks a value.
 - Do not load or persist translated state with the wrong context and then assume storefront rendering will fix it.
+- **A custom entity needs a system-language translation row.** Translated fields are read starting from the system-language row; a value stored only in another language is not returned. See `04-plugin-backend.md` → "Custom Translations Need A System-Language Row".
+- **Custom fields can be per language.** On entities whose `customFields` is a `TranslatedField` (for example `promotion`, `product`, `category`, `cms_page`), a custom field saved in one admin content language is not set in another. For a behavioural flag (not text), decide how to read it: from the system language only, or "set in any language". Then make the admin show that rule.
 
 ## Validation and Release Checks
 
