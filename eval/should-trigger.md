@@ -57,6 +57,12 @@ These prompts should reliably auto-invoke the `shopware-development` skill in Cl
 34. My Shopware migration works on a fresh install but not on existing shops.
 35. What order should plugin refresh, update, and activate run in on deploy?
 
+## CMS
+
+39. Add a custom CMS element with a data resolver to my Shopware theme.
+40. My Shopware CMS block shows slider arrows locally but not on staging.
+41. Add per-page inheritance to my Shopware CMS element config fields.
+
 ## Conceptual — no file open
 
 These must trigger with an empty working directory. They are what the removed `paths` field was suppressing.

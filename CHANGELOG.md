@@ -2,6 +2,30 @@
 
 All notable changes to the universal Shopware AI skill are documented in this file.
 
+## [Unreleased] - cms branch
+
+### Added
+
+- **`references/27-cms-elements-and-blocks.md`**, a deep reference for Shopping Experiences work. Sourced from real project work and checked against Shopware 6.7.15 core and admin source. It covers:
+  - Slot config is a `TranslatedField`, so every setting is per language, not only text.
+  - `overwriteSlotConfig()` deep-merges entity overrides and never removes keys. That is why stale override keys (old `navigation` vs 6.7 `navigationArrows`) make a block work locally and break on staging.
+  - `<sw-cms-inherit-wrapper>` (6.7.5.0+) for per-page overrides, including `:key="isInherited"` on rich editors and its system-language behaviour.
+  - Admin pitfalls:
+    - the 6.7 placeholder path
+    - `this.$set` removed in Vue 3
+    - `sw-select-field` dropping `<option>` children
+    - `update:value` vs `update:model-value`
+    - `disabledConfigInfoTextKey`
+    - the single-block `sw-cms-visibility-config`
+  - Custom page types, the hidden `product-listing` block, `TYPE_MAPPING_ENTITIES` scope, and default-layout config keys.
+  - Resolvers: autoconfigured tag, `FieldConfig` sources, `product_media.media` not autoloaded, sanitizing before `|raw`.
+  - Server-side handlers must resolve entity overrides like `CmsFormSlotConfigResolver` does.
+  - Full-width sections and the block `.row` overflow; the layout `cssClass` can't reach the breadcrumb.
+  - Translating CMS content without freezing layout settings.
+  - Layout content is database state and does not deploy.
+- SKILL.md routing row, reference-map entry, and `description`/`when_to_use` triggers for CMS. `12-extension-patterns.md` points to the new file.
+- Four CMS should-trigger eval prompts.
+
 ## [v0.9.0-dev] - 2026-08-26 (dev branch)
 
 A correctness release. The skill's own rules were reviewed the way code is reviewed, against Shopware core source and official docs. **33 defects were found and fixed.** Nine placed code or config where it would never execute; one actively inverted into a production incident; three would fatal or fail validation at runtime.
