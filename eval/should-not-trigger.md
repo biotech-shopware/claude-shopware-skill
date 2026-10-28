@@ -1,6 +1,6 @@
 # Should-Not-Trigger Prompts
 
-These prompts should NOT auto-invoke the `shopware-development` skill. The description and `paths` field scope the skill to Shopware work. Test in a fresh session; false-positive rate should be ≤ 1/5.
+Exploratory negative discovery prompts for fresh sessions without Shopware context. Record actual skill-loading traces and denominator before claiming any false-positive rate. There is no required `paths` field.
 
 ## Generic PHP / Symfony (not Shopware-specific)
 
@@ -34,5 +34,5 @@ These prompts should NOT auto-invoke the `shopware-development` skill. The descr
 
 ## Rules
 
-- If any of these auto-invoke, the description or `paths` field is too broad. Tune down.
-- If a Shopware prompt fails to trigger, the description is too narrow. Add the missing user paraphrase to `when_to_use`.
+- Investigate unexpected loading against actual context and the active description before changing routing.
+- Check positive and negative paraphrases independently; do not tune metadata to one observed wording or treat conceptual prompts as source-review cases.

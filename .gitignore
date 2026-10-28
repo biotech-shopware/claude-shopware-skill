@@ -1,2 +1,6 @@
 .analysis/
 .DS_Store
+__pycache__/
+*.pyc
+eval/results/
+dist/

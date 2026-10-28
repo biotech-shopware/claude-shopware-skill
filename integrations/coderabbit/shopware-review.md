@@ -10,7 +10,7 @@ Apply these criteria to Shopware 6 plugin, project, Administration, and classic 
 - Pin findings to the reviewed commit or working-tree state. Treat code that changed between reviews as a changed baseline.
 - Distinguish confirmed defects from hypotheses, inactive or dormant code, deferred scope, third-party limitations, and runtime verification gaps.
 - Require an exact file and symbol, realistic failure mode, affected users or systems, production blast radius, smallest coherent safe fix, regression risk, and practical validation for each material finding.
-- Use P0 for exploitable security/payment trust failures, broken idempotency, cache collapse, or severe hot-path regressions; P1 for broad correctness, migration, performance, or operational failures; P2 for material maintainability, compatibility, or testing gaps.
+- Assign P0/P1/P2 from evidenced impact, reachability, likelihood, and urgency. Reserve P0 for critical reachable failures requiring immediate action; a security, idempotency, or cache category is not automatically P0. Missing tests alone do not establish P1.
 - Avoid speculative defensive recommendations. A safeguard must address a concrete failure mode in the reviewed path.
 - If no material issue is present, report no finding rather than manufacturing style feedback.
 
@@ -33,7 +33,7 @@ Apply these criteria to Shopware 6 plugin, project, Administration, and classic 
 - Treat custom fields as merchant-managed metadata. Prefer an entity extension for structured fields attached to an existing entity and a custom entity for operational state, deduplication, sync history, lifecycle state, or independently queried records.
 - Verify custom-field updates merge existing values unless full replacement is explicit. Do not use mutable JSON/custom-field blobs as primary query or deduplication state at scale.
 - Avoid redundant casts, trims, null fallbacks, or validation after a typed DAL/config contract already guarantees the value. Keep normalization only at real untrusted-input boundaries.
-- Keep migrations immutable after release. Require a new migration instead of editing an executed one, idempotent schema operations where practical, destructive work in `updateDestructive()`, and indexes matching actual filters, joins, uniqueness, and sorting.
+- Keep released migrations immutable; add a new migration, indexes matching actual access paths, and idempotent operations where practical. Distinguish normal updates from explicitly invoked destructive migrations, with deployment approval and merchant-data retention. Required normal-update work must not depend on an uninvoked destructive step.
 - Keep large backfills out of synchronous migration execution. Require bounded, resumable processing before final constraints or indexes depend on migrated data.
 - Verify state changes use Shopware state-machine transitions or the owning transition service rather than direct technical-state writes.
 - Admin API routes require ACL and narrow privileges. Customer-facing Store API/storefront mutations require authentication where applicable, ownership checks, bounded payloads, and non-GET methods.
@@ -84,7 +84,7 @@ Apply these criteria to Shopware 6 plugin, project, Administration, and classic 
 - Validators must be cheap, deterministic, and scoped to the exact line item or checkout condition. They must not widen ownership or trust browser-authored customer, payment, shipping, or recurring identifiers.
 - Recalculate from the current `SalesChannelContext` when currency, tax, shipping, payment availability, rules, or customer state may have changed. Do not patch totals manually from stale snapshots.
 - Keep correctness-critical totals and availability synchronous. Move post-order ERP, CRM, reporting, and notification side effects to queues only after the order and transaction intent are durably persisted.
-- External shipping or tax calls on checkout require strict timeouts, bounded payloads, safe caching keyed by all relevant cart/address/context dimensions, and an explicit failure path. Do not cache one quote across incompatible carts or addresses.
+- External shipping/tax data requires timeouts, bounded payloads, per-calculation deduplication, provider-derived freshness, and an explicit failure path. Where reuse is valid, key it by the actual provider/cart/address/context inputs; do not reuse quotes across incompatible contexts or cache financial mutations as reads.
 - Verify shipping logic uses the shipping address and correct delivery context rather than silently substituting billing data.
 - Flag writes or expensive recalculation hidden in cart, confirm, offcanvas, or other read-only page loads.
 
@@ -115,7 +115,7 @@ Apply these criteria to Shopware 6 plugin, project, Administration, and classic 
 
 ## HTTP Cache and Varnish
 
-- Verify only genuinely public read routes opt into `_httpCache`. Personalized, session-mutating, write, authorization, and sensitive endpoints must not be cached as shared responses.
+- Verify cacheable read output is safely represented by the deployed cache variation and policy. Sensitive per-customer data, writes, and session/authorization mutations must not become shared responses. Do not flag safe rule/audience-based cache variants as inherently defective merely because contexts differ.
 - Preserve Shopware cache variation and invalidation behavior. Check `sw-cache-hash`, invalidation states, cache tags, route policies, and the exact 6.7 feature/config behavior against installed core.
 - Flag customer-specific markup rendered into anonymous cacheable HTML. Isolate personalization behind a safe dynamic request or non-cacheable fragment instead of disabling cache for the whole page.
 - Treat new cookies, sessions, response headers, redirects, and request-dependent values on cacheable storefront routes as cache-key and hit-rate changes requiring evidence.
@@ -147,7 +147,18 @@ Apply these criteria to Shopware 6 plugin, project, Administration, and classic 
 - Mapping changes require an explicit `dal:refresh:index` or equivalent rollout strategy. Verify rebuild duration, queue growth, DB load, index size, and MySQL/OpenSearch fallback behavior.
 - Verify search-dependent writes, emitted messages, worker handling, index population, and returned results align end to end.
 
-## Testing and Release Validation
+## Lifecycle and Deployment
+
+- Verify lifecycle-only changes have an execution path on already-installed shops, including version/discovery updates where deployment is version-gated. Fresh-install tests do not prove upgrade behavior; preserve merchant data on uninstall and explicitly sequence destructive cleanup.
+- Use `POST /api/_action/index` with `only` or the verified CLI `--only` option for a targeted reindex. `/api/_action/indexing` queues the full registry and does not narrow from an `only` request body.
+
+## CMS and Local Environment Boundaries
+
+- CMS slot configuration is translated database state. Verify system-language creation, language-aware writes, entity override merging, resolver data, and storefront escaping together; file deployment alone does not deploy layout content.
+- Preserve normal parent/entity save behavior in administration extensions; distinguish per-page inherited CMS configuration from global layout defaults and test non-system-language edits.
+- For local-runtime advice, inspect generated services, actual mounts, environment precedence, worker restarts, and mail-agent settings before recommending commands. Production dumps require outbound-mail isolation; deleting volumes or retiring an environment requires explicit authorization and a verified backup/restore path.
+
+## Testing and Release Checks
 
 - Choose the narrowest test that proves behavior: unit tests for pure services, Shopware integration tests for DAL/wiring/migrations, request-level tests for Store API/storefront routes, and browser/E2E tests for runtime Administration, storefront, cache, or accessibility behavior.
 - Use Shopware test traits such as `IntegrationTestBehaviour`, `KernelTestBehaviour`, and `SalesChannelApiTestBehaviour` according to the required boundary. Avoid ad hoc kernel bootstrapping and shared persistent fixtures.

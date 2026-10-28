@@ -1,0 +1,6 @@
+{
+  "name": "biotech-shopware-skills",
+  "owner": {"name": "biotech-shopware"},
+  "metadata": {"description": "Portable Shopware development and review knowledge for Claude Code and Codex"},
+  "plugins": [{"name": "shopware-knowledge", "source": "./plugins/shopware-knowledge"}]
+}

@@ -1,6 +1,6 @@
 # Should-Trigger Prompts
 
-These prompts should reliably auto-invoke the `shopware-development` skill in Claude Code and Codex. Test in a fresh session; target hit rate ≥ 4/5.
+Exploratory discovery prompts for fresh Claude Code and Codex sessions. Record actual skill-loading traces; these prompts alone are not a measured trigger rate. Use cases.json and run.py for source-backed behavior evaluation. A correct answer without a load trace does not prove automatic invocation.
 
 ## Plugin work
 

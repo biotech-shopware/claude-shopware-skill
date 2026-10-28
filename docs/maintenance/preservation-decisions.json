@@ -1,0 +1,1320 @@
+[
+  {
+    "source": "shopware-development/references/04-plugin-backend.md",
+    "heading": "Plugin Backend",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/04-plugin-backend.md",
+    "reason": "Replace the plain index with linked owning sections and the Messenger implementation reference."
+  },
+  {
+    "source": "shopware-development/references/04-plugin-backend.md",
+    "heading": "DAL and Data Modeling",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/04-plugin-backend.md",
+    "reason": "Batch discovery to exhaustion, preserve complete bounded-ID reads, and distinguish string typing from validated normalization."
+  },
+  {
+    "source": "shopware-development/references/04-plugin-backend.md",
+    "heading": "Migrations and Schema Safety",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/04-plugin-backend.md",
+    "reason": "Separate automatic non-destructive migrations from explicitly planned plugin destructive cleanup."
+  },
+  {
+    "source": "shopware-development/references/04-plugin-backend.md",
+    "heading": "HTTP Cache and Reverse Proxy Safety",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/04-plugin-backend.md",
+    "reason": "Use exact 6.7.15.1 hash/state behavior, verify tag coverage, and mark the private badge example against storage."
+  },
+  {
+    "source": "shopware-development/references/04-plugin-backend.md",
+    "heading": "Performance, Cache, and Async",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/04-plugin-backend.md",
+    "reason": "Derive quote freshness from the provider contract and distinguish reads from side effects and failures."
+  },
+  {
+    "source": "shopware-development/references/04-plugin-backend.md",
+    "heading": "Messenger and Handler Patterns",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/messenger-handlers.md",
+    "reason": "Replace the racy read-check-sync example with a durable atomic business-key claim and provider idempotency/reconciliation seam."
+  },
+  {
+    "source": "shopware-development/references/04-plugin-backend.md",
+    "heading": "`ScheduledTaskHandler` Requires `LoggerInterface`",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/messenger-handlers.md",
+    "reason": "Move task details and correct the claim that container registration fixes a subclass's outdated parent constructor call."
+  },
+  {
+    "source": "shopware-development/references/04-plugin-backend.md",
+    "heading": "Messenger Message Size Limit",
+    "status": "moved",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/messenger-handlers.md",
+    "reason": "Move unchanged opt-in message-size semantics to the handler reference with pinned configuration sources."
+  },
+  {
+    "source": "shopware-development/references/04-plugin-backend.md",
+    "heading": "Webhook Messenger Transport (`WEBHOOKS_REWORK`)",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/messenger-handlers.md",
+    "reason": "Document the verified opt-in flag, outbox retry ownership, and conditional admin-worker configuration in the handler reference."
+  },
+  {
+    "source": "shopware-development/references/04-plugin-backend.md",
+    "heading": "`NavigationRoute` Cache Key Event",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/04-plugin-backend.md",
+    "reason": "Tie missing key variation and wrong-event impact to actual cached loader output and its root/depth/channel/language key."
+  },
+  {
+    "source": "shopware-development/references/04-plugin-backend.md",
+    "heading": "State Machine Per-Entity Locking",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/04-plugin-backend.md",
+    "reason": "Core transition locking does not make adjacent provider effects or an entire handler idempotent."
+  },
+  {
+    "source": "shopware-development/references/04-plugin-backend.md",
+    "heading": "Sales Channel Repository Default",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/04-plugin-backend.md",
+    "reason": "Choose repository by storefront visibility/pricing versus operational scope, not the number of sales channels."
+  },
+  {
+    "source": "shopware-development/references/04-plugin-backend.md",
+    "heading": "Hard Limits On Data Fetches",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/04-plugin-backend.md",
+    "reason": "Avoid truncating validated ID-set reads; consume all discovery pages and chunk large ID sets."
+  },
+  {
+    "source": "shopware-development/references/09-symfony-and-php.md",
+    "heading": "PHP Baseline",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/09-symfony-and-php.md",
+    "reason": "A string type does not prove canonical whitespace or identifier validity; normalization depends on validation."
+  },
+  {
+    "source": "shopware-development/references/09-symfony-and-php.md",
+    "heading": "Registered But Inert Code",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/09-symfony-and-php.md",
+    "reason": "Require reachable behavioral or measured performance impact; placeholders, delegation, and injection alone are not defects."
+  },
+  {
+    "source": "shopware-development/references/09-symfony-and-php.md",
+    "heading": "Symfony And PHP Versions",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/09-symfony-and-php.md",
+    "reason": "Use 6.7.15.1 package constraints, retain PHP 8.3 support, and preserve PHP 8.2 syntax compatibility."
+  },
+  {
+    "source": "shopware-development/references/11-quality-and-operations.md",
+    "heading": "External API Resilience",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/11-quality-and-operations.md",
+    "reason": "Use explicit outage handling without assuming checkout may proceed when authoritative totals/status are unavailable."
+  },
+  {
+    "source": "shopware-development/references/11-quality-and-operations.md",
+    "heading": "Shipping and Tax Notes",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/11-quality-and-operations.md",
+    "reason": "Make fallback/caching conditional on quote validity and separate tax reporting effects from cached reads."
+  },
+  {
+    "source": "shopware-development/references/11-quality-and-operations.md",
+    "heading": "Cache, Queue, and Index Operations",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/11-quality-and-operations.md",
+    "reason": "Allow appropriately operated Doctrine/MySQL production queues; choose a broker from measured needs."
+  },
+  {
+    "source": "shopware-development/references/11-quality-and-operations.md",
+    "heading": "Shopware Usage Data Collection",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/11-quality-and-operations.md",
+    "reason": "Replace the private 50k-product incident rule with verified collection/consent gates and measured operational decisions."
+  },
+  {
+    "source": "shopware-development/references/11-quality-and-operations.md",
+    "heading": "Performance Baseline",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/11-quality-and-operations.md",
+    "reason": "Retain conditional tuning knowledge while removing universal backend, DAL, compression, and deployment prescriptions."
+  },
+  {
+    "source": "shopware-development/references/11-quality-and-operations.md",
+    "heading": "Frosh Tools Observability",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/11-quality-and-operations.md",
+    "reason": "Make FroshTools optional and counter reliability dependent on the installed implementation, not an anecdotal version rule."
+  },
+  {
+    "source": "shopware-development/references/11-quality-and-operations.md",
+    "heading": "Static Analysis Baseline",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/11-quality-and-operations.md",
+    "reason": "Resolve tool compatibility from project constraints/config instead of universal Shopware-version pins or memory/scope rules."
+  },
+  {
+    "source": "shopware-development/references/11-quality-and-operations.md",
+    "heading": "MySQL Dump Canonical Form",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/11-quality-and-operations.md",
+    "reason": "Remove mandatory regex DEFINER stripping and qualify snapshot, privilege, and restore assumptions."
+  },
+  {
+    "source": "shopware-development/references/18-cart-and-checkout-pipeline.md",
+    "heading": "Collector vs Processor",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/18-cart-and-checkout-pipeline.md",
+    "reason": "Collectors can be reinvoked; reuse by relevant inputs and preserve complete bounded-ID collection reads."
+  },
+  {
+    "source": "shopware-development/references/18-cart-and-checkout-pipeline.md",
+    "heading": "Async Handoff Boundaries",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/18-cart-and-checkout-pipeline.md",
+    "reason": "Permit stale fallback or later reconciliation only when the domain contract allows it; otherwise block safely."
+  },
+  {
+    "source": "shopware-development/references/18-cart-and-checkout-pipeline.md",
+    "heading": "External API In Cart",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/18-cart-and-checkout-pipeline.md",
+    "reason": "Replace mandatory caching/admin invalidation with provider-derived read policy and separate side-effect recovery."
+  },
+  {
+    "source": "shopware-development/references/23-cache-and-http-cache.md",
+    "heading": "Cache and HTTP Cache",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/23-cache-and-http-cache.md",
+    "reason": "Add linked contents and explicitly scope key/policy behavior to installed 6.7.15.1 packages and flags."
+  },
+  {
+    "source": "shopware-development/references/23-cache-and-http-cache.md",
+    "heading": "Delayed Cache Invalidation",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/23-cache-and-http-cache.md",
+    "reason": "Retain supported shared MySQL storage and replace vague attribution with the pinned configuration/invalidation implementation."
+  },
+  {
+    "source": "shopware-development/references/23-cache-and-http-cache.md",
+    "heading": "CACHE_REWORK Feature Flag",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/23-cache-and-http-cache.md",
+    "reason": "Use exact 6.7.15.1 defaults and distinguish policy/mismatch behavior from PERFORMANCE_TWEAKS and the unused older flag."
+  },
+  {
+    "source": "shopware-development/references/23-cache-and-http-cache.md",
+    "heading": "Finding Shape: Personalised Output In A Shared Response",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/23-cache-and-http-cache.md",
+    "reason": "Require proven unsafe shared reuse; private policies, fragments, and complete safe keys are alternatives to universal no-store."
+  },
+  {
+    "source": "shopware-development/references/23-cache-and-http-cache.md",
+    "heading": "What The HTTP Cache Key Varies On",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/23-cache-and-http-cache.md",
+    "reason": "Document exact URI/headers/hash parts, response-cookie and request-header precedence, mismatch guard, and the 6.6 difference."
+  },
+  {
+    "source": "shopware-development/references/23-cache-and-http-cache.md",
+    "heading": "Redirects From Cacheable Routes Get Cached",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/23-cache-and-http-cache.md",
+    "reason": "Verify final policy headers and complete redirect variation instead of assuming controller privacy or redirect permanence."
+  },
+  {
+    "source": "shopware-development/references/23-cache-and-http-cache.md",
+    "heading": "Invalidation Cost Is Real",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/23-cache-and-http-cache.md",
+    "reason": "Remove private purge counts/timings and retain measured miss-burst planning with complete targeted/batched invalidation."
+  },
+  {
+    "source": "shopware-development/references/23-cache-and-http-cache.md",
+    "heading": "`NavigationRoute` Cache Key Event",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/23-cache-and-http-cache.md",
+    "reason": "Demonstrate context-dependent cached loader output before claiming a wrong-event or missing-key exposure."
+  },
+  {
+    "source": "shopware-development/references/23-cache-and-http-cache.md",
+    "heading": "Message Queue For Cache Work",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/23-cache-and-http-cache.md",
+    "reason": "Use the pinned task interval and qualify Elasticsearch exception mode as an outage tradeoff already enabled by default."
+  },
+  {
+    "source": "shopware-development/references/24-external-api-caching-in-cart.md",
+    "heading": "External API Caching In Cart",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/24-external-api-caching-in-cart.md",
+    "reason": "Replace the unconditional-contract index with links to the scoped provider-read policy."
+  },
+  {
+    "source": "shopware-development/references/24-external-api-caching-in-cart.md",
+    "heading": "Why This Is A Correctness Boundary",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/24-external-api-caching-in-cart.md",
+    "reason": "Remove a fixed recalculation count and mandatory cross-request caching; preserve deterministic quote reuse and side-effect separation."
+  },
+  {
+    "source": "shopware-development/references/24-external-api-caching-in-cart.md",
+    "heading": "Mandatory Cache Contract",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/24-external-api-caching-in-cart.md",
+    "reason": "Classify quote reads, side effects, and errors separately; derive reuse and invalidation from the provider/business contract."
+  },
+  {
+    "source": "shopware-development/references/24-external-api-caching-in-cart.md",
+    "heading": "Cache Key Components",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/24-external-api-caching-in-cart.md",
+    "reason": "Replace the universal ordered field list with used-response-field dependencies, tenant/config scope, and canonical inputs."
+  },
+  {
+    "source": "shopware-development/references/24-external-api-caching-in-cart.md",
+    "heading": "TTL Rules",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/24-external-api-caching-in-cart.md",
+    "reason": "Remove universal eight-hour/15-minute TTLs and cleanup assumptions; use provider validity and tolerated staleness."
+  },
+  {
+    "source": "shopware-development/references/24-external-api-caching-in-cart.md",
+    "heading": "Admin Invalidation Endpoint",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/24-external-api-caching-in-cart.md",
+    "reason": "Keep scoped authenticated/ACL-protected clearing as optional support tooling, not a mandatory route/UI."
+  },
+  {
+    "source": "shopware-development/references/24-external-api-caching-in-cart.md",
+    "heading": "Live Check On Order Placement",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/24-external-api-caching-in-cart.md",
+    "reason": "Derive final validation from provider quote/commit requirements rather than an arbitrary freshness threshold."
+  },
+  {
+    "source": "shopware-development/references/24-external-api-caching-in-cart.md",
+    "heading": "Extendability",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/24-external-api-caching-in-cart.md",
+    "reason": "Use real injection/decoration seams; arbitrary tags or adding TTL/admin controls alone do not establish correctness."
+  },
+  {
+    "source": "shopware-development/references/24-external-api-caching-in-cart.md",
+    "heading": "Provider-Side Auto-Invalidation",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/24-external-api-caching-in-cart.md",
+    "reason": "Authenticate provider callbacks independently of merchant Admin API tokens and choose supported automatic freshness mechanisms."
+  },
+  {
+    "source": "shopware-development/references/24-external-api-caching-in-cart.md",
+    "heading": "Auditing An Existing Cache",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/24-external-api-caching-in-cart.md",
+    "reason": "Treat a missing key input as a defect only when proven invalidation/versioning does not already cover it."
+  },
+  {
+    "source": "shopware-development/references/24-external-api-caching-in-cart.md",
+    "heading": "Review Prompts",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/24-external-api-caching-in-cart.md",
+    "reason": "Review operation class, complete dependencies, freshness, scoped optional clearing, and provider final-validation requirements."
+  },
+  {
+    "source": "shopware-development/references/24-external-api-caching-in-cart.md",
+    "heading": "Source",
+    "status": "retired",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/24-external-api-caching-in-cart.md",
+    "reason": "Remove private request provenance and an unverified plugin-specific defect assertion; cite public cart/auth sources without claiming a provider defect."
+  },
+  {
+    "source": "shopware-development/references/25-patching-and-dependency-tooling.md",
+    "heading": "Patching And Dependency Tooling",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/25-patching-and-dependency-tooling.md",
+    "reason": "Replace the pinning-oriented plain index with linked compatibility, patching, tooling, and restore topics."
+  },
+  {
+    "source": "shopware-development/references/25-patching-and-dependency-tooling.md",
+    "heading": "`cweagans/composer-patches` For Vendor Patches",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/25-patching-and-dependency-tooling.md",
+    "reason": "Retain reproducible patches without a fixed legacy tool pin; use package-root diffs and installed-major re-patching workflow."
+  },
+  {
+    "source": "shopware-development/references/25-patching-and-dependency-tooling.md",
+    "heading": "PHPStan And PHP-CS-Fixer Pinning",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/25-patching-and-dependency-tooling.md",
+    "reason": "Use project/tool-extension compatibility and reviewed plugin authorization, not universal pins or automatic trust prompts."
+  },
+  {
+    "source": "shopware-development/references/25-patching-and-dependency-tooling.md",
+    "heading": "`frosh/shopware-rector`",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/25-patching-and-dependency-tooling.md",
+    "reason": "Keep Rector as optional compatible upgrade assistance, not a mandatory or complete migration check."
+  },
+  {
+    "source": "shopware-development/references/25-patching-and-dependency-tooling.md",
+    "heading": "`FriendsOfShopware/FroshTools`",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/25-patching-and-dependency-tooling.md",
+    "reason": "Make observability installation optional and counter reliability dependent on the installed tag/transport."
+  },
+  {
+    "source": "shopware-development/references/25-patching-and-dependency-tooling.md",
+    "heading": "MySQL Dump Canonical Form",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/25-patching-and-dependency-tooling.md",
+    "reason": "Keep an adjustable InnoDB example, qualify flags/consistency, and preserve or deliberately remap DEFINER security semantics."
+  },
+  {
+    "source": "shopware-development/references/25-patching-and-dependency-tooling.md",
+    "heading": "Security Audit",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/25-patching-and-dependency-tooling.md",
+    "reason": "Triage each resolved advisory; a Shopware patch is not proof all plugin dependency issues are fixed."
+  },
+  {
+    "source": "shopware-development/references/25-patching-and-dependency-tooling.md",
+    "heading": "What Not To Do",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/25-patching-and-dependency-tooling.md",
+    "reason": "Assess actual credential exposure and review per-project Composer plugin authorization without generic trust prescriptions."
+  },
+  {
+    "source": "shopware-development/references/25-patching-and-dependency-tooling.md",
+    "heading": "Sources",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/25-patching-and-dependency-tooling.md",
+    "reason": "Replace vague blog/org attribution with verified primary patch-workflow, core, Composer, tool, and MySQL anchors."
+  },
+  {
+    "source": "shopware-development/references/26-plugin-lifecycle-and-activation.md",
+    "heading": "Why This Class Of Defect Is Invisible",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/26-plugin-lifecycle-and-activation.md",
+    "reason": "Upgrade-path tests can catch lifecycle deployment gaps; only fresh-install-only testing misses them inherently."
+  },
+  {
+    "source": "shopware-development/references/26-plugin-lifecycle-and-activation.md",
+    "heading": "Migrations",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/26-plugin-lifecycle-and-activation.md",
+    "reason": "MigrationRuntime tracks class identity and separate pass timestamps; creation timestamp orders/cuts off execution rather than plugin version."
+  },
+  {
+    "source": "shopware-development/references/26-plugin-lifecycle-and-activation.md",
+    "heading": "`updateDestructive()` Never Runs For Plugins",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/26-plugin-lifecycle-and-activation.md",
+    "reason": "The explicit destructive command supports plugin identifiers; distinguish automatic non-destructive updates, retention, rollout, and uninstall cleanup."
+  },
+  {
+    "source": "shopware-development/references/26-plugin-lifecycle-and-activation.md",
+    "heading": "Deployment Ordering",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/26-plugin-lifecycle-and-activation.md",
+    "reason": "Require refresh when discovery/version metadata changes without prescribing unrelated lifecycle actions on every deploy."
+  },
+  {
+    "source": "shopware-development/references/26-plugin-lifecycle-and-activation.md",
+    "heading": "Review Prompts",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/26-plugin-lifecycle-and-activation.md",
+    "reason": "Review pre-cleanup compatibility and explicit retention/rollback sequencing instead of treating all destructive work as forbidden."
+  },
+  {
+    "source": "shopware-development/references/05-storefront-and-themes.md",
+    "heading": "Twig Rules",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/05-storefront-and-themes.md",
+    "reason": "Use render-occurrence IDs and matching panels; entity IDs alone repeat across cards and sliders."
+  },
+  {
+    "source": "shopware-development/references/05-storefront-and-themes.md",
+    "heading": "Storefront JS",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/05-storefront-and-themes.md",
+    "reason": "Use static cookie API, gate external iframe creation on consent, handle revocation and isolate subscription cleanup."
+  },
+  {
+    "source": "shopware-development/references/05-storefront-and-themes.md",
+    "heading": "Plugins Inside Replaced Markup Run Once",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/05-storefront-and-themes.md",
+    "reason": "Pin CartWidget post-insertion non-bubbling events, initial refresh, scoped async initialization and explicit teardown."
+  },
+  {
+    "source": "shopware-development/references/05-storefront-and-themes.md",
+    "heading": "CSS Gotchas",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/05-storefront-and-themes.md",
+    "reason": "Scope icon, overflow and Bootstrap utility diagnostics to installed theme/browser behavior instead of universal CSS claims."
+  },
+  {
+    "source": "shopware-development/references/05-storefront-and-themes.md",
+    "heading": "Global Storefront Event Bus (6.7.11+)",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/05-storefront-and-themes.md",
+    "reason": "Verify available target-version runtime and method dispatch; do not infer first release or confuse the cookie emitter."
+  },
+  {
+    "source": "shopware-development/references/05-storefront-and-themes.md",
+    "heading": "Vite Dev Server Replaces `composer watch:storefront`",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/05-storefront-and-themes.md",
+    "reason": "Pin available Composer scripts to core v6.7.15.1 and require project-script detection rather than an unverified version floor."
+  },
+  {
+    "source": "shopware-development/references/05-storefront-and-themes.md",
+    "heading": "Theme Config As CSS Custom Properties",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/05-storefront-and-themes.md",
+    "reason": "ThemeCompiler emits SCSS variables; show explicit CSS custom-property export instead of claiming automatic export of all fields."
+  },
+  {
+    "source": "shopware-development/references/05-storefront-and-themes.md",
+    "heading": "`theme.json` Per-File References",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/05-storefront-and-themes.md",
+    "reason": "Anchor bundle-relative file references to the verified resolver and qualify older-version support."
+  },
+  {
+    "source": "shopware-development/references/05-storefront-and-themes.md",
+    "heading": "`context.token` Removed From Twig",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/05-storefront-and-themes.md",
+    "reason": "Keep credentials out of HTML and avoid a public endpoint workaround; anchor the actual Twig-access guard."
+  },
+  {
+    "source": "shopware-development/references/05-storefront-and-themes.md",
+    "heading": "ESI Header And Footer",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/05-storefront-and-themes.md",
+    "reason": "Preserve explicit fragment error behavior and distinguish ESI-capable caches from Nginx SSI."
+  },
+  {
+    "source": "shopware-development/references/05-storefront-and-themes.md",
+    "heading": "Accessibility Markup Baseline (EAA)",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/05-storefront-and-themes.md",
+    "reason": "Name icon-only controls on the control; standalone meaningful icons require both exposure and a translated name."
+  },
+  {
+    "source": "shopware-development/references/06-administration-and-apps.md",
+    "heading": "Administration Rules",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/06-administration-and-apps.md",
+    "reason": "Preserve parent save and pending entity state; ask only unresolved high-impact choices and do not treat promise resolution as persistence."
+  },
+  {
+    "source": "shopware-development/references/06-administration-and-apps.md",
+    "heading": "Administration Twig Templates",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/06-administration-and-apps.md",
+    "reason": "Keep category Save/Cancel semantics; scale alone does not authorize immediate embedded-editor writes."
+  },
+  {
+    "source": "shopware-development/references/06-administration-and-apps.md",
+    "heading": "Vite + Pinia + Vue 3",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/06-administration-and-apps.md",
+    "reason": "Qualify the 6.6/6.7 administration build split and await actual async-component readiness rather than nextTick alone."
+  },
+  {
+    "source": "shopware-development/references/06-administration-and-apps.md",
+    "heading": "Meteor Components (`mt-*`)",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/06-administration-and-apps.md",
+    "reason": "Preserve mt/sw value-event distinctions and qualify deprecated wrappers, option forwarding and boolean bindings."
+  },
+  {
+    "source": "shopware-development/references/06-administration-and-apps.md",
+    "heading": "Runtime Pitfalls (Vue 3 Admin)",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/06-administration-and-apps.md",
+    "reason": "Retain listing, FormData and router examples; remove fixed request-rate claim and pin default-header/source behavior."
+  },
+  {
+    "source": "shopware-development/references/06-administration-and-apps.md",
+    "heading": "`sw-entity-listing` `items` → `dataSource`",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/06-administration-and-apps.md",
+    "reason": "Verify the target listing prop/deprecation and use the template data-source binding without an unverified minimum release."
+  },
+  {
+    "source": "shopware-development/references/06-administration-and-apps.md",
+    "heading": "MCP Server Integration",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/06-administration-and-apps.md",
+    "reason": "Replace stale upcoming-release guidance with the 6.7.14 flag removal and installed-bundle/authentication conditions."
+  },
+  {
+    "source": "shopware-development/references/12-extension-patterns.md",
+    "heading": "CMS Elements and Blocks",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/12-extension-patterns.md",
+    "reason": "Preserve parent save defaults and ask only unresolved high-impact CMS choices; pin CMS source metadata to v6.7.15.1."
+  },
+  {
+    "source": "shopware-development/references/12-extension-patterns.md",
+    "heading": "Product and Catalog Extension Choices",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/12-extension-patterns.md",
+    "reason": "Respect an authorized entity model and parent persistence flow instead of pausing for every plausible alternative."
+  },
+  {
+    "source": "shopware-development/references/12-extension-patterns.md",
+    "heading": "Custom Fields In XML (Not Manifest Inline)",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/12-extension-patterns.md",
+    "reason": "Distinguish required set elements from the individual field name attribute; preserve the validated XML example."
+  },
+  {
+    "source": "shopware-development/references/12-extension-patterns.md",
+    "heading": "Cookie Provider Replaced By Event",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/12-extension-patterns.md",
+    "reason": "Add verified optional-cookie declaration and connect consent metadata to the gated client lifecycle; qualify older targets."
+  },
+  {
+    "source": "shopware-development/references/17-accessibility-and-template-best-practices.md",
+    "heading": "Accessibility and Template Best Practices",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/17-accessibility-and-template-best-practices.md",
+    "reason": "Make jurisdictional legal/procurement references conditional rather than a universal storefront obligation."
+  },
+  {
+    "source": "shopware-development/references/17-accessibility-and-template-best-practices.md",
+    "heading": "U.S. Ecommerce Accessibility Baseline",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/17-accessibility-and-template-best-practices.md",
+    "reason": "Retain WCAG 2.2 AA technical target without a default litigation benchmark or unsupported legal-compliance inference."
+  },
+  {
+    "source": "shopware-development/references/17-accessibility-and-template-best-practices.md",
+    "heading": "Custom Theme and Twig Guidance",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/17-accessibility-and-template-best-practices.md",
+    "reason": "Use render-occurrence filter IDs and a matching disclosure panel instead of category-only identifiers."
+  },
+  {
+    "source": "shopware-development/references/17-accessibility-and-template-best-practices.md",
+    "heading": "Custom Storefront JS and Plugin Guidance",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/17-accessibility-and-template-best-practices.md",
+    "reason": "Replace customer/cart-token IDs, name coupon input and include error references only when rendered."
+  },
+  {
+    "source": "shopware-development/references/17-accessibility-and-template-best-practices.md",
+    "heading": "6.7 Storefront Accessibility Baseline",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/17-accessibility-and-template-best-practices.md",
+    "reason": "Keep control names separate from decorative icons and distinguish upstream markup from conformance proof."
+  },
+  {
+    "source": "shopware-development/references/21-internationalization-and-snippets.md",
+    "heading": "Storefront and Admin Snippets",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/21-internationalization-and-snippets.md",
+    "reason": "Pin canonical-regional fallback to inspected loader and avoid claiming an unverified first release."
+  },
+  {
+    "source": "shopware-development/references/21-internationalization-and-snippets.md",
+    "heading": "Validation and Release Checks",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/21-internationalization-and-snippets.md",
+    "reason": "Use available filename/validation commands and the upgrade-guide rename instead of an unsupported 6.7.11 floor."
+  },
+  {
+    "source": "shopware-development/references/21-internationalization-and-snippets.md",
+    "heading": "Country-Agnostic Base Snippet Layer (6.7.3+)",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/21-internationalization-and-snippets.md",
+    "reason": "Correct low-to-high fallback/catalogue/locale/database precedence and remove fixed snippet-count and naming mandates."
+  },
+  {
+    "source": "shopware-development/references/27-cms-elements-and-blocks.md",
+    "heading": "CMS Elements and Blocks",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/27-cms-elements-and-blocks.md",
+    "reason": "Preserve parent save defaults and ask only unresolved high-impact CMS choices; pin CMS source metadata to v6.7.15.1."
+  },
+  {
+    "source": "shopware-development/references/27-cms-elements-and-blocks.md",
+    "heading": "How The Storefront Merges Overrides",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/27-cms-elements-and-blocks.md",
+    "reason": "Clarify omitted-key retention versus explicit value replacement and anchor the slider-key migration."
+  },
+  {
+    "source": "shopware-development/references/27-cms-elements-and-blocks.md",
+    "heading": "Admin Registration",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/27-cms-elements-and-blocks.md",
+    "reason": "Retain CMS registration facts while qualifying select-wrapper branches and mt/sw event contracts."
+  },
+  {
+    "source": "shopware-development/references/27-cms-elements-and-blocks.md",
+    "heading": "Inheritance Wrappers (6.7.5+)",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/27-cms-elements-and-blocks.md",
+    "reason": "Use explicit model-value binding and $t; preserve inheritance behavior and the owning parent save pipeline."
+  },
+  {
+    "source": "shopware-development/references/27-cms-elements-and-blocks.md",
+    "heading": "Storefront Resolvers",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/27-cms-elements-and-blocks.md",
+    "reason": "Declare batched collect criteria and constrain CSS-value validation instead of implying per-slot loading or prefix-only checks."
+  },
+  {
+    "source": "shopware-development/references/27-cms-elements-and-blocks.md",
+    "heading": "Storefront Templates",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/27-cms-elements-and-blocks.md",
+    "reason": "Treat full-width gutter overflow as theme-dependent and avoid global row resets."
+  },
+  {
+    "source": "shopware-development/references/27-cms-elements-and-blocks.md",
+    "heading": "Layout Content Is Data, Not Code",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/27-cms-elements-and-blocks.md",
+    "reason": "Keep stable migrated layout IDs while locking only intentionally immutable plugin-owned structure."
+  },
+  {
+    "source": "shopware-development/references/28-local-dev-environment.md",
+    "heading": "Local Development With `shopware-cli project` And Docker",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/28-local-dev-environment.md",
+    "reason": "Scope metadata to detected generated Docker environments and distinguish CLI interface verification from historical defaults."
+  },
+  {
+    "source": "shopware-development/references/28-local-dev-environment.md",
+    "heading": "Services And Ports",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/28-local-dev-environment.md",
+    "reason": "Identify captured generated-stack defaults rather than guaranteeing images, mounts and ports for every project."
+  },
+  {
+    "source": "shopware-development/references/28-local-dev-environment.md",
+    "heading": "Lifecycle",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/28-local-dev-environment.md",
+    "reason": "Make named-volume deletion explicitly authorized and backup-gated."
+  },
+  {
+    "source": "shopware-development/references/28-local-dev-environment.md",
+    "heading": "Running Commands",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/28-local-dev-environment.md",
+    "reason": "Prefer the detected container executor without banning valid intentionally configured host runtimes."
+  },
+  {
+    "source": "shopware-development/references/28-local-dev-environment.md",
+    "heading": "Builds And Watchers",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/28-local-dev-environment.md",
+    "reason": "Retain observed build-artifact symptom without inventing its cause or deleting source directories by name."
+  },
+  {
+    "source": "shopware-development/references/28-local-dev-environment.md",
+    "heading": "Git Worktrees",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/28-local-dev-environment.md",
+    "reason": "Check actual bind mounts and source/runtime alignment without automatic stack creation or copying over shared work."
+  },
+  {
+    "source": "shopware-development/references/28-local-dev-environment.md",
+    "heading": "Testing Pitfalls",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/28-local-dev-environment.md",
+    "reason": "Diagnose Secure cookies and dev caches instead of prescribing header bypass; limit cleanup to authorized disposable data."
+  },
+  {
+    "source": "shopware-development/references/28-local-dev-environment.md",
+    "heading": "Migrating From devenv",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/28-local-dev-environment.md",
+    "reason": "Make migration opt-in and retain old environment/state until dump, restore verification and authorized retirement."
+  },
+  {
+    "source": "shopware-development/references/28-local-dev-environment.md",
+    "heading": "Migrating The Database",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/28-local-dev-environment.md",
+    "reason": "Preserve dump-before-delete and engine compatibility; gate volume removal and prefer separate-volume migration."
+  },
+  {
+    "source": "shopware-development/references/28-local-dev-environment.md",
+    "heading": "Agent Instructions For The Project",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/28-local-dev-environment.md",
+    "reason": "Document the detected project runtime rather than claiming PHP and Node exist only inside the container."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "heading": "Frontmatter",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/SKILL.md",
+    "reason": "Retain discovery scope and trigger, remove duplicate trigger prose and permission preapprovals; version metadata is synchronized with both native manifests."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "heading": "Hard Constraints",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/SKILL.md",
+    "reason": "Keep the no-cap constraint, repository precedence and source verification in Establish Context and the source-authority owner."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "heading": "Source Rules",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/SKILL.md",
+    "reason": "Keep version detection and verified source research, with detailed rules in 01 and 10 instead of a second entrypoint inventory."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "heading": "Routing",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/SKILL.md",
+    "reason": "Replace numeric routing indirection with direct relative topic links, including all domain owners and conditional combinations."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "heading": "Mode Workflow",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/SKILL.md",
+    "reason": "Preserve mode-specific planning, implementation, research, review and reporting while removing mandatory three-pass execution."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "heading": "Reference Map",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/SKILL.md",
+    "reason": "Move each owner to the direct Select Topic links or the mode/source links; no domain reference is removed."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "heading": "Anti-Patterns To Avoid",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/SKILL.md",
+    "reason": "Retain source/version discipline and operational guards in the topic owners; remove skill-authoring instructions from runtime scope."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "heading": "It's Working If",
+    "status": "retired",
+    "destination": "eval/cases.json",
+    "reason": "Replace self-evaluation prose and unsupported expected outputs with separate fixed fixtures, clean controls, discovery checks and recorded runtime results."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "ids": [
+      "SKILL:016"
+    ],
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/02-version-targeting.md",
+    "reason": "Keep 6.7 fallback and explicit 6.6 compatibility without switching to an unrelated latest minor."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "ids": [
+      "SKILL:017"
+    ],
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/03-implementation-workflow.md",
+    "reason": "Preserve DRY/KISS and smallest coherent safe changes in implementation mode."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "ids": [
+      "SKILL:018"
+    ],
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/09-symfony-and-php.md",
+    "reason": "Retain concrete-failure-mode safeguards; typing alone does not guarantee normalized format."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "ids": [
+      "SKILL:019"
+    ],
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/03-implementation-workflow.md",
+    "reason": "Keep high-impact direction choice but do not reopen a direction already specified by the user or repository."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "ids": [
+      "SKILL:020"
+    ],
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/11-quality-and-operations.md",
+    "reason": "Preserve hot-path protection and scale checks in the domain and operational owners."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "ids": [
+      "SKILL:021"
+    ],
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/07-payments.md",
+    "reason": "Preserve server-authoritative payment, ownership and recurring boundaries."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "ids": [
+      "SKILL:022"
+    ],
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/07-payments.md",
+    "reason": "Preserve context/cart authority and state-mutating token handling at the payment/checkout boundary."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "ids": [
+      "SKILL:023"
+    ],
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/24-external-api-caching-in-cart.md",
+    "reason": "Correct fixed universal caching/admin requirements into provider-derived freshness, deduplication and recovery."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "ids": [
+      "SKILL:024"
+    ],
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/04-plugin-backend.md",
+    "reason": "Preserve thin entrypoints and service ownership in backend architecture."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "ids": [
+      "SKILL:025"
+    ],
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/14-cli-and-dev-tooling.md",
+    "reason": "Preserve explicit production CLI worker topology and configured transport checks."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "ids": [
+      "SKILL:026"
+    ],
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/11-quality-and-operations.md",
+    "reason": "Retire unsupported catalog-size disablement threshold; require measured load and authorized configuration choices."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "ids": [
+      "SKILL:027"
+    ],
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/25-patching-and-dependency-tooling.md",
+    "reason": "Keep reproducible dependency patches without imposing a particular installed patch tool."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "ids": [
+      "SKILL:028"
+    ],
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/26-plugin-lifecycle-and-activation.md",
+    "reason": "Keep version-gated deployment checks; upgrade-path tests can detect failures missed by fresh installs."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "ids": [
+      "SKILL:029"
+    ],
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/26-plugin-lifecycle-and-activation.md",
+    "reason": "Distinguish automatic normal updates from explicit destructive migration execution and retention gates."
+  },
+  {
+    "source": "shopware-development/SKILL.md",
+    "ids": [
+      "SKILL:030"
+    ],
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/03-implementation-workflow.md",
+    "reason": "Preserve targeted validation and reporting of actual unverified risks."
+  },
+  {
+    "source": "shopware-development/references/01-source-hierarchy.md",
+    "heading": "Core Source Verification Gate",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/01-source-hierarchy.md",
+    "reason": "Resolve the project's version; use a stated 6.7 fallback instead of implicitly adopting a newer minor."
+  },
+  {
+    "source": "shopware-development/references/01-source-hierarchy.md",
+    "heading": "Ownership Boundaries",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/01-source-hierarchy.md",
+    "reason": "Separate review coverage from severity/output; preserve CMS/local-environment owner mapping."
+  },
+  {
+    "source": "shopware-development/references/02-version-targeting.md",
+    "heading": "6.7-First Deltas",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/02-version-targeting.md",
+    "reason": "Correct validation-versus-after-order payment entry points against the matching PaymentProcessor."
+  },
+  {
+    "source": "shopware-development/references/02-version-targeting.md",
+    "heading": "Language Pack Sunset (6.8)",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/02-version-targeting.md",
+    "reason": "Keep actionable translation migration on a 6.7 project without expanding to a new supported minor."
+  },
+  {
+    "source": "shopware-development/references/02-version-targeting.md",
+    "heading": "Backport Policy",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/02-version-targeting.md",
+    "reason": "Keep supported-version backport discipline without mandating a particular patch tool."
+  },
+  {
+    "source": "shopware-development/references/03-implementation-workflow.md",
+    "heading": "Step 3: Choose the Extension Point",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/03-implementation-workflow.md",
+    "reason": "Keep extension-point choices but remove an unsupported universal priority ranking."
+  },
+  {
+    "source": "shopware-development/references/03-implementation-workflow.md",
+    "heading": "Step 4: Plan One Concern Per Chunk",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/03-implementation-workflow.md",
+    "reason": "Distinguish unrelated broad changes from tightly coupled coherent fixes."
+  },
+  {
+    "source": "shopware-development/references/03-implementation-workflow.md",
+    "heading": "Step 5: Implement Safely",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/03-implementation-workflow.md",
+    "reason": "Ask only about unresolved high-impact choices, not user-approved direction."
+  },
+  {
+    "source": "shopware-development/references/03-implementation-workflow.md",
+    "heading": "Step 6: Validate the Smallest Useful Surface",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/03-implementation-workflow.md",
+    "reason": "Preserve lifecycle validation while separating explicit destructive cleanup from normal deployment."
+  },
+  {
+    "source": "shopware-development/references/03-implementation-workflow.md",
+    "heading": "Step 9: Write PR Descriptions By Default",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/03-implementation-workflow.md",
+    "reason": "Apply detailed PR/QA format only to relevant reporting tasks and defer explicit repository/user format."
+  },
+  {
+    "source": "shopware-development/references/07-payments.md",
+    "heading": "Handler Model",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/07-payments.md",
+    "reason": "Correct validation entrypoint assumptions and remove contradictory remote-but-local-only provisioning wording."
+  },
+  {
+    "source": "shopware-development/references/07-payments.md",
+    "heading": "Data Collection",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/07-payments.md",
+    "reason": "Replace destructive getAlnum token filtering with a plugin-owned validation/ownership seam; clarify method arguments."
+  },
+  {
+    "source": "shopware-development/references/07-payments.md",
+    "heading": "6.7 Payment Handler Contract",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/07-payments.md",
+    "reason": "Distinguish required abstract methods from optional capability hooks and method-specific signatures."
+  },
+  {
+    "source": "shopware-development/references/07-payments.md",
+    "heading": "SwagPayPal 6.7 Reference Architecture",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/07-payments.md",
+    "reason": "Keep the provider extension example without imposing provider-specific architecture universally."
+  },
+  {
+    "source": "shopware-development/references/07-payments.md",
+    "heading": "Cart Token vs Context Token",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/07-payments.md",
+    "reason": "Replace private anecdote attribution with inspectable core context/cart resolution anchors."
+  },
+  {
+    "source": "shopware-development/references/07-payments.md",
+    "heading": "Middleware Retry = Duplicate Orders",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/07-payments.md",
+    "reason": "Do not infer cause from symptoms; timeouts and errors require durable uniqueness and reconciliation of unknown outcomes."
+  },
+  {
+    "source": "shopware-development/references/07-payments.md",
+    "heading": "External API In Cart (Tax, Shipping, Personalization)",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/07-payments.md",
+    "reason": "Keep checkout I/O safety in 18 and provider-derived read-cache policy in 24; remove arbitrary TTL/key/admin requirements."
+  },
+  {
+    "source": "shopware-development/references/08-analysis-and-reviews.md",
+    "heading": "Severity Model",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/08-analysis-and-reviews.md",
+    "reason": "Assign impact-based severity; categories and missing-test counts alone do not establish P0/P1."
+  },
+  {
+    "source": "shopware-development/references/08-analysis-and-reviews.md",
+    "heading": "Big-Instance Stress Model",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/08-analysis-and-reviews.md",
+    "reason": "Preserve scale analysis while labeling assumptions instead of inventing infrastructure."
+  },
+  {
+    "source": "shopware-development/references/08-analysis-and-reviews.md",
+    "heading": "Evidence Rules",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/08-analysis-and-reviews.md",
+    "reason": "Keep direct version-pinned source links in normal Markdown."
+  },
+  {
+    "source": "shopware-development/references/08-analysis-and-reviews.md",
+    "heading": "Review Output",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/08-analysis-and-reviews.md",
+    "reason": "Preserve the findings template with repository-relative example paths suitable for public reports."
+  },
+  {
+    "source": "shopware-development/references/10-official-docs-map.md",
+    "heading": "Docs Research Protocol",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/10-official-docs-map.md",
+    "reason": "Verify Markdown URLs/source paths rather than assuming a mechanical .html replacement."
+  },
+  {
+    "source": "shopware-development/references/10-official-docs-map.md",
+    "heading": "Versioned Shopware Docs",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/10-official-docs-map.md",
+    "reason": "Anchor source research to a stable matching tag instead of a moving trunk."
+  },
+  {
+    "source": "shopware-development/references/14-cli-and-dev-tooling.md",
+    "heading": "`shopware-cli` Docker Image",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/14-cli-and-dev-tooling.md",
+    "reason": "Replace private anecdote and untested build guarantee with a pinned reproducible environment and actual target revision."
+  },
+  {
+    "source": "shopware-development/references/14-cli-and-dev-tooling.md",
+    "heading": "Rector And Frosh Tools",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/14-cli-and-dev-tooling.md",
+    "reason": "Keep optional compatible codemods and diff review rather than mandatory tool use."
+  },
+  {
+    "source": "shopware-development/references/15-subscriptions-and-recurring-payments.md",
+    "heading": "Subscription Lifecycle Rules",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/15-subscriptions-and-recurring-payments.md",
+    "reason": "Keep authenticated owned mutations and allow valid state-changing HTTP methods; forbid GET mutations."
+  },
+  {
+    "source": "shopware-development/references/15-subscriptions-and-recurring-payments.md",
+    "heading": "Saved Payment Methods and Provider Choice",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/15-subscriptions-and-recurring-payments.md",
+    "reason": "Preserve scoped lookup and make authenticated-route and actual DAL-write preconditions explicit."
+  },
+  {
+    "source": "shopware-development/references/15-subscriptions-and-recurring-payments.md",
+    "heading": "Middleware Retry Loops Cause Duplicate Renewals",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/15-subscriptions-and-recurring-payments.md",
+    "reason": "Use stable cycle uniqueness/concurrency control and reconcile unknown outcomes, including network failures."
+  },
+  {
+    "source": "shopware-development/references/16-headless-and-composable-frontends.md",
+    "heading": "`context.token` No Longer In Twig",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/16-headless-and-composable-frontends.md",
+    "reason": "Correct impossible browser-issued HttpOnly-cookie advice; retain controlled context, CSRF and credential isolation."
+  },
+  {
+    "source": "shopware-development/references/16-headless-and-composable-frontends.md",
+    "heading": "Three Cache Layers",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/16-headless-and-composable-frontends.md",
+    "reason": "Detect the actual installed layers and their freshness contracts instead of assuming all deployments have three."
+  },
+  {
+    "source": "shopware-development/references/16-headless-and-composable-frontends.md",
+    "heading": "Middleware Retry = Duplicate Orders",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/16-headless-and-composable-frontends.md",
+    "reason": "Preserve duplicate-order prevention without speculative cause claims or unsafe network-failure retries."
+  },
+  {
+    "source": "shopware-development/references/16-headless-and-composable-frontends.md",
+    "heading": "WebScale, Fastly, Varnish",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/16-headless-and-composable-frontends.md",
+    "reason": "Verify the actual proxy adapter; preserve separation of application cache clustering and HTTP proxy policy."
+  },
+  {
+    "source": "shopware-development/references/19-testing-patterns.md",
+    "heading": "Coverage As A Review Finding",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/19-testing-patterns.md",
+    "reason": "Tie regression coverage to concrete unprotected failure modes rather than automatic P1 from test count."
+  },
+  {
+    "source": "shopware-development/references/20-search-and-indexing.md",
+    "heading": "Entity Indexer Lifecycle",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/20-search-and-indexing.md",
+    "reason": "Account for both synchronous and worker execution while retaining complete indexer contracts."
+  },
+  {
+    "source": "shopware-development/references/20-search-and-indexing.md",
+    "heading": "Targeted Reindexing",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/20-search-and-indexing.md",
+    "reason": "Preserve the critical singular/full index route distinction without asserting an inevitable production incident."
+  },
+  {
+    "source": "shopware-development/references/20-search-and-indexing.md",
+    "heading": "Queue Statistics With Frosh Tools",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/20-search-and-indexing.md",
+    "reason": "Keep optional diagnostics and require installed transport/version checks rather than universal counter reliability."
+  },
+  {
+    "source": "shopware-development/references/22-code-review-protocol.md",
+    "heading": "Code Review Protocol",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/22-code-review-protocol.md",
+    "reason": "Keep coverage checks with a concise searchable index."
+  },
+  {
+    "source": "shopware-development/references/22-code-review-protocol.md",
+    "heading": "Setup",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/22-code-review-protocol.md",
+    "reason": "Make report-file creation/naming task-specific; preserve pinned baseline and reviewed scope."
+  },
+  {
+    "source": "shopware-development/references/22-code-review-protocol.md",
+    "heading": "Scope",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/22-code-review-protocol.md",
+    "reason": "Preserve evidence and provider verification; allow permitted runtime checks when requested and useful."
+  },
+  {
+    "source": "shopware-development/references/22-code-review-protocol.md",
+    "heading": "3 Passes",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/22-code-review-protocol.md",
+    "reason": "Replace mandatory repeated full scans with coverage, enumeration and risk-driven independent challenge."
+  },
+  {
+    "source": "shopware-development/references/22-code-review-protocol.md",
+    "heading": "Enumeration",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/22-code-review-protocol.md",
+    "reason": "Preserve every relevant call-site check and parameter-binding example in concise form."
+  },
+  {
+    "source": "shopware-development/references/22-code-review-protocol.md",
+    "heading": "Sibling Comparison",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/22-code-review-protocol.md",
+    "reason": "Preserve comparison as a defect lead, not proof that every divergence is wrong."
+  },
+  {
+    "source": "shopware-development/references/22-code-review-protocol.md",
+    "heading": "Findings Shape",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/22-code-review-protocol.md",
+    "reason": "Preserve actionable findings while allowing useful code/patch output at any severity and necessary behavior fixes."
+  },
+  {
+    "source": "shopware-development/references/22-code-review-protocol.md",
+    "heading": "Checked and Dismissed",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/22-code-review-protocol.md",
+    "reason": "Preserve actual checked-scope evidence without invented counts or universal report requirements."
+  },
+  {
+    "source": "shopware-development/references/22-code-review-protocol.md",
+    "heading": "When A Prior Review Exists",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/22-code-review-protocol.md",
+    "reason": "Keep confirm/reject/unresolved prior-finding tracking and changed-baseline notes."
+  },
+  {
+    "source": "shopware-development/references/22-code-review-protocol.md",
+    "heading": "Rules",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/22-code-review-protocol.md",
+    "reason": "Keep proof, limitations and coherent safe fixes without prohibiting required frontend/business corrections."
+  },
+  {
+    "source": "integrations/coderabbit/shopware-review.md",
+    "heading": "Review Baseline and Evidence",
+    "status": "corrected",
+    "destination": "integrations/coderabbit/shopware-review.md",
+    "reason": "Keep the compressed profile aligned with evidence/impact-based severity and coverage observations."
+  },
+  {
+    "source": "integrations/coderabbit/shopware-review.md",
+    "heading": "DAL, Entities, Migrations, and Backend APIs",
+    "status": "corrected",
+    "destination": "integrations/coderabbit/shopware-review.md",
+    "reason": "Separate normal deployment from explicitly authorized destructive migration execution."
+  },
+  {
+    "source": "shopware-development/references/01-source-hierarchy.md",
+    "heading": "Authority Order",
+    "status": "corrected",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/references/01-source-hierarchy.md",
+    "reason": "Make source-code precedence explicit for behavior-sensitive claims; documentation remains navigation and verified usage evidence."
+  },
+  {
+    "source": "shopware-development/references/08-analysis-and-reviews.md",
+    "ids": ["08-analysis-and-reviews:013"],
+    "status": "moved",
+    "destination": "plugins/shopware-knowledge/skills/shopware-development/SKILL.md",
+    "reason": "Keep the investigation-breadth constraint once in the entrypoint; review coverage remains in 08 and 22."
+  },
+  {
+    "source": "integrations/coderabbit/shopware-review.md",
+    "heading": "Cart, Checkout, Delivery, and Promotions",
+    "status": "corrected",
+    "destination": "integrations/coderabbit/shopware-review.md",
+    "reason": "Preserve checkout I/O safety with per-calculation deduplication and provider-derived freshness rather than mandatory cross-request caching."
+  },
+  {
+    "source": "integrations/coderabbit/shopware-review.md",
+    "heading": "HTTP Cache and Varnish",
+    "status": "corrected",
+    "destination": "integrations/coderabbit/shopware-review.md",
+    "reason": "Verify actual variation and sensitive-data isolation without declaring every context-dependent cached response defective."
+  }
+]

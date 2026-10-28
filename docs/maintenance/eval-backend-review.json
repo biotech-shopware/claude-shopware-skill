@@ -1,0 +1,176 @@
+[
+  {
+    "case": "c01",
+    "arm": "baseline",
+    "result": "pass",
+    "reason": "Detects caller-controlled paid status and arbitrary transaction selection at the state transition. The containment patch is clearly temporary; the complete fix restores provider verification, amount/currency/merchant correlation, and authorized transaction binding. Forged, cross-owner, verified-success, and replay checks are proposed. Route loading and downstream enforcement are explicitly unverified; no live exploitation is claimed. Trace confirms SKILL and references 07, 08, and 22 were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": []
+  },
+  {
+    "case": "c01",
+    "arm": "candidate",
+    "result": "pass",
+    "reason": "Detects both missing payment authority and missing transaction ownership/binding. Splitting those related trust failures does not create an unsupported extra finding. Fixes distinguish customer returns from authenticated provider callbacks and require server-held correlation and provider verification. Evidence and proposed rejection/success checks match the fixture, while persistence and deployed reachability remain conditional. Trace confirms SKILL and references 07, 08, and 22 were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": []
+  },
+  {
+    "case": "c02",
+    "arm": "baseline",
+    "result": "pass",
+    "reason": "Correctly traces the method-ID-only lookup to a charge attempt despite available customer/channel columns. Login is not confused with ownership, and opaque-ID enumeration is not invented. The parameterized ownership predicates, trusted context parameters, fail-closed handling, and zero-provider-call tests are coherent. Actual money movement and runtime wiring remain unverified. Trace confirms SKILL and reference 07 were read; no read of 15 was observed, but its relevant ownership invariant is covered semantically. No observed rubric or out-of-fixture access.",
+    "extra_issues": []
+  },
+  {
+    "case": "c02",
+    "arm": "candidate",
+    "result": "pass",
+    "reason": "Detects customer and sales-channel ownership bypass in the supplied lookup and unused context. The smallest fix scopes the existing bound query and rejects unauthorized methods before provider access; tests cover cross-customer, cross-channel, unknown, unauthenticated, and owned cases. Provider enforcement and deployed authentication are appropriately left unknown. Trace confirms SKILL and reference 07 were read; no read of 15 was observed, without a demonstrated semantic omission. No observed rubric or out-of-fixture access.",
+    "extra_issues": []
+  },
+  {
+    "case": "c03",
+    "arm": "baseline",
+    "result": "pass",
+    "reason": "Detects sequential/concurrent duplicate charge requests and the crash-after-acceptance window. The fix requires unique subscription/cycle operations and an atomic pre-charge claim, not merely a unique post-charge insert or a local transaction. Stable provider idempotency or reconciliation is explicitly conditional on capabilities missing from the interface. Concurrency and ambiguous-outcome tests are focused, and actual duplicate debits are not asserted. Trace confirms SKILL and references 07 and 15 were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": []
+  },
+  {
+    "case": "c03",
+    "arm": "candidate",
+    "result": "pass",
+    "reason": "Detects both duplicate-delivery execution and loss of the local outcome after provider acceptance. Evidence follows the charge-before-insert sequence and missing cycle uniqueness. The fix correctly combines a durable atomic claim, persisted payment inputs, stable provider operation identity, and reconciliation of uncertainty. Concurrent and crash/timeout tests address the demonstrated failure windows; provider support is not invented. Trace confirms SKILL and references 07 and 15 were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": []
+  },
+  {
+    "case": "c04",
+    "arm": "baseline",
+    "result": "partial",
+    "reason": "Detects unconditional quote calls on repeated processor invocations and proposes collector-based reuse with changed-input tests. The missing client implementation/binding is genuinely absent from the supplied files, so the conditional construction concern is supported rather than counted false. The answer appropriately leaves real remote behavior and runtime ordering unverified. However, its extra high-severity consumer finding and mandatory manual invalidation exceed the demonstrated contract. Trace confirms SKILL and references 18 and 24 were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": [
+      "Unsupported extra P1 impact: no supplied consumer reads the quote, but no requirement establishes that this partial fixture must apply it to totals. The observable unused result does not establish a high-impact business defect.",
+      "The proposed remote-cache correction mandates authorized manual invalidation without an operational requirement, contrary to the rubric.",
+      "Partial-fixture caveat: the missing binding is real locally; additional application registrations could resolve it in a complete deployment."
+    ]
+  },
+  {
+    "case": "c04",
+    "arm": "candidate",
+    "result": "pass",
+    "reason": "Detects repeated unconditional client calls and correctly notes that moving the call to a collector alone is insufficient: eligible unchanged data must be reused. Tests cover changed inputs, validity, zero values, and failure distinction. Cross-request caching is optional and provider-derived, with no mandatory admin endpoint or invented latency. The missing client binding is a supported local incompleteness concern, not a false finding. Trace confirms SKILL and references 18 and 24 were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": [
+      "Partial-fixture caveat: absent implementation/binding and autoload setup do not establish failure of a complete deployment with additional wiring.",
+      "The extra unused-quote observation is source-backed, but whether it is a business defect depends on the unspecified consumer requirement; retain the answer's conditional qualification."
+    ]
+  },
+  {
+    "case": "c05",
+    "arm": "baseline",
+    "result": "pass",
+    "reason": "Detects customer and currency collisions in the shared product-only application-cache key. The versioned, unambiguously encoded product/customer/currency key is a correct focused fix that avoids old entries, while preserving login and TTL. Proposed shared-pool tests cover both warming orders, identical tuples, guests, and expiry. Additional source dependencies and outer HTTP caching are explicitly unverified, not asserted leaks. Trace confirms SKILL and references 13 and 23 were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": []
+  },
+  {
+    "case": "c05",
+    "arm": "candidate",
+    "result": "pass",
+    "reason": "Separately identifies both demonstrated key dependencies: customer and currency. The fix uses a versioned deterministic complete tuple rather than treating TTL as isolation or automatically keying every context property. Tests exercise A/B warming, currencies, reuse, products, and guests. Source freshness and HTTP-cache behavior are kept as verification questions rather than additional defects. Trace confirms SKILL and references 13 and 23 were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": []
+  },
+  {
+    "case": "c06",
+    "arm": "baseline",
+    "result": "pass",
+    "reason": "Correctly demonstrates the two-worker pending/read/publish race and the publish-before-completion crash window. The conditional-update patch checks affected rows and is explicitly labeled incomplete without owner/expiry recovery and sink idempotency. The answer does not claim a local transaction or transport guarantees exactly-once effects. Tests address overlapping claims, crash recovery, ambiguous outcomes, and stale owners. Trace confirms SKILL and references 04 and 11 were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": []
+  },
+  {
+    "case": "c06",
+    "arm": "candidate",
+    "result": "pass",
+    "reason": "Detects concurrent publication and replay after accepted-but-unrecorded publication. The correction combines an affected-row-checked claim, durable owner/lease recovery, owner-checked completion, immutable operation identity/payload, and conditional sink deduplication or reconciliation. It explicitly rejects exactly-once guarantees from local locking and unsafe replay on expiry. Tests address contention, completed duplicates, crash/timeout recovery, and stale ownership. Trace confirms SKILL, references 04 and 11, and the Messenger implementation reference were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": []
+  },
+  {
+    "case": "c07",
+    "arm": "baseline-corrected",
+    "result": "pass",
+    "reason": "Using the corrected fixture's verified abstract-contract excerpt, detects missing getDecorated() as a concrete-class load failure and does not invent other abstract methods or a missing service tag. The signature correction and class-load/container checks are appropriate; the exact non-decorator exception API remains an explicit verification boundary. The excerpt is not misrepresented as installed or independently inspected upstream core. Trace confirms SKILL, reference 20, and the supplied contract were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": [
+      "Empty indexing bodies are additionally described as functional incompleteness, but the answer explicitly conditions business impact on missing requirements. Do not count this as proven catalog data loss or an extra P0/P1."
+    ]
+  },
+  {
+    "case": "c07",
+    "arm": "candidate-corrected",
+    "result": "pass",
+    "reason": "Detects the omitted abstract getDecorated() against the corrected fixture's supplied contract and explains class-load/possible container impact. The correction preserves the exact signature and defers the exception API to matching core verification. It correctly recognizes the existing indexer tag and distinguishes the excerpt from an installed dependency. Class-load and real-discovery tests are proposed, not claimed executed. Trace confirms SKILL, reference 20, and the supplied contract were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": [
+      "Inert indexing is observable, but the answer leaves its business severity dependent on unspecified indexed data. This is not evidence of lost catalog data or an unsupported extra P0/P1."
+    ]
+  },
+  {
+    "case": "c01",
+    "arm": "baseline-repeat",
+    "result": "pass",
+    "reason": "Again detects unverified paid status and arbitrary transaction targeting, without mistaking ownership alone for payment authority. The temporary rejection patch is explicitly containment; the full correction and forged/verified/replay tests address the rubric. Production persistence and downstream enforcement remain conditional. Trace confirms references 07, 08, and 22 were read, with no observed rubric or out-of-fixture access; no explicit SKILL file read appears in the command trace.",
+    "extra_issues": []
+  },
+  {
+    "case": "c01",
+    "arm": "candidate-repeat",
+    "result": "pass",
+    "reason": "Detects the paid-state trust-boundary failure and transaction substitution. The correction requires server-held payment correlation, provider result/amount/currency/merchant validation, and appropriate customer-return or provider-callback authentication. Proposed tests cover forged status, cross-owner/channel targets, valid success, and mismatches. It does not claim live exploitability or inspected core. Trace confirms SKILL and references 07, 08, and 22 were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": []
+  },
+  {
+    "case": "c02",
+    "arm": "baseline-repeat",
+    "result": "pass",
+    "reason": "Again detects method-ID-only charging without customer/channel predicates. The SQL correction includes trusted parameter binding, fail-closed behavior, and zero-call cross-owner/channel tests. Neither login nor opaque identifiers are treated as ownership protection, and provider money movement remains unverified. Trace confirms SKILL and reference 07 were read, with no observed rubric or out-of-fixture access; attempted local Git metadata checks failed without changing the semantic finding.",
+    "extra_issues": []
+  },
+  {
+    "case": "c02",
+    "arm": "candidate-repeat",
+    "result": "not_gradable",
+    "reason": "The repeat process exited unsuccessfully without a completed final answer. There is no completed semantic output to grade; this is not counted as defect-detection failure. The successful primary candidate result remains separate, and any replacement repeat requires later review.",
+    "extra_issues": [
+      "Runtime/incomplete-output limitation only; no semantic score or skill-quality inference is assigned to this repeat."
+    ]
+  },
+  {
+    "case": "c03",
+    "arm": "baseline-repeat",
+    "result": "pass",
+    "reason": "Detects duplicate deliveries and the accepted-charge/local-persistence gap with concrete call-order and schema evidence. The fix uses an atomic unique pre-charge cycle operation, stored payment inputs, conditional provider idempotency or reconciliation, and no blind replay of uncertainty. Tests cover concurrency and acceptance-before-failure. Actual duplicate debit and provider capabilities remain qualified. Trace confirms SKILL and references 07 and 15 were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": []
+  },
+  {
+    "case": "c03",
+    "arm": "candidate-repeat",
+    "result": "pass",
+    "reason": "Again detects sequential/concurrent duplicate charge requests and the crash-after-charge window. It correctly rejects check-then-create and post-charge uniqueness as sufficient fixes, requires a durable pre-charge claim and recoverable provider identity, and tests concurrency, lost outcomes, and stuck pending recovery. Gateway guarantees are not inferred from the interface. Trace confirms SKILL and references 07 and 15 were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": []
+  },
+  {
+    "case": "c05",
+    "arm": "baseline-repeat",
+    "result": "pass",
+    "reason": "Again detects customer/currency cache collisions and correctly explains that login and TTL do not isolate audiences. The proposed versioned hash of the complete explicit input tuple is coherent; tests cover shared-pool warming orders, identical tuples, guests, expiry, and old keys. Other pricing dimensions and HTTP effects remain unverified. Trace confirms references 13 and 23 were read, with no observed rubric or out-of-fixture access; no explicit SKILL file read appears in the command trace.",
+    "extra_issues": []
+  },
+  {
+    "case": "c05",
+    "arm": "candidate-repeat",
+    "result": "pass",
+    "reason": "Detects both customer and currency reuse in the shared application cache, with impact-sensitive severity rather than requiring one label. The fix covers the complete explicit input tuple and old-key avoidance while preserving login/TTL; shared-pool A/B, currency, hit, guest, and expiry tests are focused. Checkout, source freshness, and HTTP exposure are not invented. Trace confirms SKILL and references 13 and 23 were read, with no observed rubric or out-of-fixture access.",
+    "extra_issues": []
+  },
+  {
+    "case": "c02",
+    "arm": "candidate-repeat-retry",
+    "result": "pass",
+    "reason": "Detects the method-ID-only lookup and charge attempt without customer or sales-channel ownership checks. The fix derives both ownership predicates from trusted context, rejects missing or mismatched records before provider access, and preserves the authorized path. Tests cover cross-customer/channel rejection with zero provider calls, unknown IDs, guests, and owned success. Login is not treated as ownership, opaque-ID enumeration is not invented, and actual money movement and duplicate-charge behavior remain provider-dependent. No unsupported extra P0/P1 is reported. Trace confirms SKILL and reference 07 were read; no read of 15 was observed, without a semantic omission. No observed rubric or out-of-fixture access; the successful run left the fixture unchanged.",
+    "extra_issues": []
+  }
+]
