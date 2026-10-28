@@ -109,12 +109,19 @@ $lineItem = $this->lineItemFactoryRegistry->create([
 - Add actionable cart errors and keep them scoped to the exact line item or checkout state that failed.
 - Payment, shipping, and recurring-method validators must not widen customer access or trust browser-authored identifiers.
 
+### Cart Errors Must Survive Recalculation And Reach The Page
+
+- **`Error::isPersistent()` defaults to `true`; keep it.** The cart is recalculated several times in one request, and `Processor` carries over only `getErrors()->getPersistent()` from the original cart. A warning that returns `false` disappears on the next recalculation, before the page renders. "Persistent" does not mean stored with the cart; it means it survives recalculation.
+- **Controllers must forward the errors.** Core's storefront cart actions (including adding a promotion code) end in `traceErrors()`, which calls `StorefrontController::addCartErrors($cart, …)` to turn cart errors into flash messages. A custom controller that changes the cart and redirects without calling `addCartErrors()` drops every warning its processors raised.
+
 ## Delivery, Shipping, and Promotion Interactions
 
 - Delivery calculation and promotion calculation are part of the same checkout truth surface.
 - If you add discounts, credits, or fees, verify shipping costs, free-shipping thresholds, promotion stacking, and tax behavior.
 - Do not branch shipping or promotion logic on translated labels or storefront-only presentation state.
 - Keep shipping-method technical names stable across config and migration changes.
+- **Cart-wide promotions only see stackable product line items.** `CartScopeDiscountPackager` filters on `type === product && isStackable()`. A product line item built by hand (tests, fixtures, imports, plugin add-to-cart code) without `setStackable(true)` is skipped silently. The storefront line-item factory sets it.
+- **`calculatedCheapestPrice->hasRange()` is not only about tier prices.** `CheapestPriceContainer` sets it when any variant's price differs from the cheapest one **or** a price is tiered. A product family whose variants simply cost different amounts is a "range". Code that treats `hasRange()` as "has advanced prices" skips whole variant families.
 
 Example patterns:
 
@@ -143,6 +150,7 @@ public function process(CartDataCollection $data, Cart $original, Cart $toCalcul
 - Do not assume a cart snapshot is authoritative forever. Recalculate from the current sales-channel context when payment, shipping, currency, or rules may have changed.
 - Keep the boundary between cart calculation and order persistence explicit. Do not mutate finished orders from casual cart helpers.
 - When a renewal or post-order edit reconstructs a cart, re-run the real calculation path instead of patching totals manually.
+- **Keep `priceDefinition` when rebuilding a cart from stored data** (abandoned-cart restore, cart copy, reorder). `ProductCartProcessor` sets the definition for product line items on every calculation, but custom line items (bundle discounts, fees, credits) often receive theirs only when first added. Stripping it leaves those items without a price, and the owning processor may crash on them.
 
 ## Hot-Path Red Lines
 

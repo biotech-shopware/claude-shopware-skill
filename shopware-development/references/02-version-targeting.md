@@ -116,6 +116,15 @@ Bad: Reuse a 6.7 payment example in a 6.6 plugin without re-checking the archive
 Good: Verify the exact 6.6 payment-handler contract first, then isolate any version-sensitive seam in one service or adapter.
 ```
 
+### Upgrade Traps That Fail Silently
+
+- **Overrides of removed Twig blocks do nothing.** With `sw_extends`, a `{% block %}` that no longer exists in the parent template is never rendered, and nothing warns you. After a core upgrade, check every overridden block name against the new core template (`vendor/shopware/storefront/Resources/views/…`). Payment and shipping form overrides are common casualties on 6.7.
+- **Extending a core class ties you to an `@internal` constructor.** Core service constructors are marked `@internal` and change in minor releases. `ProductSliderCmsElementResolver` gained a fourth argument within 6.6 and was rebuilt around processors in 6.7, which broke plugins that subclassed it. Decorate the abstract class or wrap the service instead; if you must extend, expect to adjust on every update.
+- **`shopware/conflicts` blocks known-bad combinations.** When Composer refuses an update because of a conflict declared there, constrain the conflicting package below the listed version (for example a `twig/twig` upper bound). Don't remove `shopware/conflicts`.
+- **Core may now ship what a plugin built.** Check release notes for overlaps and migrate data to the core field instead of keeping two:
+  - `order.internalComment` (6.7.0.0) replaces custom "internal comment" order custom fields. Move existing values with a migration and update templates and PDFs that print it; escape it (`|nl2br` on escaped text, not `|raw`).
+  - The EU legal guarantee notice (GARAN label: `Content/LegalGuaranteeNotice`, `store-api/legal-guarantee-notice`) arrived in 6.7.14.0 and was backported to 6.6.10.25.
+
 ## Replacement Strategy
 
 Prefer small, explicit version seams over scattered conditionals:

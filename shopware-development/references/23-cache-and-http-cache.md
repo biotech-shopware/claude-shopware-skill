@@ -41,6 +41,22 @@ Any endpoint whose body varies by customer — prices, entitlements, saved addre
 
 Report this as a **data-exposure defect**, not a merchandising or personalisation bug. The blast radius is every customer sharing that cache key, and the failure is silent: nothing errors, the wrong body is simply returned.
 
+## What The HTTP Cache Key Varies On
+
+`HttpCacheKeyGenerator` builds the key from the URL and query string, the `sw-cache-hash` cookie/header, and a fixed list of request headers (`HttpCacheVariantHeaders::HEADERS` in 6.7.15: `sw-access-key`, `sw-language-id`, `sw-currency-id`, `sw-include-seo-urls`). The `sw-cache-hash` value is built from rule IDs, version, currency, tax state, and logged-in state (`HttpCacheCookieEvent` parts).
+
+Anything else does **not** split the cache, including `Accept-Language`, `X-Forwarded-For`/GeoIP, custom headers, and the guest's shipping country.
+
+- If a cacheable page varies by something outside that list, add it to the hash in an `HttpCacheCookieEvent` listener (`$event->add('country', $countryId)`), or the first visitor's variant is served to everyone. Example: a free-shipping notice that depends on the visitor's country.
+- With `CACHE_REWORK`/`PERFORMANCE_TWEAKS`, the rule-ID part narrows to the resolved rule areas (default `RuleAreas::PRODUCT_AREA`); see the `CACHE_REWORK` section.
+
+### Redirects From Cacheable Routes Get Cached
+
+`CacheResponseSubscriber` skips caching for 404s, non-GET requests, and routes without the `_httpCache` attribute. It does **not** skip 3xx responses. A redirect returned from a cacheable route (for example a language or country redirect on `frontend.home.page`) gets `s-maxage` and can be stored by the app cache, Varnish, or a CDN. Combined with the key above, one visitor's language decides where everyone is sent.
+
+- Return redirects that depend on the visitor from a non-cacheable route, or mark the response private/`no-store`. On 6.7 without `CACHE_REWORK`, `setPrivate()` alone is not enough if `setSharedMaxAge()` runs later in the same response.
+- Prefer `302` over `301` for visitor-dependent redirects. Browsers cache 301s indefinitely even when the shared cache doesn't.
+
 ## Deprecated Cache Symbols (removed in 6.8)
 
 - `CacheStateValidator`

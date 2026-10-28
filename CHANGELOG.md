@@ -52,6 +52,49 @@ All notable changes to the universal Shopware AI skill are documented in this fi
 - SKILL.md routing row, reference-map entry, and `description`/`when_to_use` triggers. `14-cli-and-dev-tooling.md` points to the new file.
 - Four local-environment should-trigger eval prompts.
 
+## [Unreleased] - missing-facts branch
+
+Facts from recent project work that existing reference files lacked. Each was checked against Shopware 6.7.15 core source, release tags on GitHub, or `shopware-cli` 0.19.1; the few that could not be traced are marked *observed* in the text.
+
+### Added
+
+- **`04-plugin-backend.md`**:
+  - Write events carry only the written fields; use `requestChangeSet()` for old values.
+  - Deletes fire `<entity>.deleted`, not `.written`; use `EntityDeleteEvent` to read the owner before the delete.
+  - Custom translations need a system-language row, because reads start from it.
+  - `EntitySearchResult` collection methods, including iteration, are deprecated for 6.8.
+  - DBAL 4 `ArrayParameterType`.
+  - No dynamic properties on structs.
+- **`18-cart-and-checkout-pipeline.md`**:
+  - Non-persistent cart errors are dropped on recalculation.
+  - Controllers must call `addCartErrors()`.
+  - Cart-wide promotions skip non-stackable line items.
+  - Displayed prices must round the way the cart does.
+  - `hasRange()` is true whenever variant prices differ.
+  - Keep `priceDefinition` when rebuilding carts.
+- **`23-cache-and-http-cache.md`**:
+  - What the HTTP cache key varies on (not `Accept-Language`, GeoIP or country), with `HttpCacheCookieEvent` to add parts.
+  - 3xx responses from cacheable routes get `s-maxage`.
+- **`02-version-targeting.md`**:
+  - Overrides of removed Twig blocks do nothing.
+  - `@internal` constructors break subclasses.
+  - `shopware/conflicts`.
+  - Core now ships `order.internalComment` (6.7.0.0) and the legal guarantee notice (6.7.14.0, backported to 6.6.10.25).
+- **`21-internationalization-and-snippets.md`**:
+  - Database snippets override file snippets.
+  - From 6.7.10, regional locales fall back to the canonical locale's files (`nl-BE` → `nl-NL`).
+  - Custom fields are stored per language on translated entities.
+- **`13-context-and-commerce.md`**: e-invoices (ZUGFeRD/XRechnung) for tax-free orders take the VAT basis from `totalPrice`; report prepaid amounts with `withPaidAmount()`.
+- **`11-quality-and-operations.md`**:
+  - The plugin icon path.
+  - Ship flows inactive.
+  - Notes for the Store tester.
+  - `shopware-cli account producer extension info pull/push/upload`.
+  - Shopware Account session expiry and `shopSecret` rotation.
+- **`26-plugin-lifecycle-and-activation.md`**:
+  - The exact install order: `install()` → migrations → custom fields → `postInstall()`.
+  - Plugin labels come from Composer data, so run `composer update` and `plugin:refresh` after renaming.
+
 ## [v0.9.0-dev] - 2026-08-26 (dev branch)
 
 A correctness release. The skill's own rules were reviewed the way code is reviewed, against Shopware core source and official docs. **33 defects were found and fixed.** Nine placed code or config where it would never execute; one actively inverted into a production incident; three would fatal or fail validation at runtime.

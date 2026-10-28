@@ -17,6 +17,7 @@ Nothing in a normal test suite catches this. Treat "does this need a version bum
 - **There is no `postActivate()` method.** `PluginPostActivateEvent` exists as an event, but there is nothing to override.
 - `activate()` and `deactivate()` run *before* the state change.
 - Fresh install runs `install()` → `postInstall()`. Update runs `update()` → `postUpdate()`. `update()` never runs on a fresh install.
+- Inside `PluginLifecycleService::installPlugin()` the exact order is `install()` → plugin migrations → custom-field XML sync → `postInstall()`. Tables a migration creates **do not exist yet in `install()`**. Seed data that needs them (mail templates, flows, default records) in the migration itself or in `postInstall()`. A migration that inserts mail templates therefore also runs on a fresh install.
 
 ### What Does Not Run On Activate
 
@@ -48,6 +49,8 @@ Two details that change how you debug this:
 So a targeted `plugin:update <Name>` will run `update()` without a bump, while the automated paths will not. Use that to force a sync when debugging; do not rely on it in deployment.
 
 **For Composer-managed plugins in `vendor/`, editing `composer.json` is not enough.** The version comes from the resolved package in `composer.lock` — run `composer update` for the new version to be visible at all.
+
+The same applies to the plugin's **name and description** (`extra.label`, `extra.description`). `PluginFinder` takes Composer-managed plugins from Composer's installed-package data. A local copy in `custom/plugins/` wins, but `custom/static-plugins/` path packages are not local copies. After renaming a static plugin, run `composer update <package>` and then `plugin:refresh` before the admin shows the new label.
 
 ## What Needs A Version Bump To Reach Production
 
