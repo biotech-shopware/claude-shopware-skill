@@ -75,6 +75,7 @@ No MCP runtime, hook, external service, or additional plugin is required. When i
 - [Plugin documentation](plugins/shopware-knowledge/README.md) and [detailed 0.10.0 changes](plugins/shopware-knowledge/CHANGELOG.md)
 - [Preservation ledger](docs/maintenance/preservation-ledger.md), [correction evidence](docs/maintenance/corrections.md), and [validation results](docs/maintenance/validation-results.md)
 - [Installation checks](docs/verify-install.md) and [upstream handoff](docs/maintenance/upstream-handoff.md)
+- [Prepared review description and QA guide](docs/maintenance/pull-request.md)
 - [CodeRabbit review profile](integrations/coderabbit/shopware-review.md); copy to `.rules/shopware-review.md` in the reviewed repository
 - [Future optional retrieval design](docs/maintenance/retrieval-design.md)
 - [Historical changelog](CHANGELOG.md) and [MIT license](LICENSE)
