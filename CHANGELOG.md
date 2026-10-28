@@ -26,6 +26,32 @@ All notable changes to the universal Shopware AI skill are documented in this fi
 - SKILL.md routing row, reference-map entry, and `description`/`when_to_use` triggers for CMS. `12-extension-patterns.md` points to the new file.
 - Four CMS should-trigger eval prompts.
 
+## [Unreleased] - local-dev-environment branch
+
+### Added
+
+- **`references/28-local-dev-environment.md`**, covering local development with `shopware-cli project` and Docker. Verified against `shopware-cli` 0.19.1 help and config schema, the compose files it generates for 6.7 projects, and core source. It covers:
+  - How the files relate: `.config/shopware-project.yml` (and the legacy name), the per-machine `.local.yml`, the generated `compose.yaml`, which is never edited, and `compose.override.yaml`.
+  - Services and default ports. The generated stack differs per project: `search`, `queue`, `worker`, `scheduler`, and `cache` appear only in some.
+  - `dev start` / `status` / `stop` / `stop --remove-data` / `install`, `--on-port-conflict random`, and the shared Traefik `project proxy`.
+  - Running commands in `web`: `project console` / `composer` need the stack up, `docker compose exec -T` for agents, never host PHP. Also `sql`, `dump --anonymize`, `logs`, `admin-api`, and `worker`.
+  - A cheapest-rebuild table, watcher flags, and stray build output.
+  - Git worktrees are not mounted into the running stack.
+  - Locally, messages and scheduled tasks need a consumer, and running workers must be restarted after code changes because they keep the old code in memory. OpenSearch is enabled whenever the `search` service exists, and disabling it in an override must cover every kernel-booting service.
+  - Mail safety: `core.mailerSettings.emailAgent` in `system_config` overrides `MAILER_DSN`, so a production dump can send real mail.
+  - The image proxy for missing production media.
+  - Testing pitfalls: secure cookies on http, forwarded IPs, the HTTP cache in dev, DB snippet overrides.
+  - Migrating from devenv, and what a project `CLAUDE.md` should contain.
+  - Migrating the devenv database:
+    - dump before deleting `.devenv/`, using `project dump` connection flags
+    - match the engine before the first start (MariaDB is the default)
+    - import with `project sql --file` or by streaming into the `mariadb` client
+    - `DATABASE_URL` from the container environment wins over `.env.local`
+    - fix the sales channel domain, rebuild indexes and theme, and align admin credentials
+  - `dev install` needs `shopware/deployment-helper` in `composer.json`.
+- SKILL.md routing row, reference-map entry, and `description`/`when_to_use` triggers. `14-cli-and-dev-tooling.md` points to the new file.
+- Four local-environment should-trigger eval prompts.
+
 ## [v0.9.0-dev] - 2026-08-26 (dev branch)
 
 A correctness release. The skill's own rules were reviewed the way code is reviewed, against Shopware core source and official docs. **33 defects were found and fixed.** Nine placed code or config where it would never execute; one actively inverted into a production incident; three would fatal or fail validation at runtime.

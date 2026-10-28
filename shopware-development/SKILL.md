@@ -10,7 +10,8 @@ description: >-
   (Shopping Experiences), storefront Twig/JS/SCSS,
   administration (Meteor, Pinia, Vite), app extensions, Store API and Admin
   API, snippets and i18n, accessibility (WCAG/EAA), headless frontends,
-  code review with a 3-pass protocol, and multi-plugin audits.
+  code review with a 3-pass protocol, multi-plugin audits, and the local
+  shopware-cli Docker environment.
 when_to_use: >-
   Use for any Shopware 6 question, whether or not a file is open. Trigger
   phrases: "review my Shopware plugin", "audit this Shopware code", "fix
@@ -19,7 +20,9 @@ when_to_use: >-
   installer run", "why is Shopware invalidating too much cache", "Shopware
   Twig template", "Shopware Meteor / Pinia / Vite", "Shopware accessibility
   audit", "Store API extension", "shopware indexer / reindex", "shopware
-  snippet / translation", "Shopware CMS element / block", "slot config".
+  snippet / translation", "Shopware CMS element / block", "slot config",
+  "shopware-cli project dev", "local Shopware
+  Docker environment".
 argument-hint: "[plan|implement|review|audit|research] <task description>"
 allowed-tools:
   - Read
@@ -85,6 +88,7 @@ When the routing matrix points to a number like `07`, open `references/07-paymen
 | `patch`, `composer-patches`, `PHPStan`, `php-cs-fixer`, `shopware-rector`, `Frosh Tools` | `25` | `11` for quality gates, `14` for CLI, `02` for backport policy |
 | `external API in cart`, `TaxJar`, `Avalara`, `tax calculation cache`, `third-party cart data` | `24` | `18` pipeline, `04` DI, `11` operations |
 | `CMS`, `Shopping Experiences`, `cms element`, `cms block`, `slot config`, `slotConfig`, `sw-cms`, `CmsElementResolver` | `27` | `05` storefront templates, `06` admin components, `23` rule-based visibility, `21` translated content |
+| `shopware-cli project`, `project dev`, `compose.yaml`, `compose.override.yaml`, `docker compose exec`, `.shopware-project.yml`, `local environment`, `Mailpit`, `devenv`, `Lando` | `28` | `14` CLI, `20` OpenSearch, `11` operations, `21` DB snippet overrides |
 | `plugin lifecycle`, `version bump`, `plugin:refresh`, `plugin:update`, `updateDestructive`, `custom field installer`, `didn't run after deploy` | `26` | `04` migrations, `12` custom fields, `02` version split |
 
 Accessibility, ADA, WCAG, VPAT, screen reader, keyboard, form, focus, modal, storefront UX, or frontend audit tasks always read `05`, `10`, and `17`.
@@ -148,6 +152,7 @@ Before proposing or editing, inventory mutation surfaces, trust boundaries, owne
 - [references/25-patching-and-dependency-tooling.md](references/25-patching-and-dependency-tooling.md) composer-patches, PHPStan/PHPCS pinning, shopware-rector, Frosh Tools, mysqldump
 - [references/26-plugin-lifecycle-and-activation.md](references/26-plugin-lifecycle-and-activation.md) lifecycle methods, version bump chain, what needs a bump to deploy, `updateDestructive`
 - [references/27-cms-elements-and-blocks.md](references/27-cms-elements-and-blocks.md) slot config storage and override merge, `sw-cms-inherit-wrapper`, admin registration and previews, custom page types, resolvers, rule-based visibility, translating CMS content
+- [references/28-local-dev-environment.md](references/28-local-dev-environment.md) `shopware-cli project dev`, generated `compose.yaml` and overrides, running commands in `web`, cheapest rebuilds, queue/scheduler/OpenSearch locally, mail safety with production dumps, testing pitfalls, devenv/Lando migration
 
 ## It's Working If
 

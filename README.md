@@ -63,7 +63,8 @@ claude-shopware-skill/
         ├── 24-external-api-caching-in-cart.md  # v0.8.0-dev
         ├── 25-patching-and-dependency-tooling.md # v0.8.0-dev
         ├── 26-plugin-lifecycle-and-activation.md # v0.9.0-dev
-        └── 27-cms-elements-and-blocks.md       # unreleased (cms branch)
+        ├── 27-cms-elements-and-blocks.md       # unreleased (cms branch)
+        └── 28-local-dev-environment.md         # unreleased (local-dev-environment branch)
 ```
 
 ## Branches
