@@ -15,11 +15,15 @@ Prepared `shopware-knowledge` **0.10.0** for review, not publication. Native/por
 | Claude manifests | Native plugin and repository marketplace pass the installed Claude validator |
 | Claude installation | One-step local-marketplace installation into a separate documented configuration directory succeeds; listed/enabled at 0.10.0; installed runtime files match the candidate byte-for-byte |
 | Codex discovery | Native marketplace catalog lists the available plugin at 0.10.0; temporary project-skill installation loads actual relative references in live CLI traces |
+| GitHub branch installation | Official Codex installer and Claude one-command marketplace install both fetch `ai-tooling-refactoring` successfully; downloaded runtime files match the source byte-for-byte |
+| Downloaded-skill smoke | Codex CLI loads the GitHub-installed skill and its relative references, keeps the formatter control clean, and leaves the fixture unchanged |
 | Codex semantic cases | 14 paired cases reviewed by meaning against fixed source/rubrics; expected defects preserved, three clean/compatibility controls stay clean, no new unsupported P0/P1 observed |
 | Codex repetition | Payment authority, saved-method ownership, renewal idempotency and cache isolation repeated on unchanged fixtures in both arms; one model-capacity failure is excluded and retried with the same model |
 | Natural-language discovery | Two unprefixed CLI prompts load the project skill and appropriate references; pricing defect detected and pure-formatter control remains clean |
 | Host integration | Versions, generated issue registrations, manifests, package/export checks and all 28 focused Codex registry BATS tests pass in the pinned host checkout |
 | Formatting/privacy | Diff whitespace checks pass; runtime Markdown has no personal paths, private-conversation provenance or platform-specific invocation instructions |
+
+The [GitHub validation workflow](https://github.com/biotech-shopware/claude-shopware-skill/actions/runs/40743615151) passed for implementation commit `5d2c8318d277cb54359c02d37bf054e75acd3f38`. Follow-up documentation commits do not change the tested runtime corpus; their CI status must still be checked separately.
 
 ## Behavioral Evidence
 
