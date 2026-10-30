@@ -1,30 +1,17 @@
 # Changelog
 
-All notable changes to the universal Shopware AI skill are documented in this file.
+## [0.10.0] - Unreleased
 
-## [Unreleased] - cms branch
+- Prepare the skill-only `shopware-knowledge` plugin for Claude Code and Codex with the Shopware AI Coding Tools layout, dual manifests/marketplaces, portable export, and standalone installation.
+- Integrate CMS, local-development, missing-facts, and Administration/storefront contributions while preserving authorship. Consolidate overlapping unreleased notes; detailed adopted behavior is documented in the plugin changelog and preservation ledger.
+- Simplify mode/topic routing without reducing investigation breadth. Preserve business invariants and examples; correct review severity, consent lifecycle, cache/provider policy, retries, migrations, query bounds, and operational assumptions.
+- Add rule-level preservation accounting, source/applicability metadata, package validation, fixed behavioral regression cases, and installation/export checks. Keep detailed PR/QA and findings templates task-specific.
+- Document source maintenance and a future optional deterministic retrieval layer. No MCP runtime, hooks, or service dependency is added; no release tag is published during preparation.
+- Verify installation from the pushed GitHub branch through both the official Codex installer and Claude's one-command marketplace flow; byte-compare installed runtime content. Record passing Codex smoke/paired cases and CI while keeping authenticated Claude behavior an explicit remaining gate.
+- Finalize the upstream plugin documentation, duplicate-install troubleshooting, detailed PR/QA handoff, and refreshed host checks. Bundle the MIT notice in native and portable skill installations, with missing-notice regression tests. Keep local environment limitations distinct from CI results.
+- Submit the upstream-ready branch for review, link source and upstream PRs, and repeat real GitHub installation/file-parity checks for both clients plus the read-only Codex clean-control smoke. Verify all 1,559 host BATS cases in a compatible non-root Linux environment. Keep upstream workflow approval and authenticated Claude behavior as explicit gates.
 
-### Added
-
-- **`references/27-cms-elements-and-blocks.md`**, a deep reference for Shopping Experiences work. Sourced from real project work and checked against Shopware 6.7.15 core and admin source. It covers:
-  - Slot config is a `TranslatedField`, so every setting is per language, not only text.
-  - `overwriteSlotConfig()` deep-merges entity overrides and never removes keys. That is why stale override keys (old `navigation` vs 6.7 `navigationArrows`) make a block work locally and break on staging.
-  - `<sw-cms-inherit-wrapper>` (6.7.5.0+) for per-page overrides, including `:key="isInherited"` on rich editors and its system-language behaviour.
-  - Admin pitfalls:
-    - the 6.7 placeholder path
-    - `this.$set` removed in Vue 3
-    - `sw-select-field` dropping `<option>` children
-    - `update:value` vs `update:model-value`
-    - `disabledConfigInfoTextKey`
-    - the single-block `sw-cms-visibility-config`
-  - Custom page types, the hidden `product-listing` block, `TYPE_MAPPING_ENTITIES` scope, and default-layout config keys.
-  - Resolvers: autoconfigured tag, `FieldConfig` sources, `product_media.media` not autoloaded, sanitizing before `|raw`.
-  - Server-side handlers must resolve entity overrides like `CmsFormSlotConfigResolver` does.
-  - Full-width sections and the block `.row` overflow; the layout `cssClass` can't reach the breadcrumb.
-  - Translating CMS content without freezing layout settings.
-  - Layout content is database state and does not deploy.
-- SKILL.md routing row, reference-map entry, and `description`/`when_to_use` triggers for CMS. `12-extension-patterns.md` points to the new file.
-- Four CMS should-trigger eval prompts.
+See [the detailed plugin changelog](plugins/shopware-knowledge/CHANGELOG.md) for rationale and [validation results](docs/maintenance/validation-results.md) for executed versus pending checks.
 
 ## [v0.9.0-dev] - 2026-08-26 (dev branch)
 
@@ -34,7 +21,7 @@ A correctness release. The skill's own rules were reviewed the way code is revie
 
 These are recorded rather than quietly edited, because the reason a rule was wrong is worth more than the rule.
 
-- **`/api/_action/indexing` with `{"only": [...]}` did the opposite of what was documented.** That route reads no request body; it calls `sendIndexingMessage([], $skips)`, and an empty list means *every registered indexer*. The documented "targeted rebuild" queued a full site-wide reindex and returned `200`, not `204`. The route that accepts `only` is `POST /api/_action/index` (singular). Sourced from a Slack thread and encoded without verification. `references/20`.
+- **`/api/_action/indexing` with `{"only": [...]}` did the opposite of what was documented.** That route reads no request body; it calls `sendIndexingMessage([], $skips)`, and an empty list means *every registered indexer*. The documented "targeted rebuild" queued a full site-wide reindex and returned `200`, not `204`. The route that accepts `only` is `POST /api/_action/index` (singular). `references/20`.
 - **`updateDestructive()` — "separate destructive operations into it"** meant required schema work never ran. `runMigrations()` → `migrateInPlace()` → `MigrationRuntime::migrate()` calls `update()` only; `updateDestructive()` is reachable solely from `bin/console database:migrate-destructive`, which merchants do not run for plugins. `references/04`, `03`.
 - **`CategoryLevelLoaderCacheKeyEvent` namespaced `Category\SalesChannel\`** — the real namespace is `Category\Event\`. `::class` resolves without an existence check, so a subscriber registered cleanly and never fired, producing exactly the stale/leaked navigation the rule existed to prevent. `references/04`, `23`.
 - **Elasticsearch decoration example defined `mapping()`** — the contract is `getMapping(Context $context)`. The decorator compiled, was never called, and the custom field silently never reached the index. `references/20`.
@@ -115,7 +102,7 @@ These are recorded rather than quietly edited, because the reason a rule was wro
 
 ### Note on sources
 
-Two of the worst defects (`/api/_action/indexing`, and one cache claim) came from Slack-sourced material added in v0.8.0-dev and encoded without checking against core. Slack and project-anecdote sources are now the lowest-confidence input class in this repo and should be verified before encoding, not after.
+Previously unverified guidance included incorrect indexing and cache claims. Behavior-sensitive rules now require matching stable-source verification.
 
 ## [v0.8.0-dev] - 2026-08-21 (dev branch)
 
@@ -143,15 +130,15 @@ This entry documents the `dev` branch. It is not merged to `main` yet. Install v
 ### New reference files
 
 - `references/22-code-review-protocol.md` — verbatim 3-pass review protocol (setup, scope, passes, findings shape, prior-review handling, rules). Codified from a battle-tested review prompt.
-- `references/23-cache-and-http-cache.md` — delayed cache invalidation defaults per version (6.6=20s, 6.7=5min with `cache_rework`), `sw-cache-hash` narrowed to price-relevant rules, `CACHE_REWORK` flag (renamed from `CACHE_CONTEXT_HASH_RULES_OPTIMIZATION` in 6.7.5), removed `Cached*Route` classes, deprecated cache state symbols, ESI header/footer, external Varnish/Fastly integration, `NavigationRoute` cache-key event, invalidation-cost warnings from real production data. Sources: release notes 6.7.0/6.7.5/6.7.6/6.7.11, UPGRADE-6.7.md, Rune Laenen Slack threads Aug 2026.
-- `references/24-external-api-caching-in-cart.md` — TaxJar-style caching contract for any plugin calling an external API from a `CartDataCollector` / `CartProcessor`. Cache key components, TTL rules (8 hours default for tax/shipping providers), admin invalidation route pattern, live-check on order placement, extendability requirements, provider-side auto-invalidation ideal case, review prompts. Source: real-world TaxJar plugin review thread Aug 2026.
-- `references/25-patching-and-dependency-tooling.md` — `cweagans/composer-patches` for vendor patches, backport policy for 6.6 fixes only in 6.7, PHPStan/PHPCS pinning (1.12.5/3.64.0) with `--memory-limit=2G`, `FriendsOfShopware/shopware-rector` set list `SHOPWARE_6_7_0` with specific rectors, `FriendsOfShopware/FroshTools` for in-admin observability with 6.6 counter caveats, canonical `mysqldump` with `--single-transaction --routines --hex-blob` and `DEFINER=` stripping, security audit workflow, `auth.json` guidance. Sources: laenen.me blog posts, FriendsOfShopware GitHub, Rune Slack Aug 2026.
+- `references/23-cache-and-http-cache.md` — delayed cache invalidation defaults per version (6.6=20s, 6.7=5min with `cache_rework`), `sw-cache-hash` narrowed to price-relevant rules, `CACHE_REWORK` flag (renamed from `CACHE_CONTEXT_HASH_RULES_OPTIMIZATION` in 6.7.5), removed `Cached*Route` classes, deprecated cache state symbols, ESI header/footer, external Varnish/Fastly integration, `NavigationRoute` cache-key event, invalidation-cost warnings from real production data. Sources: release notes 6.7.0/6.7.5/6.7.6/6.7.11, UPGRADE-6.7.md.
+- `references/24-external-api-caching-in-cart.md` — TaxJar-style caching contract for any plugin calling an external API from a `CartDataCollector` / `CartProcessor`. Cache key components, TTL rules (8 hours default for tax/shipping providers), admin invalidation route pattern, live-check on order placement, extendability requirements, provider-side auto-invalidation ideal case, review prompts.
+- `references/25-patching-and-dependency-tooling.md` — `cweagans/composer-patches` for vendor patches, backport policy for 6.6 fixes only in 6.7, PHPStan/PHPCS pinning (1.12.5/3.64.0) with `--memory-limit=2G`, `FriendsOfShopware/shopware-rector` set list `SHOPWARE_6_7_0` with specific rectors, `FriendsOfShopware/FroshTools` for in-admin observability with 6.6 counter caveats, canonical `mysqldump` with `--single-transaction --routines --hex-blob` and `DEFINER=` stripping, security audit workflow, `auth.json` guidance. Sources: laenen.me blog posts, FriendsOfShopware GitHub.
 
 ### Existing reference file updates
 
 - `references/01-source-hierarchy.md` — added ownership bullets for files 22, 23, 24, 25.
 - `references/02-version-targeting.md` — added runtime version matrix (PHP 8.4 default, 8.5 supported 6.7.6+, Symfony 7.3 baseline 6.7.2, Symfony 7.4 from 6.7.7, `php-redis` 6.1+ from 6.7.7, MySQL settings), Language Pack sunset in 6.8 with `translation:install --locales`, backport policy note (not all 6.7 fixes backport to 6.6; example PR #18205 6.7.13.0+ only; use composer-patches).
-- `references/04-plugin-backend.md` — added FK naming change `fk__table__col` and `TableHelper`, custom field snake_case rule, `EntityDefinition::__construct` deprecation, `ScheduledTaskHandler` `LoggerInterface` requirement, messenger message size cap `shopware.messenger.message_max_kib_size`, `WEBHOOKS_REWORK` transport with retry ladder, `NavigationRoute` `CategoryLevelLoaderCacheKeyEvent` subscription, Sync API foreign-key resolvers (technical names/ISO codes), state machine per-entity locking, Store-API `limit` cap, `ResetInterface` for FrankenPHP/RoadRunner, product `states` → `type` model, sales channel repository default from Rune Slack.
+- `references/04-plugin-backend.md` — added FK naming change `fk__table__col` and `TableHelper`, custom field snake_case rule, `EntityDefinition::__construct` deprecation, `ScheduledTaskHandler` `LoggerInterface` requirement, messenger message size cap `shopware.messenger.message_max_kib_size`, `WEBHOOKS_REWORK` transport with retry ladder, `NavigationRoute` `CategoryLevelLoaderCacheKeyEvent` subscription, Sync API foreign-key resolvers (technical names/ISO codes), state machine per-entity locking, Store-API `limit` cap, `ResetInterface` for FrankenPHP/RoadRunner, product `states` → `type` model, sales-channel repository guidance.
 - `references/05-storefront-and-themes.md` — added `controllerName`/`controllerAction` → `activeRoute` (Twig/JS/CSS), cookie provider replaced by `CookieGroupCollectEvent`, global storefront event bus `window.Shopware.emit`/`on` + `PluginManager.callPluginMethod` (6.7.11), Vite dev server `composer storefront:dev-server` (6.7.11), theme config auto-exposed as CSS custom properties `var(--sw-*)`, `theme.json` per-file references `@BundleName/…`, `context.token` removed from Twig (`GHSA-6w82-v552-wjw2`), ESI header/footer routes with detailed extension pattern, `sw_breadcrumb_full*` requires `SalesChannelContext`, EAA-driven markup baseline (1rem font-size, `sw_icon` aria-hidden default, `<ul>`/`<li>` line items).
 - `references/06-administration-and-apps.md` — added Vite + Pinia + Vue 3 details (async components by default, `@vue:mounted` for refs, `mapVuexState` legacy vs `mapState` Pinia, `$tc` shimmed), full Meteor components mapping table (`sw-button` → `mt-button`, 20 renames), admin codemod command with `-v 6.7`, `sw-entity-listing` `items` → `dataSource`, rule builder condition contract updates (`LineItemProductStatesRule` → `LineItemProductTypeRule`, `LineItemPurchasePriceRule` type change, `sw-condition-generic` replaces specific components, `sw-condition-field-errors`), filesystem `visibility` top-level, OAuth `scope` string not array + `/api/oauth/authorize` removal, MCP server integration (`/api/_mcp`, `mcp.tool`/`mcp.prompt`/`mcp.resource` tags, `debug:mcp` CLI, `MCP_SERVER` flag removed 6.7.14), payment/shipping `technicalName` non-nullable warning with `temporary_<id>` auto-migration risk.
 - `references/07-payments.md` — added `AbstractPaymentHandler` consolidation (5 legacy interfaces deprecated, `pay/finalize/validate/recurring/refund` + `supports()`), `shopware.payment.method` single DI tag, handler receives only `orderTransactionId` + request + `Context`, `technicalName` discipline with plugin prefix, SwagPayPal 6.7 reference architecture (single abstract + per-method subclasses, three lifecycle methods), Order `primaryOrderTransaction` field, cart-token vs context-token pitfall section, middleware retry = duplicate orders section, external API in cart cross-reference to `24`.
@@ -184,15 +171,13 @@ This entry documents the `dev` branch. It is not merged to `main` yet. Install v
 
 - Frontmatter parses as valid YAML (name, description as `>-`, `when_to_use` as `>-`, `paths` as list, `allowed-tools` as list, `argument-hint`).
 - Reference file count: 25 (was 21 in v0.7.3).
-- Every added rule is cited to a Shopware release note, ADR, developer.shopware.com doc, Rune Laenen blog post, or a specific Rune Slack thread.
-- Rune's actual Slack channels are `#altus-nova_shopware` and `#webscale-shopware-altusnova` (no `nu-tech` channel exists — search returned empty).
+- Earlier additions recorded source references; subsequent correctness releases revalidated behavior-sensitive claims against stable core.
 
 ### Sources cited
 
 - Shopware release notes 6.7.0 through 6.7.13 on developer.shopware.com/release-notes/6.7.
 - `UPGRADE-6.7.md` on github.com/shopware/shopware.
-- Rune Laenen laenen.me blog posts on PHPStan setup, composer-patches, mysqldump.
-- Rune Laenen Slack messages Aug 2026 (`#altus-nova_shopware`, `#webscale-shopware-altusnova`, DMs).
+- Public community articles on PHPStan, reproducible patches, and database dumps.
 - FriendsOfShopware GitHub org (FroshTools, shopware-rector).
 - SwagPayPal 6.7 refactor announcement on shopware.com/en/news.
 - developer.shopware.com performance tweaks, cart processor/collector, Store API add-route, Meteor components, Language Pack migration, country-agnostic-language-layer ADR.

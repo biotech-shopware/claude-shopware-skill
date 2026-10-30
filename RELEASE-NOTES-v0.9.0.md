@@ -71,7 +71,7 @@ The second — a contract-review file — split cleanly: its Shopware-specific h
 
 `references/01-source-hierarchy.md` already defines a Core Source Verification Gate: verify a symbol exists before naming it, and state the gap when you cannot. v0.8.0-dev did not apply that gate to itself.
 
-Three of the defects came from Slack-sourced project anecdotes encoded without checking against core — now the lowest-confidence input class in this repo.
+Several earlier rules were encoded without matching-source verification; verify behavior-sensitive claims before publishing them.
 
 The countermeasure is mechanical, in `docs/verify-install.md`: measure the frontmatter budget, assert no `paths` key, check that every named command exists, and spot-check citations against what they claim. Checks that fail loudly, rather than a resolution to be more careful.
 

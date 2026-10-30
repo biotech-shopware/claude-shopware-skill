@@ -1,0 +1,164 @@
+diff --git a/.gitignore b/.gitignore
+--- a/.gitignore
++++ b/.gitignore
+@@ -59,2 +59,6 @@
+ # BATS testing framework (installed locally via .github/scripts/setup-bats.sh)
+ .bats/
++
++# Python package validation and evaluation
++__pycache__/
++*.py[cod]
+diff --git a/.agents/plugins/marketplace.json b/.agents/plugins/marketplace.json
+index 027aca4..e5ef7c9 100644
+--- a/.agents/plugins/marketplace.json
++++ b/.agents/plugins/marketplace.json
+@@ -12,6 +12,17 @@
+         "authentication": "ON_INSTALL"
+       },
+       "category": "Developer Tools"
++    },
++    {
++      "name": "shopware-knowledge",
++      "source": {
++        "source": "local",
++        "path": "./plugins/shopware-knowledge"
++      },
++      "policy": {
++        "installation": "AVAILABLE"
++      },
++      "category": "Developer Tools"
+     }
+   ]
+ }
+diff --git a/.claude-plugin/marketplace.json b/.claude-plugin/marketplace.json
+index 2cfb121..cd115e0 100644
+--- a/.claude-plugin/marketplace.json
++++ b/.claude-plugin/marketplace.json
+@@ -13,6 +13,7 @@
+   },
+   "plugins": [
+     { "name": "dev-tooling", "source": "./plugins/dev-tooling" },
++    { "name": "shopware-knowledge", "source": "./plugins/shopware-knowledge" },
+     { "name": "test-writing", "source": "./plugins/test-writing" },
+     { "name": "chunkhound-integration", "source": "./plugins/chunkhound-integration" },
+     { "name": "ci-failure-interpretation", "source": "./plugins/ci-failure-interpretation" },
+diff --git a/.github/ISSUE_TEMPLATE/plugin_component_other.yml b/.github/ISSUE_TEMPLATE/plugin_component_other.yml
+index 432ee6a..b8aa221 100644
+--- a/.github/ISSUE_TEMPLATE/plugin_component_other.yml
++++ b/.github/ISSUE_TEMPLATE/plugin_component_other.yml
+@@ -42,6 +42,7 @@ body:
+         - plugin-setup
+         - shopware-documentation
+         - shopware-env
++        - shopware-knowledge
+         - test-writing
+         - Other
+     validations:
+diff --git a/.github/ISSUE_TEMPLATE/skill_issue.yml b/.github/ISSUE_TEMPLATE/skill_issue.yml
+index 7ea1984..ab02f3d 100644
+--- a/.github/ISSUE_TEMPLATE/skill_issue.yml
++++ b/.github/ISSUE_TEMPLATE/skill_issue.yml
+@@ -45,6 +45,7 @@ body:
+         - plugin-setup / dev-tooling-setting-up
+         - shopware-documentation / structuring-documentation
+         - shopware-env / dev-environment-bootstrapping
++        - shopware-knowledge / shopware-development
+         - test-writing / phpunit-integration-test-generation
+         - test-writing / phpunit-integration-test-reviewing
+         - test-writing / phpunit-integration-to-unit-migrating
+diff --git a/README.md b/README.md
+index 22ff62a..65de709 100644
+--- a/README.md
++++ b/README.md
+@@ -18,11 +18,12 @@ Add the marketplace, then install the plugins you need:
+ 
+ Restart Claude Code after installing plugins that include MCP servers. Once setup is complete, you can uninstall `plugin-setup` to free up description budget (`/plugin uninstall plugin-setup@shopware-ai-coding-tools`).
+ 
+-On OpenAI Codex, add the same marketplace and install `dev-tooling` — the only plugin here with a Codex manifest:
++On OpenAI Codex, add the same marketplace and install `dev-tooling` for MCP tools or `shopware-knowledge` for development and review skills:
+ 
+ ```bash
+ codex plugin marketplace add shopwareLabs/ai-coding-tools
+ codex plugin add dev-tooling@shopware-ai-coding-tools
++codex plugin add shopware-knowledge@shopware-ai-coding-tools
+ ```
+ 
+ ## 🛠️ Recommended Setup
+@@ -36,6 +37,7 @@ These plugins work best alongside a few Claude Code tweaks. Turn on `ENABLE_TOOL
+ | Plugin                                                    | Description                                                                                                                              | Components                                          |
+ |-----------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------|
+ | [dev-tooling](#dev-tooling)                               | PHPStan, ECS, PHPUnit, ESLint, Stylelint, Jest, and more via MCP servers.                                                                | 🔌 MCP · 🪝 Hooks · 🤖 Agents                       |
++| [shopware-knowledge](#shopware-knowledge)                 | Version-aware Shopware 6.6/6.7 development and review guidance for Claude Code and Codex.                                                  | 🎯 Skills                                           |
+ | [test-writing](#test-writing)                             | Automated PHPUnit test generation and validation for Shopware 6.                                                                         | 🎯 Skills · 🤖 Agents · 🔌 MCP                      |
+ | [chunkhound-integration](#chunkhound-integration)         | Semantic code research using ChunkHound.                                                                                                 | 🔌 MCP · 🪝 Hooks · 🎯 Skills · 🤖 Agents           |
+ | [ci-failure-interpretation](#ci-failure-interpretation)   | CI failure log interpretation for GitHub Actions workflows.                                                                              | 🎯 Skills                                           |
+@@ -65,6 +67,20 @@ After installing, also install `plugin-setup@shopware-ai-coding-tools`, then ask
+ 
+ See [full documentation](./plugins/dev-tooling/README.md) for configuration and tool reference.
+ 
++### shopware-knowledge
++
++Version-aware Shopware 6.6/6.7 guidance for backend/DAL, storefront, administration, CMS, cart and checkout, payments and recurring commerce, caching, queues, indexing, translations, accessibility, and tests. Ships the `shopware-development` skill with concrete examples and source/applicability metadata.
++
++```bash
++/plugin install shopware-knowledge@shopware-ai-coding-tools
++# Codex
++codex plugin add shopware-knowledge@shopware-ai-coding-tools
++```
++
++Ask a Shopware development or review question, or invoke `/shopware-knowledge:shopware-development` in Claude Code or `$shopware-development` in Codex. No MCP server, hooks, credentials, or other plugin is required. Specialized workflows remain with `test-writing`, `contributor-writing`, `shopware-documentation`, and `shopware-env`; the knowledge skill does not replace them.
++
++See [full documentation](./plugins/shopware-knowledge/README.md) for scope and portable export, and [maintenance guidance](./plugins/shopware-knowledge/AGENTS.md) for package checks and fixed evaluation fixtures.
++
+ ### gh-tooling → moved to github-agent-tools
+ 
+ The GitHub CLI tooling has moved out of this marketplace into its own repository, [shopwareLabs/github-agent-tools](https://github.com/shopwareLabs/github-agent-tools), where it ships as the `github-mcp` plugin and is Codex-compatible. It is no longer distributed here.
+diff --git a/plugin-tests/dev-tooling/codex_manifest.bats b/plugin-tests/dev-tooling/codex_manifest.bats
+index 80e0978..a7df9c6 100644
+--- a/plugin-tests/dev-tooling/codex_manifest.bats
++++ b/plugin-tests/dev-tooling/codex_manifest.bats
+@@ -135,16 +135,37 @@ _assert_server_forwards_config_vars() {
+ }
+ 
+ # bats test_tags=static
+-@test "the codex marketplace lists dev-tooling only, as an available local plugin" {
+-    run jq -c '[.plugins[] | {name, source, installation: .policy.installation}]' "${CODEX_MARKETPLACE}"
++@test "the codex marketplace registers dev-tooling once as an available local plugin" {
++    run jq -c '[.plugins[] | select(.name == "dev-tooling") | {name, source, installation: .policy.installation}]' "${CODEX_MARKETPLACE}"
+     assert_output '[{"name":"dev-tooling","source":{"source":"local","path":"./plugins/dev-tooling"},"installation":"AVAILABLE"}]'
+ }
+ 
+ # bats test_tags=static
+-@test "the codex marketplace entry's path holds a codex manifest" {
+-    local path
+-    path=$(jq -r '.plugins[0].source.path' "${CODEX_MARKETPLACE}")
+-    assert [ -f "${REPO_ROOT}/${path#./}/.codex-plugin/plugin.json" ]
++@test "every codex marketplace entry has a unique name and an available local source" {
++    run jq -e '.plugins as $plugins |
++        ($plugins | type == "array" and length > 0) and
++        ([$plugins[].name] | length == (unique | length)) and
++        all($plugins[];
++            (.name | type == "string" and length > 0) and
++            .source.source == "local" and
++            (.source.path | startswith("./plugins/") and (split("/") | all(. != ".."))) and
++            .policy.installation == "AVAILABLE")' "${CODEX_MARKETPLACE}"
++    assert_success
++    assert_output "true"
++}
++
++# bats test_tags=static
++@test "every codex marketplace path holds a matching manifest and claude registration" {
++    local name path manifest
++    while IFS=$'\t' read -r name path; do
++        manifest="${REPO_ROOT}/${path#./}/.codex-plugin/plugin.json"
++        assert [ -f "${manifest}" ] || return 1
++        assert_equal "$(jq -r '.name' "${manifest}")" "${name}" || return 1
++        run jq -c --arg name "${name}" --arg path "${path}" \
++            '[.plugins[] | select(.name == $name and .source == $path)] | length' "${CLAUDE_MARKETPLACE}"
++        assert_success || return 1
++        assert_output "1" || return 1
++    done < <(jq -r '.plugins[] | [.name, .source.path] | @tsv' "${CODEX_MARKETPLACE}")
+ }
+ 
+ # A bare tool name is ambiguous to a host that exposes the three servers' tools
+

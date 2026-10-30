@@ -26,5 +26,13 @@ This matrix keeps the compressed review profile traceable to the installable ski
 | `19-testing-patterns.md` | Testing and release validation | Test traits, scope, fixtures, repositories, Store API, migration, and frontend checks included with corrected fixture requirements. |
 | `20-search-and-indexing.md` | Search and indexing | Search, mapping/fetch/query, indexer lifecycle, worker, fallback, and reindex rules included with the complete abstract contract. |
 | `21-internationalization-and-snippets.md` | Internationalization and commerce context | Snippet, translation, language-chain, and validation checks included. |
+| `22-code-review-protocol.md` | Review baseline/evidence | Enumeration and prior-finding discipline remain applicable; mandatory passes and severity-specific patch formats are not imposed. |
+| `23-cache-and-http-cache.md` | HTTP Cache and Varnish | Version/flag-dependent variation, invalidation, cookies, and sensitive fragments included; no fixed runtime assumptions. |
+| `24-external-api-caching-in-cart.md` | Cart/checkout, cache | Provider-derived freshness, input scope, failure handling, deduplication and final authority included; fixed TTLs/admin endpoints omitted. |
+| `25-patching-and-dependency-tooling.md` | Release validation/security | Version-compatible tools and reproducible patches included; mandatory tool installation and fixed tool versions omitted. |
+| `26-plugin-lifecycle-and-activation.md` | Testing/release checks | Already-installed update path, data retention, and explicit destructive migration sequencing included. |
+| `27-cms-elements-and-blocks.md` | CMS/local boundaries | Language-aware slot config, entity overrides, resolver/escaping, and deployment state included. |
+| `28-local-dev-environment.md` | CMS/local boundaries, operations | Detected service/mount/worker/mail safety included; machine-specific commands and environment defaults excluded. |
+| `messenger-handlers.md` | Messenger/operations | Durable operation claims, retry/reconciliation and transport-sensitive behavior included. |
 
 Every numbered reference contributes at least one review criterion. Exclusions are limited to agent workflow, routing, output templates, link inventories, legal framing, or platform-specific app/composable architecture.

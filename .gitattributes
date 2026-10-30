@@ -1,0 +1,2 @@
+# Unified-diff context blanks are syntax; strict git apply checks the patch payload.
+upstream/registration.patch -whitespace
