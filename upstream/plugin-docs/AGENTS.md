@@ -13,8 +13,6 @@
 
 Preserve business invariants. Before changing a rule, record the failure it addresses, matching source evidence, and regression case. Do not add private project details, feedback provenance, personal paths, or unsupported universal thresholds.
 
-The upstream preparation wrapper changes native manifest repository/homepage links for this host, preserving the original author. Canonical source metadata and runtime instructions are not rewritten.
-
 ## Checks
 
 From the repository root:

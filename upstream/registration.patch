@@ -1,3 +1,13 @@
+diff --git a/.gitignore b/.gitignore
+--- a/.gitignore
++++ b/.gitignore
+@@ -59,2 +59,6 @@
+ # BATS testing framework (installed locally via .github/scripts/setup-bats.sh)
+ .bats/
++
++# Python package validation and evaluation
++__pycache__/
++*.py[cod]
 diff --git a/.agents/plugins/marketplace.json b/.agents/plugins/marketplace.json
 index 027aca4..e5ef7c9 100644
 --- a/.agents/plugins/marketplace.json

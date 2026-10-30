@@ -9,7 +9,7 @@ Prepared `shopware-knowledge` **0.10.0** for review, not publication. Native/por
 | Preservation | All 2,457 baseline units accounted for: 2,004 retained, 28 moved, 417 corrected, 8 self-check/provenance or unsupported-assertion units retired; no unexplained unit loss |
 | Entrypoint size | 669 words versus 1,872 after contribution integration, approximately 64% smaller; this measures words, not model tokens |
 | Knowledge index | 29 deterministic topic records; all 28 numbered owners plus the bounded Messenger implementation reference |
-| Package tests | 32 focused tests pass, including invalid/escaping references, metadata, manifests, applicability and export failure cases |
+| Package tests | 34 focused tests pass, including invalid/escaping references, metadata, manifests, applicability, export failure cases and bundled-license presence |
 | Portable export | Pinned host exporter, required `skills-ref`, frontmatter normalization, reference-byte preservation and ZIP parity pass |
 | Source anchors | 89 pinned core URL paths resolve in actual v6.7.15.1 / v6.6.10.30 Git objects; path existence alone is not proof of every associated claim |
 | Claude manifests | Native plugin and repository marketplace pass the installed Claude validator |
@@ -40,6 +40,12 @@ This is independent semantic review, not an exact-string grader. Arm order was n
 Targeted investigation used Shopware v6.7.15.1 and v6.6.10.30, installed CLI help and public primary sources. Corrected mechanics and retained invariants are documented in [correction evidence](corrections.md). Changed backend PHP/JSON examples and frontend consent/DOM lifecycle harnesses received syntax/contract checks. PHP lint ran on 8.5, not a separate 8.2 runtime. Fixture PHP syntax and the clean collector signature were checked; fixtures are not full Composer-installed applications.
 
 The [upstream handoff](upstream-handoff.md) records host checks and reproducible preparation. The host citation checker resolves the plugin's citations but still reports inherited bare-path style warnings in the runtime corpus; legitimate instruction operands are not rewritten into fictitious links. This is a documented style limitation, not an unresolved-reference or behavior pass.
+
+## Final Submission Recheck
+
+The October 30 submission pass confirmed that upstream `main` still matches the pinned host baseline. Source preservation accounting, the 34 focused package tests, portable export, 29 topic records, 14 fixture schemas, 89 pinned core locators, version/issue checks, Claude marketplace validation, all 28 Codex registry BATS tests, and full repository ShellCheck were rerun. The instruction corpus is unchanged from the tested candidate. A final packaging review added the original MIT notice to the native/portable skill, two missing-notice tests, Python-bytecode ignore patterns, and upstream-facing documentation including the [detailed PR draft](upstream-pull-request.md).
+
+A full local host BATS run was attempted but not completed. Its unrelated ChunkHound tests require `ugrep`, which is absent in the local environment; the run was stopped after that prerequisite failure. The focused changed registry suite passes. The upstream Linux CI installs `ugrep` and remains the authority for the full host suite. Do not present the interrupted local run as a full-suite pass.
 
 ## Remaining Gates
 

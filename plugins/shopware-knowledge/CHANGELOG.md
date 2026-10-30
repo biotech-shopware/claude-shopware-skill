@@ -7,6 +7,7 @@
 - Package `shopware-knowledge` in the Shopware AI Coding Tools plugin layout, retaining the `shopware-development` skill trigger and all domain owners. Add Claude/Codex manifests, marketplace registration, portable export, and source/applicability metadata without a required MCP service.
 - Integrate the local-development, missing-facts, and Administration/storefront contributions with their original commits. Preserve CMS guidance already present on `dev`.
 - Remove tool pre-approvals and runtime-specific UI metadata. Let installed host plugins own their specialized workflows, with standalone fallbacks.
+- Bundle the original MIT notice inside the installed skill so portable exports retain it; validate notice presence and export byte parity. Exclude generated Python bytecode from the upstream contribution.
 - Add a dry-run-first upstream preparation adapter and narrow registration patch. Preserve one runtime corpus while adapting host metadata, documentation, namespaced validation and registry tests reproducibly.
 
 ### Instruction Quality

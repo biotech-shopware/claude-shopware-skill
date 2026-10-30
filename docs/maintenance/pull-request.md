@@ -43,7 +43,7 @@ On the executed small Codex cases, expected findings were preserved, clean contr
 
 ### Validation Performed
 
-- 32 focused package tests pass.
+- 34 focused package tests pass, including missing/blank bundled-license rejection and license-preserving export parity.
 - Required pinned host exporter, skills-ref validation, normalized portable frontmatter, reference bytes, and ZIP parity pass.
 - All 29 topic records are indexed; 89 pinned core source paths resolve in actual Shopware v6.7.15.1/v6.6.10.30 Git objects.
 - Claude plugin/marketplace validators pass; both local-marketplace and GitHub-branch one-command installations succeed in isolated configurations, with installed runtime files matching the source.
@@ -56,7 +56,7 @@ On the executed small Codex cases, expected findings were preserved, clean contr
 ### QA Notes
 
 1. Start from a clean checkout of the pinned host revision. Run `python3 scripts/prepare_upstream.py --host /path/to/ai-coding-tools`, review the planned files, then repeat with `--apply`. Confirm a second application proposes zero changes and no index/branch/remote mutation.
-2. Run host version/issue checks, the 32 package tests, portable exporter/skills-ref checks, fixture schema checks, and the 28 Codex registry BATS tests. Missing validation dependencies must fail, not skip.
+2. Run host version/issue checks, the 34 package tests, portable exporter/skills-ref checks, fixture schema checks, and the 28 Codex registry BATS tests. Missing validation dependencies must fail, not skip.
 3. Test standalone and marketplace discovery with no duplicate older installation. Use explicit invocation and a natural-language Shopware request separately. Verify actual domain-reference reads, not only a catalog entry.
 4. Re-run the fixed payment, ownership, renewal, cart, cache, queue, indexing, CMS, save-flow, lifecycle, accessibility, and 6.6 cases. Check both valid and rejection paths and retain the clean controls.
 5. Run the same behavioral comparison in authenticated Claude Code before claiming dual-runtime equivalence. Installation succeeds without that model gate; a missing login is not a behavioral pass.

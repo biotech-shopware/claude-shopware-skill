@@ -428,6 +428,9 @@ class PackValidator:
             self.error("skill-path", self.skill, "canonical skill directory missing")
         if not (self.skill / ".agent-skills").is_file():
             self.error("export-marker", self.skill, ".agent-skills marker required beside SKILL.md")
+        notice = self.skill / "LICENSE"
+        if not notice.is_file() or notice.is_symlink() or not notice.read_text(encoding="utf-8").strip():
+            self.error("license-notice", notice, "bundle the license notice inside the installed skill")
         self.metadata(self.skill, native=True)
         self.runtime(self.skill)
         self.manifests()

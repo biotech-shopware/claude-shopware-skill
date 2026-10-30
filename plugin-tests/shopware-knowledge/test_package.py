@@ -25,6 +25,7 @@ class PackageTests(unittest.TestCase):
         self.plugin = self.root / validator.PLUGIN
         self.write(self.skill / "SKILL.md", "---\nname: shopware-development\nversion: 0.10.0\ndescription: Review and implement Shopware extensions.\n---\n# Development\n\nRead [backend](references/backend.md) for backend changes.\n")
         self.write(self.skill / ".agent-skills", "")
+        self.write(self.skill / "LICENSE", "MIT License\n\nCopyright (c) Example Maintainers\n")
         self.write(self.skill / "references/backend.md", "# Backend\n\nSee [transactions][tx].\n\n[tx]: transactions.md#transactions\n")
         self.write(self.skill / "references/transactions.md", "# Transactions\n\nResolve the owning customer before changing a stored method.\n")
         for runtime in ("claude", "codex"):
@@ -73,6 +74,14 @@ class PackageTests(unittest.TestCase):
 
     def test_upstream_export_and_skills_ref_are_required_and_work(self):
         self.assertEqual([], self.errors(export=True))
+
+    def test_missing_license_notice_is_rejected(self):
+        (self.skill / "LICENSE").unlink()
+        self.assert_code("license-notice")
+
+    def test_blank_license_notice_is_rejected(self):
+        self.write(self.skill / "LICENSE", "\n")
+        self.assert_code("license-notice")
 
     def test_transitive_reference_reachability(self):
         path = self.skill / "references/backend.md"

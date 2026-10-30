@@ -26,6 +26,7 @@ PLUGIN = Path("plugins/shopware-knowledge")
 UPSTREAM_REPOSITORY = "https://github.com/shopwareLabs/ai-coding-tools"
 UPSTREAM_HOMEPAGE = UPSTREAM_REPOSITORY + "/tree/main/plugins/shopware-knowledge"
 REGISTRATIONS = frozenset({
+    ".gitignore",
     ".agents/plugins/marketplace.json",
     ".claude-plugin/marketplace.json",
     ".github/ISSUE_TEMPLATE/plugin_component_other.yml",

@@ -22,7 +22,7 @@ python3 scripts/prepare_upstream.py --host /path/to/ai-coding-tools
 python3 scripts/prepare_upstream.py --host /path/to/ai-coding-tools --apply
 ```
 
-The checked-in [registration patch](../../upstream/registration.patch) changes only the host registries, README, issue registrations, and existing Codex registry tests. The script copies the one canonical runtime corpus and namespaces test support; it does not keep a second edited knowledge copy or manipulate remote branches. Host-specific human/maintenance docs are kept in [small wrappers](../../upstream/plugin-docs/README.md).
+The checked-in [registration patch](../../upstream/registration.patch) changes only the host registries, README, issue registrations, existing Codex registry tests, and Python-bytecode ignore patterns. The script copies the one canonical runtime corpus and namespaces test support; it does not keep a second edited knowledge copy or manipulate remote branches. Host-specific human/maintenance docs are kept in [small wrappers](../../upstream/plugin-docs/README.md).
 
 Expected contribution:
 
@@ -42,7 +42,7 @@ Host wrappers reference host installation commands and maintenance paths; they d
 | Host version validator | All 11 plugin versions synchronized |
 | Issue-template generator and validator | Two intended registrations changed; dropdowns current |
 | Claude marketplace and plugin validator | Pass |
-| Focused package unit tests | 32 pass |
+| Focused package unit tests | 34 pass, including bundled-license rejection and export preservation |
 | Required exporter / `skills-ref` / ZIP parity | Pass |
 | Topic index and core locator check | 29 records; 89 pinned paths resolve |
 | Fixture schema and corrected c10 Composer decode | Pass; host/source fixture bytes match |
@@ -61,6 +61,6 @@ Preparation/apply and whitespace checks must be rerun after content changes. The
 2. Review inherited bare-path formatting deliberately. Some entries are instruction operands rather than links; do not turn them into nonexistent links just to silence style checks.
 3. Run authenticated Claude behavioral comparisons before asserting dual-runtime decision equivalence. Claude installation/manifest checks pass, but live Claude evaluation is explicitly unverified.
 4. Exercise interactive client discovery and project/provider/browser integration where applicable. CLI fixtures are not full application or production verification.
-5. Review/merge the source preparation branch, then submit the prepared upstream contribution. Publish version tags/releases only after maintainer approval.
+5. Submit the prepared contribution from a fork on `ai-tooling-refactoring`, with the [upstream PR description and QA guide](upstream-pull-request.md). Keep the source preparation branch available for preservation/correction review. Publish version tags/releases only after maintainer approval.
 
 Future MCP retrieval is a [separate deterministic design](retrieval-design.md) over the same corpus. It must preserve examples, source anchors, compatibility boundaries and standalone installation; it is not required for this first contribution.

@@ -5,8 +5,9 @@
 ### Packaging and Integration
 
 - Package `shopware-knowledge` in the Shopware AI Coding Tools plugin layout, retaining the `shopware-development` skill trigger and all domain owners. Add Claude/Codex manifests, marketplace registration, portable export, and source/applicability metadata without a required MCP service.
-- Integrate the local-development, missing-facts, and Administration/storefront contributions with their original commits. Preserve CMS guidance already present on `dev`.
+- Include CMS, environment-aware local development, version-sensitive core facts, and Administration/storefront extension patterns. Original contribution history remains in the source preparation branch.
 - Remove tool pre-approvals and runtime-specific UI metadata. Let installed host plugins own their specialized workflows, with standalone fallbacks.
+- Bundle the original MIT notice inside the installed skill so portable exports retain it; validate notice presence and export byte parity. Ignore generated Python bytecode from validation and evaluation.
 
 ### Instruction Quality
 
@@ -25,7 +26,7 @@
 
 ### Verification and Maintenance
 
-- Add a unit-level preservation ledger, fixed behavioral fixtures with clean controls, package/manifest checks, source anchors, and isolated installation/export checks. Executed results and remaining gaps are reported separately; fixture existence is not a claim of runtime validation.
-- Document monthly source/framework/PHPStan review and a separate deterministic MCP retrieval design over the same corpus. No MCP runtime ships in this iteration.
+- Add fixed behavioral fixtures with clean controls, package/manifest checks, source anchors, and isolated installation/export checks. Executed results and remaining gaps are reported separately; fixture existence is not a claim of runtime validation.
+- Document monthly source/framework/PHPStan review. Preservation accounting, correction evidence, and the optional retrieval design remain in the [source preparation handoff](https://github.com/biotech-shopware/claude-shopware-skill/blob/ai-tooling-refactoring/docs/maintenance/upstream-handoff.md). No MCP runtime ships in this iteration.
 
 Earlier release history remains in the [source repository changelog](https://github.com/biotech-shopware/claude-shopware-skill/blob/34145c3f4e00eead8aa47b7c948a6a266d53df44/CHANGELOG.md).
