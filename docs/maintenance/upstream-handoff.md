@@ -13,6 +13,14 @@ Prepare `shopware-knowledge` 0.10.0 as a skills-only contribution to Shopware AI
 
 The review branch in the source repository carries the preservation ledger, correction rationale, behavioral fixtures, and detailed changelog. These are preparation evidence, not a claim that upstream has merged the plugin.
 
+## Review Links
+
+- [Source preparation PR #5](https://github.com/biotech-shopware/claude-shopware-skill/pull/5), targeting `dev`.
+- [Upstream PR #203](https://github.com/shopwareLabs/ai-coding-tools/pull/203), targeting `main` from `biotech-shopware:ai-tooling-refactoring` at `bc8d14150f27b010459dd07d35d32ec86b11f7b0`.
+- [Source validation workflow](https://github.com/biotech-shopware/claude-shopware-skill/actions/runs/40978155433), passing for the finalized implementation and packaging commit.
+
+The upstream PR is ready for review and mergeable, with maintainer edits enabled. Its external-contribution workflows require maintainer approval. Formal reviewer assignment is unavailable to this contributor account; the maintainer handoff is posted on the PR. No merge or release tag has been performed.
+
 ## Reproduce the Contribution
 
 Use a clean checkout of the exact host baseline. From this source repository, inspect the dry run and apply only after reviewing its file list:
@@ -48,8 +56,9 @@ Host wrappers reference host installation commands and maintenance paths; they d
 | Fixture schema and corrected c10 Composer decode | Pass; host/source fixture bytes match |
 | ShellCheck of edited BATS file | Pass |
 | Host-pinned BATS framework and focused Codex registry suite | All 28 tests pass |
+| Complete host BATS suite | 1,559 pass, no failures/skips; Ubuntu 26.04 ARM64, Git 2.53.0, non-root, eight file workers preserving within-file order |
 | Host plugin README/AGENTS/changelog citation lint | All citations resolve; no findings in those wrappers |
-| Broader runtime citation/style lint | All 154 citations resolve; 96 inherited bare-path style findings remain, including three already present in the host README |
+| Broader runtime citation/style lint | All 154 checked relative citations resolve; 96 inherited bare-path style findings remain, including three already present in the host README |
 
 Fresh-checkout preparation, strict patch-payload application and final file checks pass; reapplication makes zero changes. The runtime corpus remains byte-identical. Upstream manifest repository/homepage fields adapt to the host while preserving author credit. The registration patch's meaningful context blanks are exempted narrowly from the source repository's whitespace lint; strict `git apply --whitespace=error` still validates its actual payload.
 
@@ -61,6 +70,6 @@ Preparation/apply and whitespace checks must be rerun after content changes. The
 2. Review inherited bare-path formatting deliberately. Some entries are instruction operands rather than links; do not turn them into nonexistent links just to silence style checks.
 3. Run authenticated Claude behavioral comparisons before asserting dual-runtime decision equivalence. Claude installation/manifest checks pass, but live Claude evaluation is explicitly unverified.
 4. Exercise interactive client discovery and project/provider/browser integration where applicable. CLI fixtures are not full application or production verification.
-5. Submit the prepared contribution from a fork on `ai-tooling-refactoring`, with the [upstream PR description and QA guide](upstream-pull-request.md). Keep the source preparation branch available for preservation/correction review. Publish version tags/releases only after maintainer approval.
+5. Complete review of the open upstream contribution using its [description and QA guide](upstream-pull-request.md). Keep the source preparation branch available for preservation/correction review. Publish version tags/releases only after maintainer approval.
 
 Future MCP retrieval is a [separate deterministic design](retrieval-design.md) over the same corpus. It must preserve examples, source anchors, compatibility boundaries and standalone installation; it is not required for this first contribution.

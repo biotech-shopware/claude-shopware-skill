@@ -53,7 +53,8 @@ Checks were rerun against upstream `a276558d12d0e09696fb9d1a7b4cd1925c44baf6`. C
 | Source locators | All 89 pinned core paths resolve in the actual tag objects; this checks path existence, not the semantics of every surrounding rule. |
 | Index and fixtures | 29 deterministic topic records and all 14 fixed fixture schemas/Composer targets pass. Rubrics are kept outside model workspaces. |
 | Host integration | All plugin versions synchronized, issue-template registrations current, all 28 focused Codex registry BATS tests pass, and ShellCheck passes. |
-| Installation | Actual source-branch GitHub installation through the official Codex skill installer and Claude marketplace installer succeeds; installed runtime bytes match the candidate. Codex native marketplace catalog discovery also succeeds. |
+| Complete host BATS suite | 1,559 passed, 0 failed, 0 skipped in disposable Ubuntu 26.04 ARM64 with Git 2.53.0 and a non-root user. Eight independent file workers preserve execution order within each file. |
+| Installation | Actual GitHub installation from the pushed fork through the official Codex skill installer and Claude marketplace installer succeeds; all 32 installed files, including the MIT notice, match the contribution in both clients. Codex native marketplace catalog discovery also succeeds. |
 | Codex behavior | Independent semantic review of 14 paired fixed cases preserves expected defects and keeps clean/compatibility controls clean, with no new unsupported P0/P1 observed. Selected financial/ownership/cache cases were repeated; natural-language discovery and a downloaded-skill smoke test also pass. |
 | Privacy and formatting | No personal paths, private conversation URLs or runtime-specific invocation prose in the skill. Relative links resolve and diff whitespace checks pass. Synthetic privacy-test strings are deliberate controls. |
 
@@ -72,11 +73,14 @@ python3 eval/shopware-knowledge/run.py check
 .github/scripts/validate-versions.sh
 .github/scripts/validate-issue-templates.sh
 .bats/bats-core/bin/bats plugin-tests/dev-tooling/codex_manifest.bats
+.bats/bats-core/bin/bats --timing -r plugin-tests/
 claude plugin validate .
 git diff --check
 ```
 
 The package validator invokes the existing portable exporter and `skills-ref`; missing validation dependencies fail rather than turning into a skipped success. The fixture `check` command does not invoke a model. Set up the repository's pinned BATS dependencies first with `.github/scripts/setup-bats.sh` if necessary.
+
+The recorded full-suite run used `--jobs 8 --no-parallelize-within-files` with GNU Parallel. The serial command above runs the same cases without that extra dependency. Relative-worktree fixtures need Git 2.48 or newer; this is a host-test prerequisite, not a new Shopware application requirement.
 
 1. Add this checkout as a separate local marketplace in a disposable Claude configuration. Install `shopware-knowledge` and verify it is enabled at `0.10.0`; invoke `/shopware-knowledge:shopware-development`. Expect the relevant relative references to resolve with no MCP setup or external permission granted by the skill.
 2. Register this checkout in a disposable Codex configuration or install its standalone skill through the existing installer. Verify discovery of `shopware-development`, then ask a payment, cache or CMS question. Expect the matching topic references, not the entire corpus, to be read.
@@ -92,9 +96,9 @@ The runtime change is instruction behavior, not application code. Regressions co
 
 Claude live model tests remain unverified because the available CLI is not authenticated. Native packaging and actual Claude installation pass. Interactive IDE/app discovery, real Shopware/container integration, browser/assistive-technology behavior, provider enforcement, concurrency recovery and reverse-proxy/search rollout still require their own environments. PHP snippets were linted on PHP 8.5, not a separate PHP 8.2 runtime.
 
-All runtime citations resolve. The host's broader style checker still reports inherited bare-path style findings in the corpus; some are literal instruction operands. These are not unresolved links, and the PR does not claim a clean strict-style run. The plugin's human-facing wrappers pass the citation/style check.
+All checked relative runtime citations resolve. The host's broader style checker still reports inherited bare-path style findings in the corpus; some are literal instruction operands. These are not unresolved links, and the PR does not claim a clean strict-style run. The plugin's human-facing wrappers pass the citation/style check.
 
-The full host BATS suite was attempted locally, then stopped when unrelated ChunkHound cases failed because `ugrep` is not installed on the Mac. The changed 28-test Codex registry suite passes. Upstream Linux CI installs that prerequisite and must provide the full-suite result; the interrupted local run is not counted as a pass.
+The initial macOS full-suite attempt lacked `ugrep` and was stopped. An Ubuntu 24.04 probe with Git 2.43 then reproduced the same relative-worktree membership failure on both the candidate and untouched upstream. Neither incomplete probe is counted as a pass. The completed Ubuntu 26.04/Git 2.53 non-root run passes all 1,559 cases; no unrelated runtime was changed. Upstream GitHub Actions still require maintainer approval for this external contribution, so local success is not presented as a green upstream CI run.
 
 ## Scope and release
 
@@ -103,6 +107,7 @@ The full host BATS suite was attempted locally, then stopped when unrelated Chun
 ## References
 
 - [Source preparation branch](https://github.com/biotech-shopware/claude-shopware-skill/tree/ai-tooling-refactoring)
+- [Source preparation PR and passing validation](https://github.com/biotech-shopware/claude-shopware-skill/pull/5)
 - [Detailed plugin changelog](https://github.com/biotech-shopware/claude-shopware-skill/blob/ai-tooling-refactoring/plugins/shopware-knowledge/CHANGELOG.md)
 - [Executed validation and limitations](https://github.com/biotech-shopware/claude-shopware-skill/blob/ai-tooling-refactoring/docs/maintenance/validation-results.md)
 - [Reproducible upstream preparation](https://github.com/biotech-shopware/claude-shopware-skill/blob/ai-tooling-refactoring/docs/maintenance/upstream-handoff.md)

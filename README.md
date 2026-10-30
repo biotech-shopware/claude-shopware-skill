@@ -4,6 +4,8 @@ Shopware 6.7 development and review guidance with explicit 6.6 compatibility. On
 
 This branch prepares **shopware-knowledge 0.10.0** for review and integration into Shopware AI Coding Tools. It is not a published release. The plugin name changes; the skill remains `shopware-development`. References do not limit reasoning, investigation, or solution breadth.
 
+Review: [source preparation #5](https://github.com/biotech-shopware/claude-shopware-skill/pull/5) and [upstream contribution #203](https://github.com/shopwareLabs/ai-coding-tools/pull/203). The upstream contribution targets `main`; installation below uses the source review branch until maintainer acceptance.
+
 ## Install the Review Branch
 
 ### Claude Code CLI and Code Sessions in the Desktop App

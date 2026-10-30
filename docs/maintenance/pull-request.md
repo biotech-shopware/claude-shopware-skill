@@ -51,6 +51,7 @@ On the executed small Codex cases, expected findings were preserved, clean contr
 - 14 paired Codex cases receive independent semantic review, plus repeated payment/ownership/renewal/cache cases and two unprefixed discovery probes. Rubrics remain outside model-visible fixtures.
 - Two defective initial fixtures were corrected and rerun in both arms; their superseded outputs are excluded. One capacity failure is not scored as a semantic failure and is retried with the same model.
 - On the pinned host checkout, all 11 plugin versions and generated issue registrations validate; all 28 focused Codex registry BATS tests pass. Fresh preparation works and reapplication makes zero changes.
+- The complete host BATS suite passes all 1,559 cases with zero failures/skips in disposable Ubuntu 26.04 ARM64 with Git 2.53.0 and a non-root user, using eight independent file workers. Upstream Actions still require maintainer approval; Claude live behavior remains unverified.
 - Current-tree privacy and relative-file-link checks pass. Host citation paths resolve; inherited bare-path style warnings remain documented rather than silently exempted or converted into fictitious links.
 
 ### QA Notes

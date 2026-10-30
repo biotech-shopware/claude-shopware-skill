@@ -21,6 +21,7 @@ Prepared `shopware-knowledge` **0.10.0** for review, not publication. Native/por
 | Codex repetition | Payment authority, saved-method ownership, renewal idempotency and cache isolation repeated on unchanged fixtures in both arms; one model-capacity failure is excluded and retried with the same model |
 | Natural-language discovery | Two unprefixed CLI prompts load the project skill and appropriate references; pricing defect detected and pure-formatter control remains clean |
 | Host integration | Versions, generated issue registrations, manifests, package/export checks and all 28 focused Codex registry BATS tests pass in the pinned host checkout |
+| Full host BATS suite | 1,559 passed, 0 failed, 0 skipped in disposable Ubuntu 26.04 ARM64, Git 2.53.0, non-root user; eight file workers with within-file order preserved |
 | Formatting/privacy | Diff whitespace checks pass; runtime Markdown has no personal paths, private-conversation provenance or platform-specific invocation instructions |
 
 The [GitHub validation workflow](https://github.com/biotech-shopware/claude-shopware-skill/actions/runs/40743615151) passed for implementation commit `5d2c8318d277cb54359c02d37bf054e75acd3f38`. Follow-up documentation commits do not change the tested runtime corpus; their CI status must still be checked separately.
@@ -46,6 +47,22 @@ The [upstream handoff](upstream-handoff.md) records host checks and reproducible
 The October 30 submission pass confirmed that upstream `main` still matches the pinned host baseline. Source preservation accounting, the 34 focused package tests, portable export, 29 topic records, 14 fixture schemas, 89 pinned core locators, version/issue checks, Claude marketplace validation, all 28 Codex registry BATS tests, and full repository ShellCheck were rerun. The instruction corpus is unchanged from the tested candidate. A final packaging review added the original MIT notice to the native/portable skill, two missing-notice tests, Python-bytecode ignore patterns, and upstream-facing documentation including the [detailed PR draft](upstream-pull-request.md).
 
 A full local host BATS run was attempted but not completed. Its unrelated ChunkHound tests require `ugrep`, which is absent in the local environment; the run was stopped after that prerequisite failure. The focused changed registry suite passes. The upstream Linux CI installs `ugrep` and remains the authority for the full host suite. Do not present the interrupted local run as a full-suite pass.
+
+The published upstream fork was then installed again through the official Codex installer and Claude marketplace CLI in separate temporary destinations. All 32 installed files, including the MIT notice, match the contributed skill byte-for-byte in both clients. A read-only Codex clean-control run from that actual GitHub installation read the entrypoint and relevant review/source references, reported no invented formatter defect, exited successfully and preserved all fixture hashes. Claude live behavior remains unverified. Upstream PR #203 is open; its workflow runs require maintainer approval.
+
+## Whole-Host Linux Validation
+
+All 1,559 host BATS cases passed with zero failures and zero skips against contribution commit `bc8d14150f27b010459dd07d35d32ec86b11f7b0`. The environment was the official Ubuntu 26.04 ARM64 container image at digest `sha256:6a06111c3b0a8600feadb270aec771dc239bf407b25625f93f44ab00e11f4d3c`, Git 2.53.0, the host-pinned BATS dependencies, and a non-root test user. The source checkout was mounted read-only and copied into the disposable container; no project containers or active client configurations were changed.
+
+The completed command was:
+
+```bash
+.bats/bats-core/bin/bats --jobs 8 --no-parallelize-within-files --timing -r plugin-tests/
+```
+
+GNU Parallel scheduled independent files; execution order within each file was preserved. This is a completed local integration run, not the upstream GitHub Actions result. The longer serial probe was stopped after the full file-parallel run succeeded and is not counted as another complete run.
+
+An earlier Ubuntu 24.04 probe with Git 2.43 failed relative-worktree membership tests. The same failure was reproduced on untouched upstream `a276558` in that environment. Git 2.48 added the relative back-pointer support those fixtures exercise; the formerly failing case passes with Git 2.53. No unrelated worktree runtime or tests were changed to force a pass. The older probe was stopped and excluded from successful-run totals. Upstream workflows remain gated on maintainer approval for the external contribution.
 
 ## Remaining Gates
 

@@ -9,6 +9,7 @@
 - Document source maintenance and a future optional deterministic retrieval layer. No MCP runtime, hooks, or service dependency is added; no release tag is published during preparation.
 - Verify installation from the pushed GitHub branch through both the official Codex installer and Claude's one-command marketplace flow; byte-compare installed runtime content. Record passing Codex smoke/paired cases and CI while keeping authenticated Claude behavior an explicit remaining gate.
 - Finalize the upstream plugin documentation, duplicate-install troubleshooting, detailed PR/QA handoff, and refreshed host checks. Bundle the MIT notice in native and portable skill installations, with missing-notice regression tests. Keep local environment limitations distinct from CI results.
+- Submit the upstream-ready branch for review, link source and upstream PRs, and repeat real GitHub installation/file-parity checks for both clients plus the read-only Codex clean-control smoke. Verify all 1,559 host BATS cases in a compatible non-root Linux environment. Keep upstream workflow approval and authenticated Claude behavior as explicit gates.
 
 See [the detailed plugin changelog](plugins/shopware-knowledge/CHANGELOG.md) for rationale and [validation results](docs/maintenance/validation-results.md) for executed versus pending checks.
 
